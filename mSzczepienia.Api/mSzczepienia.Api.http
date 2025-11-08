@@ -1,0 +1,6 @@
+@mSzczepienia.Api_HostAddress = http://localhost:5160
+
+GET {{mSzczepienia.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

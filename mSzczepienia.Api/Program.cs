@@ -35,7 +35,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Wyst¹pi³ b³¹d podczas migracji bazy danych.");
+        logger.LogError(ex, "Database Migration Error");
     }
 }
 

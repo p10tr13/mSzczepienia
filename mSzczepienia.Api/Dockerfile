@@ -13,6 +13,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Development
 WORKDIR /src
 COPY ["mSzczepienia.Api/mSzczepienia.Api.csproj", "mSzczepienia.Api/"]
+COPY ["mSzczepienia.Shared/mSzczepienia.Shared.csproj", "mSzczepienia.Shared/"]
 RUN dotnet restore "./mSzczepienia.Api/mSzczepienia.Api.csproj"
 COPY . .
 WORKDIR "/src/mSzczepienia.Api"

@@ -1,7 +1,11 @@
-﻿@page "/"
+﻿@inject IStringLocalizer<SharedResources> Localizer
+@using System.Globalization
+
+@page "/"
+@using mSzczepienia.Client.Resources
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>@Localizer["HelloWorld"]</h1>
 
 Welcome to your new app.

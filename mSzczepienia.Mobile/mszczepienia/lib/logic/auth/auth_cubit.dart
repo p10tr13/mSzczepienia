@@ -38,9 +38,6 @@ class AuthCubit extends Cubit<AuthState> {
 
     try {
       final user = await _authRepository.login(email, password);
-
-      // W TYM MIEJSCU POBRANIE DANYCH Z BAZ CITIZEN I ACCOUNT
-      // MAPOWANIE NA USERA
       
       emit(state.copyWith(
         status: AuthStatus.loginSuccess,
@@ -50,6 +47,24 @@ class AuthCubit extends Cubit<AuthState> {
       emit(state.copyWith(status: AuthStatus.loginFailed));
     }
   }
+
+  /// SIGN UP
+  Future<void> signUpRequested(String pesel, String name, String surname, String defaultMedicalFacility, String email, String password) async {
+    
+    emit(state.copyWith(status: AuthStatus.loading));
+
+    try {
+      final user = await _authRepository.signUp(pesel, name, surname, defaultMedicalFacility, email, password);
+      
+      emit(state.copyWith(
+        status: AuthStatus.signUpSuccess,
+        user: user,
+      ));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.signUpFailed));
+    }
+  }
+
 
   /// LOGOUT
   Future<void> logoutRequested() async {

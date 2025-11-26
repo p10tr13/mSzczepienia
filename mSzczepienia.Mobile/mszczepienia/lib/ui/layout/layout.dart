@@ -9,12 +9,12 @@ class Layout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         centerTitle: false, 
-        toolbarHeight: 60.0,
+        toolbarHeight: 70.0,
         title: Padding(
-          padding: const EdgeInsets.only(top: 30.0, bottom: 8.0, left: 8.0),
+          padding: const EdgeInsets.only(top: 30.0, bottom: 20.0, left: 8.0),
           child: Row(
             children: [
               Container(

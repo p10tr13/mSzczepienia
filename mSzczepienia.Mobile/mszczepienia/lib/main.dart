@@ -2,11 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mszczepienia/core/router/app_router.dart';
 import 'package:mszczepienia/core/theme/app_theme.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
-import 'package:mszczepienia/logic/auth/auth_gate.dart';
 import 'package:mszczepienia/logic/auth/auth_repository.dart';
-//import 'package:mszczepienia/logic/router/app_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,14 +28,17 @@ class MyApp extends StatelessWidget {
       create: (context) => AuthRepository(),
       child: BlocProvider(
         create: (context) => AuthCubit(context.read<AuthRepository>()),
-        child: MaterialApp(
-          title: 'mSzczepienia',
-          theme: AppTheme.lightTheme,
-          
-          home: const AuthGate(), 
-          
-          routes: {
-          },
+        child: Builder(
+          builder: (context) {
+            final appRouter = AppRouter(authCubit: context.read<AuthCubit>());
+
+            return MaterialApp.router(
+              title: 'mSzczepienia',
+              theme: AppTheme.lightTheme,
+              routerConfig: appRouter.router,
+              debugShowCheckedModeBanner: false
+            );
+          }
         ),
       ),
     );

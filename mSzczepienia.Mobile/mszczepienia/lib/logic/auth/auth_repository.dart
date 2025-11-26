@@ -28,7 +28,9 @@ class AuthRepository {
 
   // LOG IN
   Future<AppUser?> login(String email, String password) async {
+
     
+    // FIREBASE LOGIN
     try {
       await firebaseAuth.signInWithEmailAndPassword(
         email: email, 
@@ -37,16 +39,53 @@ class AuthRepository {
     } catch (e) {
       throw Exception('Incorrect credentials');
     }
-    
+
+    // DATABASE LOGIN
+    // TODO: Get data from db about user
+
     // Save new user to class AppUser
     final loggedUser = AppUser(
       email: email,
+      name: '', surname: '', pesel: '', defaultMedicalFacility: '',
     );
-
     // Save to secure storage
     await _storage.write(key: _userKey, value: loggedUser.toJson());
 
     return loggedUser;
+  }
+
+
+  // SIGN UP
+  Future<AppUser?> signUp(String pesel, String name, String surname, String defaultMedicalFacility, String email, String password) async {
+
+    
+    // FIREBASE SIGN UP
+    try {
+      await firebaseAuth.createUserWithEmailAndPassword(
+        email: email, 
+        password: password
+      );
+
+    } catch (e) {
+      throw Exception('Incorrect credentials');
+    }
+
+    // DATABASE SIGN UP - POST data to db about new user
+
+
+    
+    // Save new user to class AppUser
+    final signedUpUser = AppUser(
+      name: name, 
+      surname: surname, 
+      pesel: pesel,
+      email: email,
+      defaultMedicalFacility: defaultMedicalFacility,
+    );
+    // Save to secure storage
+    await _storage.write(key: _userKey, value: signedUpUser.toJson());
+
+    return signedUpUser;
   }
 
 

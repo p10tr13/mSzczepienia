@@ -12,8 +12,8 @@ using mSzczepienia.Shared;
 namespace mSzczepienia.Shared.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251110210828_AddNewTables")]
-    partial class AddNewTables
+    [Migration("20251127184734_VaccineVarcharChanged")]
+    partial class VaccineVarcharChanged
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,8 +107,8 @@ namespace mSzczepienia.Shared.Migrations
 
                     b.Property<string>("diseaseName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("diseaseId");
 
@@ -336,8 +336,8 @@ namespace mSzczepienia.Shared.Migrations
 
                     b.Property<string>("vaccineName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("vaccineId");
 

@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace mSzczepienia.Shared.Data
+{
+    public class VaccineDiseaseCsvModel { 
+        public required string vaccineName { get; set; } 
+        public required string diseaseName { get; set; } 
+    }
+
+}

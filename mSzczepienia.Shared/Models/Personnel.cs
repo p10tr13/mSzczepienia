@@ -1,4 +1,5 @@
-﻿using System;
+﻿using mSzczepienia.Shared.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace mSzczepienia.Shared.Models
         public int facilityId { get; set; }
         public MedicalFacility medicalFacility { get; set; } = null!;
         public required string pwzNumber { get; set; }
-        public required string position { get; set; }
+        public Position position { get; set; }
 
         // Relations
         public ICollection<OcrSubmission> ocrSubmissions { get; set; } = new List<OcrSubmission>();

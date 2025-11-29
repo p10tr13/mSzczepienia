@@ -1,30 +1,30 @@
-diseaseName
-Respiratory Syncytial Virus Infections
-"Influenza, Human"
-Immunization
-Disease Outbreaks
-Hepatitis B
-Hepatitis A
-COVID-19 virus infection
-Pneumococcal Infections
-Papillomavirus Infections
-Uterine Cervical Dysplasia
-Dengue
-Cholera
-"Hemorrhagic Fever, Ebola"
-Condylomata Acuminata
-Tetanus
-"Meningitis, Haemophilus"
-Whooping Cough
-Poliomyelitis
-Diphtheria
-Chikungunya virus
-"Encephalitis, Japanese"
-Rubella
-Mumps
-Measles
-"Meningitis, Meningococcal"
-Chickenpox
-Rotavirus Infections
-Herpes Zoster
-"Influenza A Virus, H5N8 Subtype"
+diseaseNameEn,diseaseNamePl
+Respiratory Syncytial Virus Infections,Zakażenia wirusem RS (RSV)
+"Influenza, Human",Grypa u ludzi
+Immunization,Szczepienie / immunizacja
+Disease Outbreaks,Wybuchy chorób / epidemie
+Hepatitis B,Wirusowe zapalenie wątroby typu B (WZW B)
+Hepatitis A,Wirusowe zapalenie wątroby typu A (WZW A)
+COVID-19 virus infection,Zakażenie wirusem COVID-19
+Pneumococcal Infections,Zakażenia pneumokokowe
+Papillomavirus Infections,Zakażenia wirusem brodawczaka ludzkiego (HPV)
+Uterine Cervical Dysplasia,Dysplazja szyjki macicy
+Dengue,Denga
+Cholera,Cholera
+"Hemorrhagic Fever, Ebola",Gorączka krwotoczna Ebola
+Condylomata Acuminata,Kłykciny kończyste
+Tetanus,Tężec
+"Meningitis, Haemophilus",Zapalenie opon mózgowo-rdzeniowych wywołane Haemophilus influenzae typu b (Hib)
+Whooping Cough,Krztusiec
+Poliomyelitis,Poliomyelitis / Polio / Choroba Heinego-Medina
+Diphtheria,Błonica (dyfteryt)
+Chikungunya virus,Chikungunya
+"Encephalitis, Japanese",Japońskie zapalenie mózgu
+Rubella,Różyczka
+Mumps,Świnka
+Measles,Odra
+"Meningitis, Meningococcal",Zapalenie opon mózgowo-rdzeniowych meningokokowe
+Chickenpox,Ospa wietrzna
+Rotavirus Infections,Zakażenia rotawirusowe
+Herpes Zoster,Półpasiec
+"Influenza A Virus, H5N8 Subtype",Wirus grypy A podtyp H5N8

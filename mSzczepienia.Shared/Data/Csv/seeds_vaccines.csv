@@ -1,49 +1,49 @@
-vaccineName,manufacturer,creationDate
-Abrysvo,Pfizer Europe MA EEIG,17/07/2023
-"Adjupanrix (previously Pandemic influenza vaccine (H5N1) (split virion, inactivated, adjuvanted) GlaxoSmithKline Biologicals)",GlaxoSmithKline Biologicals S.A.,14/12/2015
-Aflunov,Seqirus S.r.l. ,19/05/2017
-Ambirix,GlaxoSmithKline Biologicals S.A.,27/10/2017
-Arexvy,GlaxoSmithKline Biologicals S.A.,16/06/2023
-Bimervax,Hipra Human Health S.L.,31/03/2023
-Capvaxive,Merck Sharp & Dohme B.V. ,31/01/2025
-Celldemic,Seqirus Netherlands B.V.,23/02/2024
-Cervarix,GlaxoSmithKline Biologicals S.A.,17/05/2018
-Comirnaty,BioNTech Manufacturing GmbH,23/12/2020
-Dengvaxia,Sanofi Winthrop Industrie,18/12/2018
-Dukoral,Valneva Sweden AB,16/03/2015
-Ervebo,Merck Sharp & Dohme B.V. ,12/12/2019
-Fendrix,GlaxoSmithKline Biologicals S.A.,27/10/2017
-Fluad Tetra,Seqirus Netherlands B.V.,29/05/2020
-Flucelvax,Seqirus Netherlands B.V.,18/10/2024
-Fluenz,AstraZeneca AB,31/05/2024
-Gardasil,Merck Sharp & Dohme B.V. ,17/05/2018
-HBVaxPro,Merck Sharp & Dohme B.V. ,18/12/2017
-Heplisav B,Dynavax GmbH,01/03/2021
-Hexacima,Sanofi Winthrop Industrie,08/01/2018
-Hexyon,Sanofi Winthrop Industrie,08/12/2017
-Incellipan,Seqirus Netherlands B.V.,23/02/2024
-Infanrix Hexa,GlaxoSmithKline Biologicals S.A.,12/04/2018
-Ixchiq,Valneva Austria GmbH,31/05/2024
-Ixiaro,Valneva Austria GmbH,08/01/2018
-M-M-RVaxPro,Merck Sharp & Dohme B.V. ,19/02/2018
-MenQuadfi,Sanofi Winthrop Industrie,27/11/2020
-Mvabea,Janssen-Cilag International N.V.   ,23/07/2020
-Nimenrix,Pfizer Europe MA EEIG,15/03/2018
-Pandemic influenza vaccine H5N1 AstraZeneca (previously Pandemic influenza vaccine H5N1 Medimmune),AstraZeneca AB,23/06/2017
-Prevenar 13,Pfizer Europe MA EEIG,19/03/2018
-Prevenar 20 (previously Apexxnar),Pfizer Europe MA EEIG,14/12/2021
-ProQuad,Merck Sharp & Dohme B.V.,18/05/2017
-Qdenga,Takeda GmbH,12/10/2022
-RotaTeq,Merck Sharp & Dohme B.V.,26/09/2017
-Rotarix,GlaxoSmithKline Biologicals S.A.,26/07/2018
-Shingrix,GlaxoSmithKline Biologicals S.A.,21/03/2018
-Spikevax (previously COVID-19 Vaccine Moderna),"Moderna Biotech Spain, S.L.",20/01/2021
-Supemtek Tetra (previously Supemtek),Sanofi Winthrop Industrie,25/11/2020
-Synflorix,GlaxoSmithKline Biologicals S.A.,12/10/2017
-Twinrix Adult,GlaxoSmithKline Biologicals S.A.,27/10/2017
-Twinrix Paediatric,GlaxoSmithKline Biologicals S.A.,27/10/2017
-Vaxchora,Bavarian Nordic A/S,08/04/2020
-Vaxelis,MCM Vaccine B.V.,06/04/2018
-Zabdeno,Janssen-Cilag International N.V.   ,23/07/2020
-Zoonotic Influenza Vaccine Seqirus,Seqirus S.r.l. ,14/09/2023
-mResvia,"Moderna Biotech Spain, S.L.",28/06/2024
+vaccineName,manufacturer,vaccineDescription,creationDate
+Abrysvo,Pfizer Europe MA EEIG,"respiratory syncytial virus vaccine (bivalent, recombinant)",17/07/2023
+"Adjupanrix (previously Pandemic influenza vaccine (H5N1) (split virion, inactivated, adjuvanted) GlaxoSmithKline Biologicals)",GlaxoSmithKline Biologicals S.A.,"pandemic influenza vaccine (H5N1) (split virion, inactivated, adjuvanted)",14/12/2015
+Aflunov,Seqirus S.r.l. ,"zoonotic influenza vaccine (H5N1) (surface antigen, inactivated, adjuvanted)",19/05/2017
+Ambirix,GlaxoSmithKline Biologicals S.A.,hepatitis A (inactivated) and hepatitis B (rDNA) (HAB) vaccine (adsorbed),27/10/2017
+Arexvy,GlaxoSmithKline Biologicals S.A.,"recombinant respiratory syncytial virus pre-fusion F protein, adjuvanted with AS01E",16/06/2023
+Bimervax,Hipra Human Health S.L.,"COVID-19 Vaccine (recombinant, adjuvanted)",31/03/2023
+Capvaxive,Merck Sharp & Dohme B.V. ,pneumococcal polysaccharide conjugate vaccine (21-valent),31/01/2025
+Celldemic,Seqirus Netherlands B.V.,"zoonotic influenza vaccine (H5N1) (surface antigen, inactivated, adjuvanted, prepared in cell cultures)",23/02/2024
+Cervarix,GlaxoSmithKline Biologicals S.A.,"human papillomavirus vaccine [types 16, 18] (recombinant, adjuvanted, adsorbed)",17/05/2018
+Comirnaty,BioNTech Manufacturing GmbH,COVID-19 mRNA vaccine,23/12/2020
+Dengvaxia,Sanofi Winthrop Industrie,"dengue tetravalent vaccine (live, attenuated)",18/12/2018
+Dukoral,Valneva Sweden AB,"cholera vaccine (inactivated, oral)",16/03/2015
+Ervebo,Merck Sharp & Dohme B.V. ,"Ebola Zaire vaccine (rVSV∆G-ZEBOV-GP, live)",12/12/2019
+Fendrix,GlaxoSmithKline Biologicals S.A.,"hepatitis B (rDNA) vaccine (adjuvanted, adsorbed)",27/10/2017
+Fluad Tetra,Seqirus Netherlands B.V.,"influenza vaccine (surface antigen, inactivated, adjuvanted)",29/05/2020
+Flucelvax,Seqirus Netherlands B.V.,"influenza vaccine (surface antigen, inactivated, prepared in cell cultures)",18/10/2024
+Fluenz,AstraZeneca AB,"influenza vaccine (live attenuated, nasal)",31/05/2024
+Gardasil,Merck Sharp & Dohme B.V. ,"human papillomavirus vaccine [types 6, 11, 16, 18] (recombinant, adsorbed)",17/05/2018
+HBVaxPro,Merck Sharp & Dohme B.V. ,hepatitis B vaccine (recombinant DNA),18/12/2017
+Heplisav B,Dynavax GmbH,hepatitis B surface antigen,01/03/2021
+Hexacima,Sanofi Winthrop Industrie,"diphtheria, tetanus, pertussis (acellular, component), hepatitis B (rDNA), poliomyelitis (inactivated) and Haemophilus influenzae type b conjugate vaccine (adsorbed)",08/01/2018
+Hexyon,Sanofi Winthrop Industrie,"diphtheria, tetanus, pertussis (acellular, component), hepatitis B (rDNA), poliomyelitis (inactivated) and Haemophilus influenzae type b conjugate vaccine (adsorbed)",08/12/2017
+Incellipan,Seqirus Netherlands B.V.,"pandemic influenza vaccine (H5N1) (surface antigen, inactivated, adjuvanted, prepared in cell cultures)",23/02/2024
+Infanrix Hexa,GlaxoSmithKline Biologicals S.A.,"diphtheria (D), tetanus (T), pertussis (acellular, component) (Pa), hepatitis B (rDNA) (HBV), poliomyelitis (inactivated) (IPV) and Haemophilus influenzae type-b (Hib) conjugate vaccine (adsorbed)",12/04/2018
+Ixchiq,Valneva Austria GmbH,Chikungunya vaccine (live),31/05/2024
+Ixiaro,Valneva Austria GmbH,"Japanese encephalitis vaccine (inactivated, adsorbed)",08/01/2018
+M-M-RVaxPro,Merck Sharp & Dohme B.V. ,"measles, mumps and rubella vaccine (live)",19/02/2018
+MenQuadfi,Sanofi Winthrop Industrie,"meningococcal group A, C, W-135 and Y conjugate vaccine",27/11/2020
+Mvabea,Janssen-Cilag International N.V.   ,Ebola vaccine (MVA-BN-Filo [recombinant]),23/07/2020
+Nimenrix,Pfizer Europe MA EEIG,"meningococcal groups A, C, W-135 and Y conjugate vaccine",15/03/2018
+Pandemic influenza vaccine H5N1 AstraZeneca (previously Pandemic influenza vaccine H5N1 Medimmune),AstraZeneca AB,"pandemic influenza vaccine (H5N1) (live attenuated, nasal)",23/06/2017
+Prevenar 13,Pfizer Europe MA EEIG,"pneumococcal polysaccharide conjugate vaccine (13-valent, adsorbed)",19/03/2018
+Prevenar 20 (previously Apexxnar),Pfizer Europe MA EEIG,"pneumococcal polysaccharide conjugate vaccine (20-valent, adsorbed)",14/12/2021
+ProQuad,Merck Sharp & Dohme B.V.,"measles, mumps, rubella and varicella vaccine (live)",18/05/2017
+Qdenga,Takeda GmbH,"dengue tetravalent vaccine (live, attenuated)",12/10/2022
+RotaTeq,Merck Sharp & Dohme B.V.,"rotavirus vaccine, live",26/09/2017
+Rotarix,GlaxoSmithKline Biologicals S.A.,"rotavirus vaccine, live",26/07/2018
+Shingrix,GlaxoSmithKline Biologicals S.A.,"herpes zoster vaccine (recombinant, adjuvanted)",21/03/2018
+Spikevax (previously COVID-19 Vaccine Moderna),"Moderna Biotech Spain, S.L.",COVID-19 mRNA vaccine,20/01/2021
+Supemtek Tetra (previously Supemtek),Sanofi Winthrop Industrie,"quadrivalent influenza vaccine (recombinant, prepared in cell culture)",25/11/2020
+Synflorix,GlaxoSmithKline Biologicals S.A.,pneumococcal polysaccharide conjugate vaccine (adsorbed),12/10/2017
+Twinrix Adult,GlaxoSmithKline Biologicals S.A.,hepatitis A (inactivated) and hepatitis B (rDNA) (HAB) vaccine (adsorbed),27/10/2017
+Twinrix Paediatric,GlaxoSmithKline Biologicals S.A.,hepatitis A (inactivated) and hepatitis B (rDNA) (HAB) vaccine (adsorbed),27/10/2017
+Vaxchora,Bavarian Nordic A/S,"cholera vaccine, oral, live",08/04/2020
+Vaxelis,MCM Vaccine B.V.,"diphtheria, tetanus, pertussis (acellular, component), hepatitis B (rDNA), poliomyelitis (inactivated) and Haemophilus type b conjugate vaccine (adsorbed)",06/04/2018
+Zabdeno,Janssen-Cilag International N.V.   ,ebola vaccine (Ad26.ZEBOV-GP [recombinant]),23/07/2020
+Zoonotic Influenza Vaccine Seqirus,Seqirus S.r.l. ,"zoonotic influenza vaccine (H5N8) (surface antigen, inactivated, adjuvanted)",14/09/2023
+mResvia,"Moderna Biotech Spain, S.L.",Respiratory syncytial virus mRNA vaccine (nucleoside modified),28/06/2024

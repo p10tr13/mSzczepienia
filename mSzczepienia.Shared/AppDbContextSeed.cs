@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Bogus.DataSets;
 using Bogus.Extensions.Poland;
 using CsvHelper;
 using mSzczepienia.Shared.Data;
@@ -71,7 +72,7 @@ namespace mSzczepienia.Shared
                 var existingCitizens = _dbContext.citizens.ToList();
                 var existingVerifiers = _dbContext.personnel.ToList();
 
-                var submissions = GenerateOcrSubmissions(100, existingCitizens, existingVerifiers);
+                var submissions = GenerateOcrSubmissions(50, existingCitizens, existingVerifiers);
                 _dbContext.ocrSubmissions.AddRange(submissions);
                 _dbContext.SaveChanges();
             }
@@ -83,7 +84,7 @@ namespace mSzczepienia.Shared
                 using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     var diseaseRecords = csv.GetRecords<DiseaseCsvModel>().ToList();
-                    var entities = diseaseRecords.Select(x => new Disease { diseaseName = x.diseaseName });
+                    var entities = diseaseRecords.Select(x => new Disease { diseaseNameEn = x.diseaseNameEn, diseaseNamePl = x.diseaseNamePl });
 
                     _dbContext.diseases.AddRange(entities);
                     _dbContext.SaveChanges();
@@ -101,6 +102,7 @@ namespace mSzczepienia.Shared
                     {
                         vaccineName = x.vaccineName,
                         manufacturer = x.manufacturer,
+                        vaccineDescription = x.vaccineDescription,
                         creationDate = x.creationDate
                     });
 
@@ -116,7 +118,7 @@ namespace mSzczepienia.Shared
                     .ToDictionary(v => v.vaccineName, v => v.vaccineId);
 
                 var diseasesMap = _dbContext.diseases
-                    .ToDictionary(d => d.diseaseName, d => d.diseaseId);
+                    .ToDictionary(d => d.diseaseNameEn, d => d.diseaseId);
 
 
                 var relations = new List<VaccineDisease>();
@@ -140,6 +142,25 @@ namespace mSzczepienia.Shared
                 }
 
                 _dbContext.vaccineDiseases.AddRange(relations);
+                _dbContext.SaveChanges();
+            }
+
+            // Vaccination Entries
+            if (!_dbContext.vaccinationEntries.Any())
+            {
+                var existingOcrSubmissions = _dbContext.ocrSubmissions.ToList();
+                var existingVaccines = _dbContext.vaccineDefinitions.ToList();
+                var entries = GenerateVaccinationEntries(existingOcrSubmissions, existingVaccines);
+                _dbContext.vaccinationEntries.AddRange(entries);
+                _dbContext.SaveChanges();
+            }
+
+            // Vaccination Records
+            if (!_dbContext.vaccinationRecords.Any())
+            {
+                var existingVaccinationEntries = _dbContext.vaccinationEntries.ToList();
+                var records = GenerateVaccinationRecords(existingVaccinationEntries);
+                _dbContext.vaccinationRecords.AddRange(records);
                 _dbContext.SaveChanges();
             }
 
@@ -258,9 +279,71 @@ namespace mSzczepienia.Shared
         }
 
         // 6. GENERATING VACCINATION ENTRIES
-        private IEnumerable<VaccinationEntry> GenerateVaccinationEntries(int count)
+        private IEnumerable<VaccinationEntry> GenerateVaccinationEntries(
+            IEnumerable<OcrSubmission> ocrSubmissions, 
+            IEnumerable<VaccineDefinition> vaccineDefinitions)
         {
+            var ocrSubmissionList = ocrSubmissions.ToList();
+            var vaccineDefinitionsList = vaccineDefinitions.ToList();
 
+            var vaccinationEntries = new List<VaccinationEntry>();
+
+            var faker = new Faker("pl");
+            foreach (var ocrSubmission in ocrSubmissionList)
+            {
+                for (int i = 0; i < 5; i++) 
+                {
+                    var randomVaccine = faker.PickRandom(vaccineDefinitionsList);
+                    var randomBatch = faker.Random.AlphaNumeric(10).ToUpper();
+                    var randomDate = faker.Date.Past(1).ToString("yyyy-MM-dd");
+
+                    var entry = new VaccinationEntry
+                    {
+                        ocrSubmissionId = ocrSubmission.submissionId,
+                        batchOcr = randomBatch,
+                        vaccineNameOcr = randomVaccine.vaccineName,
+                        dateOcr = randomDate,
+                        vaccineId = randomVaccine.vaccineId,
+                        batch = randomBatch,
+                        date = DateTime.Parse(randomDate),
+                    };
+                    vaccinationEntries.Add(entry);
+                }
+            }
+
+            return vaccinationEntries;
+        }
+
+        // 7. GENERATING VACCINATION RECORDS
+        private IEnumerable<VaccinationRecord> GenerateVaccinationRecords(IEnumerable<VaccinationEntry> vaccinationEntries)
+        {
+            var vaccinationEntriesList = vaccinationEntries.ToList();
+
+            var vaccinationRecords = new List<VaccinationRecord>();
+
+            var faker = new Faker("pl");
+            foreach (var vaccinationEntry in vaccinationEntriesList)
+            {
+                if (vaccinationEntry.vaccineId != null &&
+                    vaccinationEntry.batch != null &&
+                    vaccinationEntry.date != null)
+                {
+                    var record = new VaccinationRecord
+                    {
+
+                        citizenId = vaccinationEntry.ocrSubmission.citizenId,
+                        vaccineId = (int)vaccinationEntry.vaccineId,
+                        batch = vaccinationEntry.batch,
+                        vaccinationDate = (DateTime)vaccinationEntry.date,
+                        doseNumber = faker.Random.Int(1, 3).ToString(),
+                        sourceEntryId = vaccinationEntry.vaccinationEntryId,
+                        creationDate = DateTime.Now,
+                    };
+                    vaccinationRecords.Add(record);
+                }
+
+            }
+            return vaccinationRecords;
         }
     }
 }

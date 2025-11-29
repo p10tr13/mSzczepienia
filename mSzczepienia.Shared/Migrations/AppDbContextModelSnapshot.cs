@@ -102,7 +102,12 @@ namespace mSzczepienia.Shared.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("diseaseId"));
 
-                    b.Property<string>("diseaseName")
+                    b.Property<string>("diseaseNameEn")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("diseaseNamePl")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -228,8 +233,8 @@ namespace mSzczepienia.Shared.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("vaccinationEntryId"));
 
                     b.Property<string>("batch")
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("batchOcr")
                         .IsRequired()
@@ -241,19 +246,19 @@ namespace mSzczepienia.Shared.Migrations
 
                     b.Property<string>("dateOcr")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("ocrSubmissionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("vaccineId")
+                    b.Property<int?>("vaccineId")
                         .HasColumnType("int");
 
                     b.Property<string>("vaccineNameOcr")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.HasKey("vaccinationEntryId");
 
@@ -330,6 +335,11 @@ namespace mSzczepienia.Shared.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("vaccineDescription")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("vaccineName")
                         .IsRequired()
@@ -423,8 +433,7 @@ namespace mSzczepienia.Shared.Migrations
                     b.HasOne("mSzczepienia.Shared.Models.VaccineDefinition", "vaccineDefinition")
                         .WithMany("vaccinationEntries")
                         .HasForeignKey("vaccineId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ocrSubmission");
 

@@ -15,6 +15,7 @@ namespace mSzczepienia.Shared.Models
         public required string batchOcr { get; set; }
         public required string vaccineNameOcr { get; set; }
         public required string dateOcr { get; set; }
+        public int? vaccineId { get; set; }
         public VaccineDefinition? vaccineDefinition { get; set; } = null!;
         public string? batch { get; set; }
         public DateTime? date { get; set; }

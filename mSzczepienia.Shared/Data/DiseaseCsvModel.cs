@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace mSzczepienia.Shared.Data
 {
     public class DiseaseCsvModel { 
-        public required string diseaseName { get; set; } 
+        public required string diseaseNameEn { get; set; }
+        public required string diseaseNamePl { get; set; }
     }
 
 }

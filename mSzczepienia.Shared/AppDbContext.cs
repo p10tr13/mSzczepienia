@@ -199,12 +199,12 @@ namespace mSzczepienia.Shared
                     .HasMaxLength(40);
                 e.Property(ve => ve.vaccineNameOcr)
                     .IsRequired()
-                    .HasMaxLength(100);
+                    .HasMaxLength(300);
                 e.Property(ve => ve.dateOcr)
                     .IsRequired()
-                    .HasMaxLength(20);
+                    .HasMaxLength(100);
                 e.Property(ve => ve.batch)
-                    .HasMaxLength(40);
+                    .HasMaxLength(100);
 
                 // Relations
                 e.HasOne(ve => ve.ocrSubmission)
@@ -278,6 +278,9 @@ namespace mSzczepienia.Shared
                 e.Property(vd => vd.manufacturer)
                     .IsRequired()
                     .HasMaxLength(100);
+                e.Property(vd => vd.vaccineDescription)
+                    .IsRequired()
+                    .HasMaxLength(500);
                 e.Property(vd => vd.creationDate)
                     .IsRequired();
             });
@@ -317,7 +320,10 @@ namespace mSzczepienia.Shared
                 e.Property(d => d.diseaseId)
                     .IsRequired()
                     .ValueGeneratedOnAdd(); // Auto-incremented ID
-                e.Property(d => d.diseaseName)
+                e.Property(d => d.diseaseNameEn)
+                    .IsRequired()
+                    .HasMaxLength(500);
+                e.Property(d => d.diseaseNamePl)
                     .IsRequired()
                     .HasMaxLength(500);
             });

@@ -10,5 +10,4 @@ namespace mSzczepienia.Shared.Data
         public required string vaccineName { get; set; } 
         public required string diseaseName { get; set; } 
     }
-
 }

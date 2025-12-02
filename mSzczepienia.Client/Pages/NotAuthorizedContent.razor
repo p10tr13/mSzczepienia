@@ -1,0 +1,38 @@
+﻿@page "/access-denied"
+@attribute [Authorize]
+@inject IStringLocalizer<SharedResources> Localizer
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavManager
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-10">
+    <MudPaper Elevation="3" Class="pa-6 d-flex flex-column align-center text-center">
+        <MudIcon Icon="@Icons.Material.Filled.Block" Size="Size.Large" Color="Color.Error" />
+
+        <MudText Typo="Typo.h4" Class="mt-3 mb-2">
+            @Localizer["AccessDenied"]
+        </MudText>
+
+        <MudText Typo="Typo.body1" Class="mb-5">
+            @Localizer["YouDoNotHavePermission"]
+        </MudText>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="NavigateToHomePage">
+            @Localizer["GoHome"]
+        </MudButton>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private async Task NavigateToHomePage()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var role = authState.User.FindFirst("role")?.Value;
+        if (role == "admin")
+            NavManager.NavigateTo("/admin-dashboard");
+        else if (role == "worker")
+            NavManager.NavigateTo("/worker-dashboard");
+        else
+            NavManager.NavigateTo("/login");
+    }
+
+}

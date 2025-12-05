@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mSzczepienia.Shared.Enums
+namespace mSzczepienia.Api.Enums
 {
     public enum Position
     {

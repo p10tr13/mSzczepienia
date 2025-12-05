@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using mSzczepienia.Shared.Models;
+using mSzczepienia.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mSzczepienia.Shared
+namespace mSzczepienia.Api
 {
     public class AppDbContext: DbContext
     {

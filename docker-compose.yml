@@ -12,7 +12,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./mSzczepienia.Shared/Data/Csv:/app/Data/Csv
+      - ./mSzczepienia.Api/Data/Csv:/app/Data/Csv
 
   db:
     image: "mcr.microsoft.com/mssql/server:2022-latest"

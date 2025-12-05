@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Api;
 using mSzczepienia.Api.Configurations;
 using mSzczepienia.Api.Middlewares;
-using mSzczepienia.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 

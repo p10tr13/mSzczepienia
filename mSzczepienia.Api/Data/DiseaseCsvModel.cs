@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mSzczepienia.Shared.Data
+namespace mSzczepienia.Api.Data
 {
     public class DiseaseCsvModel { 
         public required string diseaseNameEn { get; set; }

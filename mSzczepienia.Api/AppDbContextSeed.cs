@@ -2,9 +2,9 @@
 using Bogus.DataSets;
 using Bogus.Extensions.Poland;
 using CsvHelper;
-using mSzczepienia.Shared.Data;
-using mSzczepienia.Shared.Enums;
-using mSzczepienia.Shared.Models;
+using mSzczepienia.Api.Data;
+using mSzczepienia.Api.Enums;
+using mSzczepienia.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mSzczepienia.Shared
+namespace mSzczepienia.Api
 {
     public class AppDbContextSeed
     {

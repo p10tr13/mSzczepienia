@@ -1,11 +1,6 @@
-﻿using mSzczepienia.Api.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using mSzczepienia.Shared.Enums;
 
-namespace mSzczepienia.Api.Models
+namespace mSzczepienia.Shared.Models
 {
     public class Account
     {

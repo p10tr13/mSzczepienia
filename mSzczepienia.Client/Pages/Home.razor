@@ -1,11 +1,34 @@
-﻿@inject IStringLocalizer<SharedResources> Localizer
-@using System.Globalization
+﻿@page "/"
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavManager
 
-@page "/"
-@using mSzczepienia.Client.Resources
+<MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" Style="display:block; margin:auto; margin-top:40vh;" />
 
-<PageTitle>Home</PageTitle>
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
 
-<h1>@Localizer["HelloWorld"]</h1>
+        if (user.Identity?.IsAuthenticated != true)
+        {
+            NavManager.NavigateTo("/login", forceLoad: true);
+            return;
+        }
 
-Welcome to your new app.
+        var role = user.FindFirst("role")?.Value;
+
+        switch (role)
+        {
+            case "admin":
+                NavManager.NavigateTo("/admin-dashboard", forceLoad: true);
+                break;
+            case "worker":
+                NavManager.NavigateTo("/worker-dashboard", forceLoad: true);
+                break;
+            default:
+                NavManager.NavigateTo("/login", forceLoad: true);
+                break;
+        }
+    }
+}

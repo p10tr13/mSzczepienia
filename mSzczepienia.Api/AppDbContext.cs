@@ -1,12 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Shared.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace mSzczepienia.Shared
+namespace mSzczepienia.Api
 {
     public class AppDbContext: DbContext
     {
@@ -76,6 +71,7 @@ namespace mSzczepienia.Shared
                     .IsRequired();
                 e.Property(c => c.submissionStatus)
                     .IsRequired()
+                    .HasConversion<string>() // Store enum as string
                     .HasMaxLength(20);
 
                 // Relations
@@ -109,6 +105,7 @@ namespace mSzczepienia.Shared
                     .HasMaxLength(50);
                 e.Property(p => p.position)
                     .IsRequired()
+                    .HasConversion<string>() // Store enum as string
                     .HasMaxLength(50);
 
                 // Relations
@@ -163,6 +160,7 @@ namespace mSzczepienia.Shared
                     .HasMaxLength(255);
                 e.Property(os => os.status)
                     .IsRequired()
+                    .HasConversion<string>() // Store enum as string
                     .HasMaxLength(20);
                 e.Property(os => os.submissionDate)
                     .IsRequired();
@@ -196,14 +194,12 @@ namespace mSzczepienia.Shared
                     .HasMaxLength(40);
                 e.Property(ve => ve.vaccineNameOcr)
                     .IsRequired()
-                    .HasMaxLength(100);
+                    .HasMaxLength(300);
                 e.Property(ve => ve.dateOcr)
                     .IsRequired()
-                    .HasMaxLength(20);
-                e.Property(ve => ve.vaccineId)
-                    .IsRequired();
+                    .HasMaxLength(100);
                 e.Property(ve => ve.batch)
-                    .HasMaxLength(40);
+                    .HasMaxLength(100);
 
                 // Relations
                 e.HasOne(ve => ve.ocrSubmission)
@@ -273,10 +269,13 @@ namespace mSzczepienia.Shared
                     .ValueGeneratedOnAdd(); // Auto-incremented ID
                 e.Property(vd => vd.vaccineName)
                     .IsRequired()
-                    .HasMaxLength(100);
+                    .HasMaxLength(500);
                 e.Property(vd => vd.manufacturer)
                     .IsRequired()
                     .HasMaxLength(100);
+                e.Property(vd => vd.vaccineDescription)
+                    .IsRequired()
+                    .HasMaxLength(500);
                 e.Property(vd => vd.creationDate)
                     .IsRequired();
             });
@@ -316,9 +315,12 @@ namespace mSzczepienia.Shared
                 e.Property(d => d.diseaseId)
                     .IsRequired()
                     .ValueGeneratedOnAdd(); // Auto-incremented ID
-                e.Property(d => d.diseaseName)
+                e.Property(d => d.diseaseNameEn)
                     .IsRequired()
-                    .HasMaxLength(50);
+                    .HasMaxLength(500);
+                e.Property(d => d.diseaseNamePl)
+                    .IsRequired()
+                    .HasMaxLength(500);
             });
         }
     }

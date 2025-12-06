@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using mSzczepienia.Shared.Enums;
 
 namespace mSzczepienia.Shared.Models
 {
@@ -12,7 +8,7 @@ namespace mSzczepienia.Shared.Models
         public int citizenId { get; set; }
         public Citizen citizen { get; set; } = null!;
         public required string photoUrl { get; set; }
-        public required string status { get; set; }
+        public SubmissionStatus status { get; set; }
         public int? verifierId { get; set; }
         public Personnel? verifier { get; set; } = null!;
         public DateTime submissionDate { get; set; }

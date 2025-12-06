@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace mSzczepienia.Shared.Models
+﻿namespace mSzczepienia.Shared.Models
 {
     public class VaccineDefinition
     {
         public int vaccineId { get; set; }
         public required string vaccineName { get; set; }
         public required string manufacturer { get; set; }
+        public required string vaccineDescription { get; set; }
         public DateTime creationDate { get; set; }
 
         // Relations

@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace mSzczepienia.Shared.Migrations
+namespace mSzczepienia.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddNewTables : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,8 @@ namespace mSzczepienia.Shared.Migrations
                 {
                     diseaseId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    diseaseName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    diseaseNameEn = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    diseaseNamePl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,8 +64,9 @@ namespace mSzczepienia.Shared.Migrations
                 {
                     vaccineId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    vaccineName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    vaccineName = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     manufacturer = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    vaccineDescription = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     creationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -190,10 +192,10 @@ namespace mSzczepienia.Shared.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ocrSubmissionId = table.Column<int>(type: "int", nullable: false),
                     batchOcr = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    vaccineNameOcr = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    dateOcr = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    vaccineId = table.Column<int>(type: "int", nullable: false),
-                    batch = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
+                    vaccineNameOcr = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    dateOcr = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    vaccineId = table.Column<int>(type: "int", nullable: true),
+                    batch = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     date = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>

@@ -12,7 +12,7 @@ using mSzczepienia.Api;
 namespace mSzczepienia.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251205133617_InitialMigration")]
+    [Migration("20251206173612_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />

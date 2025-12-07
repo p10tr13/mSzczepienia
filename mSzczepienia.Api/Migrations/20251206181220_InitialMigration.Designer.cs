@@ -12,7 +12,7 @@ using mSzczepienia.Api;
 namespace mSzczepienia.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251205133617_InitialMigration")]
+    [Migration("20251206181220_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace mSzczepienia.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.Account", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.Account", b =>
                 {
                     b.Property<Guid>("accountId")
                         .ValueGeneratedOnAdd()
@@ -42,6 +42,11 @@ namespace mSzczepienia.Api.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("firebaseUid")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("name")
                         .IsRequired()
@@ -63,7 +68,7 @@ namespace mSzczepienia.Api.Migrations
                     b.ToTable("accounts");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.Citizen", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.Citizen", b =>
                 {
                     b.Property<int>("citizenId")
                         .ValueGeneratedOnAdd()
@@ -97,7 +102,7 @@ namespace mSzczepienia.Api.Migrations
                     b.ToTable("citizens");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.Disease", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.Disease", b =>
                 {
                     b.Property<int>("diseaseId")
                         .ValueGeneratedOnAdd()
@@ -120,7 +125,7 @@ namespace mSzczepienia.Api.Migrations
                     b.ToTable("diseases");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.MedicalFacility", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.MedicalFacility", b =>
                 {
                     b.Property<int>("facilityId")
                         .ValueGeneratedOnAdd()
@@ -151,7 +156,7 @@ namespace mSzczepienia.Api.Migrations
                     b.ToTable("medicalFacilities");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.OcrSubmission", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.OcrSubmission", b =>
                 {
                     b.Property<int>("submissionId")
                         .ValueGeneratedOnAdd()
@@ -193,7 +198,7 @@ namespace mSzczepienia.Api.Migrations
                     b.ToTable("ocrSubmissions");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.Personnel", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.Personnel", b =>
                 {
                     b.Property<int>("personnelId")
                         .ValueGeneratedOnAdd()
@@ -227,7 +232,7 @@ namespace mSzczepienia.Api.Migrations
                     b.ToTable("personnel");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.VaccinationEntry", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.VaccinationEntry", b =>
                 {
                     b.Property<int>("vaccinationEntryId")
                         .ValueGeneratedOnAdd()
@@ -272,7 +277,7 @@ namespace mSzczepienia.Api.Migrations
                     b.ToTable("vaccinationEntries");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.VaccinationRecord", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.VaccinationRecord", b =>
                 {
                     b.Property<int>("recordId")
                         .ValueGeneratedOnAdd()
@@ -323,7 +328,7 @@ namespace mSzczepienia.Api.Migrations
                     b.ToTable("vaccinationRecords");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.VaccineDefinition", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.VaccineDefinition", b =>
                 {
                     b.Property<int>("vaccineId")
                         .ValueGeneratedOnAdd()
@@ -354,7 +359,7 @@ namespace mSzczepienia.Api.Migrations
                     b.ToTable("vaccineDefinitions");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.VaccineDisease", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.VaccineDisease", b =>
                 {
                     b.Property<int>("vaccineId")
                         .HasColumnType("int");
@@ -369,15 +374,15 @@ namespace mSzczepienia.Api.Migrations
                     b.ToTable("vaccineDiseases");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.Citizen", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.Citizen", b =>
                 {
-                    b.HasOne("mSzczepienia.Api.Models.Account", "account")
+                    b.HasOne("mSzczepienia.Shared.Models.Account", "account")
                         .WithOne()
-                        .HasForeignKey("mSzczepienia.Api.Models.Citizen", "accountId")
+                        .HasForeignKey("mSzczepienia.Shared.Models.Citizen", "accountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("mSzczepienia.Api.Models.MedicalFacility", "medicalFacility")
+                    b.HasOne("mSzczepienia.Shared.Models.MedicalFacility", "medicalFacility")
                         .WithMany("citizens")
                         .HasForeignKey("facilityId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -388,15 +393,15 @@ namespace mSzczepienia.Api.Migrations
                     b.Navigation("medicalFacility");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.OcrSubmission", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.OcrSubmission", b =>
                 {
-                    b.HasOne("mSzczepienia.Api.Models.Citizen", "citizen")
+                    b.HasOne("mSzczepienia.Shared.Models.Citizen", "citizen")
                         .WithMany("ocrSubmissions")
                         .HasForeignKey("citizenId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("mSzczepienia.Api.Models.Personnel", "verifier")
+                    b.HasOne("mSzczepienia.Shared.Models.Personnel", "verifier")
                         .WithMany("ocrSubmissions")
                         .HasForeignKey("verifierId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -406,15 +411,15 @@ namespace mSzczepienia.Api.Migrations
                     b.Navigation("verifier");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.Personnel", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.Personnel", b =>
                 {
-                    b.HasOne("mSzczepienia.Api.Models.Account", "account")
+                    b.HasOne("mSzczepienia.Shared.Models.Account", "account")
                         .WithOne()
-                        .HasForeignKey("mSzczepienia.Api.Models.Personnel", "accountId")
+                        .HasForeignKey("mSzczepienia.Shared.Models.Personnel", "accountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("mSzczepienia.Api.Models.MedicalFacility", "medicalFacility")
+                    b.HasOne("mSzczepienia.Shared.Models.MedicalFacility", "medicalFacility")
                         .WithMany("personnels")
                         .HasForeignKey("facilityId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -425,15 +430,15 @@ namespace mSzczepienia.Api.Migrations
                     b.Navigation("medicalFacility");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.VaccinationEntry", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.VaccinationEntry", b =>
                 {
-                    b.HasOne("mSzczepienia.Api.Models.OcrSubmission", "ocrSubmission")
+                    b.HasOne("mSzczepienia.Shared.Models.OcrSubmission", "ocrSubmission")
                         .WithMany("vaccinationEntries")
                         .HasForeignKey("ocrSubmissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("mSzczepienia.Api.Models.VaccineDefinition", "vaccineDefinition")
+                    b.HasOne("mSzczepienia.Shared.Models.VaccineDefinition", "vaccineDefinition")
                         .WithMany("vaccinationEntries")
                         .HasForeignKey("vaccineId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -443,21 +448,21 @@ namespace mSzczepienia.Api.Migrations
                     b.Navigation("vaccineDefinition");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.VaccinationRecord", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.VaccinationRecord", b =>
                 {
-                    b.HasOne("mSzczepienia.Api.Models.Citizen", "citizen")
+                    b.HasOne("mSzczepienia.Shared.Models.Citizen", "citizen")
                         .WithMany("vaccinationRecords")
                         .HasForeignKey("citizenId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("mSzczepienia.Api.Models.VaccinationEntry", "sourceEntry")
+                    b.HasOne("mSzczepienia.Shared.Models.VaccinationEntry", "sourceEntry")
                         .WithOne("vaccinationRecord")
-                        .HasForeignKey("mSzczepienia.Api.Models.VaccinationRecord", "sourceEntryId")
+                        .HasForeignKey("mSzczepienia.Shared.Models.VaccinationRecord", "sourceEntryId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("mSzczepienia.Api.Models.VaccineDefinition", "vaccineDefinition")
+                    b.HasOne("mSzczepienia.Shared.Models.VaccineDefinition", "vaccineDefinition")
                         .WithMany("vaccinationRecords")
                         .HasForeignKey("vaccineId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -470,15 +475,15 @@ namespace mSzczepienia.Api.Migrations
                     b.Navigation("vaccineDefinition");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.VaccineDisease", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.VaccineDisease", b =>
                 {
-                    b.HasOne("mSzczepienia.Api.Models.Disease", "disease")
+                    b.HasOne("mSzczepienia.Shared.Models.Disease", "disease")
                         .WithMany("vaccineDiseases")
                         .HasForeignKey("diseaseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("mSzczepienia.Api.Models.VaccineDefinition", "vaccineDefinition")
+                    b.HasOne("mSzczepienia.Shared.Models.VaccineDefinition", "vaccineDefinition")
                         .WithMany("vaccineDiseases")
                         .HasForeignKey("vaccineId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -489,41 +494,41 @@ namespace mSzczepienia.Api.Migrations
                     b.Navigation("vaccineDefinition");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.Citizen", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.Citizen", b =>
                 {
                     b.Navigation("ocrSubmissions");
 
                     b.Navigation("vaccinationRecords");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.Disease", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.Disease", b =>
                 {
                     b.Navigation("vaccineDiseases");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.MedicalFacility", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.MedicalFacility", b =>
                 {
                     b.Navigation("citizens");
 
                     b.Navigation("personnels");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.OcrSubmission", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.OcrSubmission", b =>
                 {
                     b.Navigation("vaccinationEntries");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.Personnel", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.Personnel", b =>
                 {
                     b.Navigation("ocrSubmissions");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.VaccinationEntry", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.VaccinationEntry", b =>
                 {
                     b.Navigation("vaccinationRecord");
                 });
 
-            modelBuilder.Entity("mSzczepienia.Api.Models.VaccineDefinition", b =>
+            modelBuilder.Entity("mSzczepienia.Shared.Models.VaccineDefinition", b =>
                 {
                     b.Navigation("vaccinationEntries");
 

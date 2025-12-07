@@ -36,8 +36,6 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
-        
-        final AuthStatus authStatus = state.status;
 
         return Layout(
           child: SingleChildScrollView(
@@ -202,7 +200,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               final email = _emailController.text;
                               final password = _passwordController.text;
                     
-                              context.read<AuthCubit>().signUpRequested(pesel, name, surname, defaultMedicalFacility, email, password);
+                              context.read<AuthCubit>().signUpRequested(pesel, name, surname, '', defaultMedicalFacility, email, password);
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -212,7 +210,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: authStatus == AuthStatus.loading ? CircularProgressIndicator(color: Colors.white,) : Text(
+                          child: state is AuthLoading ? CircularProgressIndicator(color: Colors.white,) : Text(
                             'Sign Up',
                             style: const TextStyle(
                               fontSize: 16,

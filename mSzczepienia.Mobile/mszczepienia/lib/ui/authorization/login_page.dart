@@ -34,8 +34,6 @@ class _LoginPageState extends State<LoginPage> {
 
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
-        
-        final AuthStatus authStatus = state.status;
 
         return Layout(
           child: SingleChildScrollView(
@@ -119,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                     
                       Center(
                         child: Text(
-                          authStatus == AuthStatus.loginFailed ? 'Incorrect credentials' : '',
+                          state is AuthError ? state.message : '',
                           style: TextStyle(
                             fontSize: 14,
                             color: AppColors.logoRed,
@@ -153,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: authStatus == AuthStatus.loading ? CircularProgressIndicator(color: Colors.white,) : Text(
+                          child: state is AuthLoading ? CircularProgressIndicator(color: Colors.white,) : Text(
                             'Log In',
                             style: const TextStyle(
                               fontSize: 16,

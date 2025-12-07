@@ -6,62 +6,59 @@ import 'package:mszczepienia/logic/auth/auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;
 
-  AuthCubit(this._authRepository) : super(const AuthState()) {
-    _checkAppStart();
+  AuthCubit(this._authRepository) : super(AuthInitial()) {
+    checkAppStart();
   }
 
   // CHECKING IF USER IS LOGGED IN
-  Future<void> _checkAppStart() async {
+  Future<void> checkAppStart() async {
     
-    emit(state.copyWith(status: AuthStatus.loading));
-
+    emit(AuthLoading());
     try {
       final user = await _authRepository.getCurrentUser();
 
       if (user != null) {
-        emit(state.copyWith(
-          status: AuthStatus.loginSuccess,
-          user: user,
-        ));
+        emit(Authenticated(user));
       } else {
-        emit(state.copyWith(status: AuthStatus.unauthenticated));
+        emit(Unauthenticated());
       }
     } catch (_) {
-      emit(state.copyWith(status: AuthStatus.unauthenticated));
+      emit(Unauthenticated());
     }
   }
 
   /// LOGIN
   Future<void> loginRequested(String email, String password) async {
     
-    emit(state.copyWith(status: AuthStatus.loading));
-
+    emit(AuthLoading());
     try {
       final user = await _authRepository.login(email, password);
       
-      emit(state.copyWith(
-        status: AuthStatus.loginSuccess,
-        user: user,
-      ));
+      if (user != null) {
+        emit(Authenticated(user));
+      } else {
+        emit(AuthError('Incorrect credentials'));
+      }
     } catch (e) {
-      emit(state.copyWith(status: AuthStatus.loginFailed));
+      emit(AuthError(e.toString()));
     }
   }
 
   /// SIGN UP
-  Future<void> signUpRequested(String pesel, String name, String surname, String defaultMedicalFacility, String email, String password) async {
+  Future<void> signUpRequested(String pesel, String name, String surname, String dateOfBirth, String defaultMedicalFacility, String email, String password) async {
     
-    emit(state.copyWith(status: AuthStatus.loading));
+    emit(AuthLoading());
 
     try {
-      final user = await _authRepository.signUp(pesel, name, surname, defaultMedicalFacility, email, password);
+      final user = await _authRepository.signUp(pesel, name, surname, dateOfBirth, defaultMedicalFacility, email, password);
       
-      emit(state.copyWith(
-        status: AuthStatus.signUpSuccess,
-        user: user,
-      ));
+      if (user != null) {
+        emit(Authenticated(user));
+      } else {
+        emit(AuthError('Sign up error'));
+      }
     } catch (e) {
-      emit(state.copyWith(status: AuthStatus.signUpFailed));
+      emit(AuthError(e.toString()));
     }
   }
 
@@ -69,13 +66,13 @@ class AuthCubit extends Cubit<AuthState> {
   /// LOGOUT
   Future<void> logoutRequested() async {
     
-    emit(state.copyWith(status: AuthStatus.loading));
+    emit(AuthLoading());
 
     try {
       await _authRepository.logout();
-      emit(const AuthState(status: AuthStatus.signOutSuccess, user: null));
+      emit(Unauthenticated());
     } catch (e) {
-      emit(const AuthState(status: AuthStatus.signOutFailed, user: null));
+      emit(AuthError(e.toString()));
     }
   }
 }

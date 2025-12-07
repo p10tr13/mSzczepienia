@@ -14,7 +14,7 @@ class Layout extends StatelessWidget {
         centerTitle: false, 
         toolbarHeight: 70.0,
         title: Padding(
-          padding: const EdgeInsets.only(top: 30.0, bottom: 20.0, left: 8.0),
+          padding: const EdgeInsets.only(top: 20.0, bottom: 20.0, left: 8.0),
           child: Row(
             children: [
               Container(

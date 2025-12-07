@@ -5,6 +5,7 @@ namespace mSzczepienia.Shared.Models
     public class Account
     {
         public Guid accountId { get; set; }
+        public required string firebaseUid { get; set; }
         public required string email { get; set; }
         public Role role { get; set; }
         public required string name { get; set; }

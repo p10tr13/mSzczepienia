@@ -16,10 +16,7 @@ class AppRouter {
     
     redirect: (context, state) {
       final authState = authCubit.state;
-      final bool isLoggedIn = 
-          authState.status == AuthStatus.loginSuccess || 
-          authState.status == AuthStatus.signUpSuccess;
-
+      final bool isLoggedIn = authState is Authenticated;
       final bool isAuth = state.uri.toString() == '/login' || state.uri.toString() == '/signup';
 
       // LOGIKA PRZEKIEROWAŃ:

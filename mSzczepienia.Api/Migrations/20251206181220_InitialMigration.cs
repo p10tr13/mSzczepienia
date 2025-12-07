@@ -16,6 +16,7 @@ namespace mSzczepienia.Api.Migrations
                 columns: table => new
                 {
                     accountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    firebaseUid = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     role = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),

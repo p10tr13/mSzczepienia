@@ -33,6 +33,9 @@ namespace mSzczepienia.Api
                 e.Property(a => a.accountId)
                     .IsRequired()
                     .HasDefaultValueSql("NEWID()"); // Generates a new GUID by default
+                e.Property(a => a.firebaseUid)
+                    .IsRequired()
+                    .HasMaxLength(128);
                 e.Property(a => a.email)
                     .IsRequired()
                     .HasMaxLength(100);

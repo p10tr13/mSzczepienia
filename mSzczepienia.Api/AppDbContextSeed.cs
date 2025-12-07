@@ -43,7 +43,18 @@ namespace mSzczepienia.Api
 
 
                 // Citizens
-                var citizenAccounts = GenerateAccounts(50, Role.Citizen);
+                var citizenAccounts = GenerateAccounts(50, Role.Citizen).ToList();
+                var testCitizenAccount = new Account
+                {
+                    email = "piotrjac23@gmail.com",
+                    firebaseUid = "UwJYlRuRKHfz6U1C3hFudMYxIOU2",
+                    role = Role.Citizen,
+                    name = "Mateusz",
+                    surname = "Jacak",
+                    creationDate = DateTime.Now,
+                    dateOfBirth = new DateTime(2003, 02, 06)
+                };
+                citizenAccounts.Add(testCitizenAccount);
                 _dbContext.accounts.AddRange(citizenAccounts);
                 _dbContext.SaveChanges();
 
@@ -54,8 +65,9 @@ namespace mSzczepienia.Api
                 // Admins
                 var adminAccounts = GenerateAccounts(5, Role.Admin);
                 _dbContext.accounts.AddRange(adminAccounts);
-                
-                
+
+
+
                 _dbContext.SaveChanges();
             }
 
@@ -178,6 +190,7 @@ namespace mSzczepienia.Api
         {
             var faker = new Faker<Account>("pl")
                 .RuleFor(a => a.email, (f, u) => f.Internet.Email(u.name, u.surname))
+                .RuleFor(a => a.firebaseUid, f => f.Random.AlphaNumeric(28))
                 .RuleFor(a => a.role, f => roleName)
                 .RuleFor(a => a.name, f => f.Name.FirstName())
                 .RuleFor(a => a.surname, f => f.Name.LastName())
@@ -219,11 +232,12 @@ namespace mSzczepienia.Api
         {
             var facilitiesList = facilities.ToList();
             var citizens = new List<Citizen>();
-            var faker = new Faker("pl");
 
             // Assuming accounts are only with role Citizen
             foreach (var account in accounts)
             {
+                var faker = new Faker("pl");
+
                 var citizen = new Citizen
                 {
                     accountId = account.accountId,
@@ -249,13 +263,13 @@ namespace mSzczepienia.Api
             var faker = new Faker<OcrSubmission>("pl")
                 .RuleFor(s => s.citizenId, f => f.PickRandom(citizensList).citizenId)
                 .RuleFor(s => s.photoUrl, f => f.Internet.Url() + "/scan.jpg")
-                .RuleFor(s => s.status, f => f.PickRandom<SubmissionStatus>())
+                .RuleFor(s => s.status, f => f.PickRandom<OcrSubmissionStatus>())
                 .RuleFor(s => s.submissionDate, f => f.Date.Past(1));
 
             // Logic for records which have been verified
             return faker.Generate(count).Select(s =>
             {
-                if (s.status != SubmissionStatus.NotUploaded || s.status != SubmissionStatus.Pending)
+                if (s.status != OcrSubmissionStatus.Pending)
                 {
                     s.verifierId = new Faker().PickRandom(verifiersList).personnelId;
                     s.verificationDate = s.submissionDate.AddHours(new Faker().Random.Int(1, 48));

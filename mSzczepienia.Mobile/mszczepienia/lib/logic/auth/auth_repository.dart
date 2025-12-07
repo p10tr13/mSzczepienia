@@ -1,27 +1,33 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mszczepienia/data/models/app_user.dart';
+import 'package:mszczepienia/data/internal/app_user.dart';
+import 'package:mszczepienia/data/models/citizen_details_model.dart';
+import 'package:mszczepienia/data/repositories/citizen_repository.dart';
 
 class AuthRepository {
+  final FirebaseAuth firebaseAuth;
+  final FlutterSecureStorage storage;
+  final CitizenRepository citizenRepository;
 
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  static const _userKey = 'user_data';
 
-  final _storage = const FlutterSecureStorage();
-  
-  static const _userKey = 'user_session_data';
-
+  AuthRepository(
+    this.firebaseAuth, 
+    this.storage, 
+    this.citizenRepository
+  );
 
   // Check if user is already logged in
   Future<AppUser?> getCurrentUser() async {
     try {
-      final jsonString = await _storage.read(key: _userKey);
+      final jsonString = await storage.read(key: _userKey);
       
       if (jsonString != null) {
         return AppUser.fromJson(jsonString);
       }
     } catch (e) {
       // If there is an error delete whatever left
-      await _storage.delete(key: _userKey);
+      await storage.delete(key: _userKey);
     }
     return null;
   }
@@ -29,7 +35,6 @@ class AuthRepository {
   // LOG IN
   Future<AppUser?> login(String email, String password) async {
 
-    
     // FIREBASE LOGIN
     try {
       await firebaseAuth.signInWithEmailAndPassword(
@@ -41,22 +46,32 @@ class AuthRepository {
     }
 
     // DATABASE LOGIN
-    // TODO: Get data from db about user
+    try {
+      final CitizenDetailsModel citizenDetails = await citizenRepository.getCitizenDetails();
 
-    // Save new user to class AppUser
-    final loggedUser = AppUser(
-      email: email,
-      name: '', surname: '', pesel: '', defaultMedicalFacility: '',
-    );
-    // Save to secure storage
-    await _storage.write(key: _userKey, value: loggedUser.toJson());
+      final loggedUser = AppUser(
+        name: citizenDetails.name,
+        surname: citizenDetails.surname,
+        email: email,
+        pesel: citizenDetails.peselHash, 
+        dateOfBirth: citizenDetails.dateOfBirth,
+        creationDate: citizenDetails.creationDate,
+        defaultMedicalFacility: citizenDetails.facilityName,
+      );
 
-    return loggedUser;
+      await storage.write(key: _userKey, value: loggedUser.toJson());
+
+      return loggedUser;
+
+    } catch (e) {
+      await firebaseAuth.signOut();
+      throw Exception('Firebase login succeed but failed to load user data');
+    }
   }
 
 
   // SIGN UP
-  Future<AppUser?> signUp(String pesel, String name, String surname, String defaultMedicalFacility, String email, String password) async {
+  Future<AppUser?> signUp(String pesel, String name, String surname, String dateOfBirth, String defaultMedicalFacility, String email, String password) async {
 
     
     // FIREBASE SIGN UP
@@ -71,19 +86,19 @@ class AuthRepository {
     }
 
     // DATABASE SIGN UP - POST data to db about new user
-
-
     
     // Save new user to class AppUser
     final signedUpUser = AppUser(
       name: name, 
       surname: surname, 
-      pesel: pesel,
       email: email,
+      pesel: pesel,
+      dateOfBirth: DateTime.parse(dateOfBirth),
+      creationDate: DateTime.now(),
       defaultMedicalFacility: defaultMedicalFacility,
     );
     // Save to secure storage
-    await _storage.write(key: _userKey, value: signedUpUser.toJson());
+    await storage.write(key: _userKey, value: signedUpUser.toJson());
 
     return signedUpUser;
   }
@@ -95,6 +110,6 @@ class AuthRepository {
     firebaseAuth.signOut();
     
     // Delete user from secure storage
-    await _storage.delete(key: _userKey);
+    await storage.delete(key: _userKey);
   }
 }

@@ -3,15 +3,19 @@ import 'dart:convert';
 class AppUser {
   final String name;
   final String surname;
+  final String email;
+  final DateTime dateOfBirth;
+  final DateTime creationDate;
   final String pesel;
   final String defaultMedicalFacility;
-  final String email;
 
   const AppUser({
-    required this.name, 
-    required this.surname,  
-    required this.pesel, 
-    required this.email, 
+    required this.name,
+    required this.surname,
+    required this.email,
+    required this.dateOfBirth,
+    required this.creationDate,
+    required this.pesel,
     required this.defaultMedicalFacility,
   });
 
@@ -19,8 +23,10 @@ class AppUser {
     return {
       'name': name,
       'surname': surname,
-      'pesel': pesel,
       'email': email,
+      'dateOfBirth': dateOfBirth.toIso8601String(),
+      'creationDate': creationDate.toIso8601String(),
+      'pesel': pesel,
       'defaultMedicalFacility': defaultMedicalFacility,
     };
   }
@@ -29,8 +35,10 @@ class AppUser {
     return AppUser(
       name: map['name'] ?? '',
       surname: map['surname'] ?? '',
-      pesel: map['pesel'] ?? '',
       email: map['email'] ?? '',
+      pesel: map['pesel'] ?? '',
+      dateOfBirth: DateTime.parse(map['dateOfBirth']),
+      creationDate: DateTime.parse(map['creationDate']),
       defaultMedicalFacility: map['defaultMedicalFacility'] ?? '',
     );
   }

@@ -1,31 +1,62 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">mSzczepienia.Client</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿@inject IStringLocalizer<SharedResources> Localizer
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+<MudNavMenu Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
+    <AuthorizeView Roles="admin">
+        <Authorized>
+
+            <MudText Typo="Typo.subtitle2" Class="px-4 mt-1 mb-2 mud-text-secondary">@Localizer["Administration"]</MudText>
+
+            <MudNavLink Href="/admin-dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">@Localizer["Dashboard"]</MudNavLink>
+
+            <MudNavGroup Title="@Localizer["FacilityManagement"]" Icon="@Icons.Material.Filled.Business" Expanded="true">
+                <MudNavLink Href="/facilities" Icon="@Icons.Material.Filled.List">@Localizer["AllFacilities"]</MudNavLink>
+                <MudNavLink Href="/facilities/add" Icon="@Icons.Material.Filled.AddLocation">@Localizer["AddFacility"]</MudNavLink>
+            </MudNavGroup>
+            <MudNavGroup Title="@Localizer["PersonnelManagement"]" Icon="@Icons.Material.Filled.Badge" Expanded="true">
+                <MudNavLink Href="/staff" Icon="@Icons.Material.Filled.Groups">@Localizer["StaffList"]</MudNavLink>
+                <MudNavLink Href="/staff/add" Icon="@Icons.Material.Filled.PersonAdd">@Localizer["AddStaff"]</MudNavLink>
+            </MudNavGroup>
+            <MudNavGroup Title="@Localizer["VaccineManagement"]" Icon="@Icons.Material.Filled.Vaccines">
+                <MudNavLink Href="/vaccines" Icon="@Icons.Material.Filled.List">@Localizer["VaccineList"]</MudNavLink>
+                <MudNavLink Href="/vaccines/add" Icon="@Icons.Material.Filled.Add">@Localizer["AddVaccine"]</MudNavLink>
+            </MudNavGroup>
+            <MudNavGroup Title="@Localizer["System"]" Icon="@Icons.Material.Filled.Settings">
+                <MudNavLink Href="/users" Icon="@Icons.Material.Filled.People">@Localizer["Users"]</MudNavLink>
+                <MudNavLink Href="/audit-logs" Icon="@Icons.Material.Filled.History">@Localizer["AuditLogs"]</MudNavLink>
+            </MudNavGroup>
+        </Authorized>
+    </AuthorizeView>
+    <AuthorizeView Roles="worker">
+        <Authorized>
+            <MudText Typo="Typo.subtitle2" Class="px-4 mt-1 mb-2 mud-text-secondary">@Localizer["MedicalStaff"]</MudText>
+
+            <MudNavLink Href="/worker-dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">@Localizer["Dashboard"]</MudNavLink>
+
+            <MudNavGroup Title="@Localizer["Verifications"]" Icon="@Icons.Material.Filled.FactCheck" Expanded="true">
+                <MudNavLink Href="/booklets/queue" Icon="@Icons.Material.Filled.ListAlt">
+                    @Localizer["VerificationQueue"]
+                </MudNavLink>
+                <MudNavLink Href="/booklets/history" Icon="@Icons.Material.Filled.History">
+                    @Localizer["History"]
+                </MudNavLink>
+            </MudNavGroup>
+
+            <MudNavGroup Title="@Localizer["PatientService"]" Icon="@Icons.Material.Filled.MedicalServices">
+                <MudNavLink Href="/vaccinations/register" Icon="@Icons.Material.Filled.Vaccines">
+                    @Localizer["PerformVaccination"]
+                </MudNavLink>
+                <MudNavLink Href="/patients/search" Icon="@Icons.Material.Filled.PersonSearch">
+                    @Localizer["FindPatient"]
+                </MudNavLink>
+            </MudNavGroup>
+        </Authorized>
+    </AuthorizeView>
+    <AuthorizeView>
+        <Authorized>
+            <MudNavLink Href="/profile" Icon="@Icons.Material.Filled.Person">@Localizer["MyProfile"]</MudNavLink>
+        </Authorized>
+    </AuthorizeView>
+</MudNavMenu>
 
 @code {
     private bool collapseNavMenu = true;

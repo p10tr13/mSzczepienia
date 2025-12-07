@@ -123,9 +123,6 @@
   <data name="forgotPassword" xml:space="preserve">
     <value>Forgot password</value>
   </data>
-  <data name="HelloWorld" xml:space="preserve">
-    <value>Hello World</value>
-  </data>
   <data name="logIn" xml:space="preserve">
     <value>Log in</value>
   </data>
@@ -167,5 +164,170 @@
   </data>
   <data name="YouDoNotHavePermission" xml:space="preserve">
     <value>You don't have permission to access this page.</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Vaccines" xml:space="preserve">
+    <value>Vaccines</value>
+  </data>
+  <data name="SearchMedicalFacility" xml:space="preserve">
+    <value>Search medical facility</value>
+  </data>
+  <data name="SearchVaccine" xml:space="preserve">
+    <value>Search vaccine</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>Street</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="PostalCode" xml:space="preserve">
+    <value>Postal Code</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="EnterStreet" xml:space="preserve">
+    <value>Enter street</value>
+  </data>
+  <data name="EnterCity" xml:space="preserve">
+    <value>Enter city</value>
+  </data>
+  <data name="EnterPostalCode" xml:space="preserve">
+    <value>Enter postal code</value>
+  </data>
+  <data name="EnterID" xml:space="preserve">
+    <value>Enter ID</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
+  </data>
+  <data name="TargetDisease" xml:space="preserve">
+    <value>Target disease</value>
+  </data>
+  <data name="EnterName" xml:space="preserve">
+    <value>Enter name</value>
+  </data>
+  <data name="EnterManufacturer" xml:space="preserve">
+    <value>Enter manufacturer</value>
+  </data>
+  <data name="EnterTargetDisease" xml:space="preserve">
+    <value>Enter target disease</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Stats" xml:space="preserve">
+    <value>Stats</value>
+  </data>
+  <data name="Charts" xml:space="preserve">
+    <value>Charts</value>
+  </data>
+  <data name="AllBooklets" xml:space="preserve">
+    <value>Submited booklets</value>
+  </data>
+  <data name="Reviewed" xml:space="preserve">
+    <value>Reviewed</value>
+  </data>
+  <data name="NotReviewed" xml:space="preserve">
+    <value>Not reviewed</value>
+  </data>
+  <data name="Rejected" xml:space="preserve">
+    <value>Rejected</value>
+  </data>
+  <data name="GenerateChart" xml:space="preserve">
+    <value>Generate chart</value>
+  </data>
+  <data name="PersonnelManagement" xml:space="preserve">
+    <value>Personnel Management</value>
+  </data>
+  <data name="StaffList" xml:space="preserve">
+    <value>Staff List</value>
+  </data>
+  <data name="AddStaff" xml:space="preserve">
+    <value>Add Staff</value>
+  </data>
+  <data name="MyProfile" xml:space="preserve">
+    <value>My Profile</value>
+  </data>
+  <data name="FacilityManagement" xml:space="preserve">
+    <value>Facility Management</value>
+  </data>
+  <data name="AllFacilities" xml:space="preserve">
+    <value>All Facilities</value>
+  </data>
+  <data name="AddFacility" xml:space="preserve">
+    <value>Add Facility</value>
+  </data>
+  <data name="VaccineManagement" xml:space="preserve">
+    <value>Vaccine Management</value>
+  </data>
+  <data name="VaccineList" xml:space="preserve">
+    <value>Vaccine List</value>
+  </data>
+  <data name="AddVaccine" xml:space="preserve">
+    <value>Add Vaccine</value>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="AuditLogs" xml:space="preserve">
+    <value>Audit Logs</value>
+  </data>
+  <data name="Administration" xml:space="preserve">
+    <value>Administration</value>
+  </data>
+  <data name="MedicalStaff" xml:space="preserve">
+    <value>Medical Staff</value>
+  </data>
+  <data name="Verifications" xml:space="preserve">
+    <value>Verifications</value>
+  </data>
+  <data name="VerificationQueue" xml:space="preserve">
+    <value>Verification Queue</value>
+  </data>
+  <data name="PatientService" xml:space="preserve">
+    <value>Patient Service</value>
+  </data>
+  <data name="PerformVaccination" xml:space="preserve">
+    <value>Perform Vaccination</value>
+  </data>
+  <data name="FindPatient" xml:space="preserve">
+    <value>Find Patient</value>
+  </data>
+  <data name="AddVaccination" xml:space="preserve">
+    <value>Add vaccination</value>
+  </data>
+  <data name="Surname" xml:space="preserve">
+    <value>Surname</value>
+  </data>
+  <data name="EnterSurname" xml:space="preserve">
+    <value>Enter Surname</value>
+  </data>
+  <data name="PESEL" xml:space="preserve">
+    <value>PESEL</value>
+  </data>
+  <data name="DailyStats" xml:space="preserve">
+    <value>Daily stats</value>
+  </data>
+  <data name="BookletsToVerify" xml:space="preserve">
+    <value>Booklets to verify</value>
+  </data>
+  <data name="BookletsTitle" xml:space="preserve">
+    <value>Vaccination booklets to verify</value>
+  </data>
+  <data name="SubmissionDate" xml:space="preserve">
+    <value>Submission Date</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>Verify</value>
   </data>
 </root>

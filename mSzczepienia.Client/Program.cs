@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.JSInterop;
 using mSzczepienia.Client;
 using mSzczepienia.Client.Auth;
+using mSzczepienia.Client.Services;
+using mSzczepienia.Client.Services.Interfaces;
 using MudBlazor.Services;
 using System.Globalization;
 
@@ -40,6 +42,10 @@ builder.Services.AddHttpClient("API", client =>
 }).AddHttpMessageHandler<JwtInterceptor>();
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("API"));
+
+builder.Services.AddScoped<IFacilityClient, FacilityClient>();
+builder.Services.AddScoped<IStatsClient, StatsClient>();
+builder.Services.AddScoped<IVaccineClient, VaccineClient>();
 
 var host = builder.Build();
 

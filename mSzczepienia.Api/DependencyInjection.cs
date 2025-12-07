@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using mSzczepienia.Api.Middlewares;
 using System.Security.Claims;
-using System.Linq;
 
 namespace mSzczepienia.Api;
 
@@ -16,6 +15,8 @@ public static class DependencyInjection
         services.RegisterAutoMapper();
         services.RegisterFirebase(configuration);
         services.AddFirebaseAdmin(configuration);
+        services.RegisterRepositories();
+        services.RegisterServices();
 
         return services;
     }
@@ -94,4 +95,19 @@ public static class DependencyInjection
         return services;
     }
 
+    public static IServiceCollection RegisterRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<Repositories.Interfaces.IFacilityRepository, Repositories.FacilityRepository>();
+        services.AddScoped<Repositories.Interfaces.IStatsRepository, Repositories.StatsRepository>();
+        services.AddScoped<Repositories.Interfaces.IVaccineRepository, Repositories.VaccineRepository>();
+        return services;
+    }
+
+    public static IServiceCollection RegisterServices(this IServiceCollection services)
+    {
+        services.AddScoped<Services.Interfaces.IFacilityService, Services.FacilityService>();
+        services.AddScoped<Services.Interfaces.IStatsService, Services.StatsService>();
+        services.AddScoped<Services.Interfaces.IVaccineService, Services.VaccineService>();
+        return services;
+    }
 }

@@ -123,9 +123,6 @@
   <data name="forgotPassword" xml:space="preserve">
     <value>Nie pamiętam hasła</value>
   </data>
-  <data name="HelloWorld" xml:space="preserve">
-    <value>Witaj świecie</value>
-  </data>
   <data name="logIn" xml:space="preserve">
     <value>Zaloguj się</value>
   </data>
@@ -167,5 +164,170 @@
   </data>
   <data name="YouDoNotHavePermission" xml:space="preserve">
     <value>Nie masz uprawnień do wyświetlenia tej strony.</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Panel główny</value>
+  </data>
+  <data name="Vaccines" xml:space="preserve">
+    <value>Szczepionki</value>
+  </data>
+  <data name="SearchMedicalFacility" xml:space="preserve">
+    <value>Wyszukaj placówkę medyczną</value>
+  </data>
+  <data name="SearchVaccine" xml:space="preserve">
+    <value>Wyszukaj szczepionkę</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>Ulica</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>Miasto</value>
+  </data>
+  <data name="PostalCode" xml:space="preserve">
+    <value>Kod pocztowy</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="EnterStreet" xml:space="preserve">
+    <value>Wpisz ulicę</value>
+  </data>
+  <data name="EnterCity" xml:space="preserve">
+    <value>Wpisz miasto</value>
+  </data>
+  <data name="EnterPostalCode" xml:space="preserve">
+    <value>Wpisz kod pocztowy</value>
+  </data>
+  <data name="EnterID" xml:space="preserve">
+    <value>Wpisz ID</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nazwa</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Producent</value>
+  </data>
+  <data name="TargetDisease" xml:space="preserve">
+    <value>Choroba celowana</value>
+  </data>
+  <data name="EnterName" xml:space="preserve">
+    <value>Wpisz nazwę</value>
+  </data>
+  <data name="EnterManufacturer" xml:space="preserve">
+    <value>Wpisz producenta</value>
+  </data>
+  <data name="EnterTargetDisease" xml:space="preserve">
+    <value>Wpisz chorobę</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Szukaj</value>
+  </data>
+  <data name="Stats" xml:space="preserve">
+    <value>Statystyki</value>
+  </data>
+  <data name="Charts" xml:space="preserve">
+    <value>Wykresy</value>
+  </data>
+  <data name="AllBooklets" xml:space="preserve">
+    <value>Zgłoszone książeczki</value>
+  </data>
+  <data name="Reviewed" xml:space="preserve">
+    <value>Przejrzane</value>
+  </data>
+  <data name="NotReviewed" xml:space="preserve">
+    <value>Nieprzejrzane</value>
+  </data>
+  <data name="Rejected" xml:space="preserve">
+    <value>Odrzucone</value>
+  </data>
+  <data name="GenerateChart" xml:space="preserve">
+    <value>Generuj wykres</value>
+  </data>
+  <data name="PersonnelManagement" xml:space="preserve">
+    <value>Zarządzanie personelem</value>
+  </data>
+  <data name="StaffList" xml:space="preserve">
+    <value>Lista pracowników</value>
+  </data>
+  <data name="AddStaff" xml:space="preserve">
+    <value>Dodaj pracownika</value>
+  </data>
+  <data name="MyProfile" xml:space="preserve">
+    <value>Mój Profil</value>
+  </data>
+  <data name="FacilityManagement" xml:space="preserve">
+    <value>Zarządzanie Placówkami</value>
+  </data>
+  <data name="AllFacilities" xml:space="preserve">
+    <value>Lista placówek</value>
+  </data>
+  <data name="AddFacility" xml:space="preserve">
+    <value>Dodaj placówkę</value>
+  </data>
+  <data name="VaccineManagement" xml:space="preserve">
+    <value>Baza szczepionek</value>
+  </data>
+  <data name="VaccineList" xml:space="preserve">
+    <value>Lista szczepionek</value>
+  </data>
+  <data name="AddVaccine" xml:space="preserve">
+    <value>Dodaj szczepionkę</value>
+  </data>
+  <data name="System" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Użytkownicy</value>
+  </data>
+  <data name="AuditLogs" xml:space="preserve">
+    <value>Logi systemowe</value>
+  </data>
+  <data name="Administration" xml:space="preserve">
+    <value>Administracja</value>
+  </data>
+  <data name="MedicalStaff" xml:space="preserve">
+    <value>Personel medyczny</value>
+  </data>
+  <data name="Verifications" xml:space="preserve">
+    <value>Weryfikacje</value>
+  </data>
+  <data name="VerificationQueue" xml:space="preserve">
+    <value>Verification Queue</value>
+  </data>
+  <data name="PatientService" xml:space="preserve">
+    <value>Obsługa pacjenta</value>
+  </data>
+  <data name="PerformVaccination" xml:space="preserve">
+    <value>Wykonaj szczepienie</value>
+  </data>
+  <data name="FindPatient" xml:space="preserve">
+    <value>Znajdź pacjenta</value>
+  </data>
+  <data name="AddVaccination" xml:space="preserve">
+    <value>Dodaj szczepienie</value>
+  </data>
+  <data name="Surname" xml:space="preserve">
+    <value>Nazwisko</value>
+  </data>
+  <data name="EnterSurname" xml:space="preserve">
+    <value>Wpisz nazwisko</value>
+  </data>
+  <data name="PESEL" xml:space="preserve">
+    <value>PESEL</value>
+  </data>
+  <data name="DailyStats" xml:space="preserve">
+    <value>Statystyki dzienne</value>
+  </data>
+  <data name="BookletsToVerify" xml:space="preserve">
+    <value>Książeczki do weryfikacji</value>
+  </data>
+  <data name="BookletsTitle" xml:space="preserve">
+    <value>Książeczki szczepień do weryfikacji</value>
+  </data>
+  <data name="SubmissionDate" xml:space="preserve">
+    <value>Data zgłoszenia</value>
+  </data>
+  <data name="Verify" xml:space="preserve">
+    <value>Weryfikuj</value>
   </data>
 </root>

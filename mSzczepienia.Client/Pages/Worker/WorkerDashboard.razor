@@ -1,8 +1,142 @@
 ﻿@page "/worker-dashboard"
 @attribute [Authorize(Roles = "worker")]
+@inject IStringLocalizer<SharedResources> Localizer
+@inject NavigationManager NavigationManager
 
-<h3>Panel Pracownika</h3>
+<MudGrid Class="pa-4">
+
+    <MudItem xs="12" md="5">
+        <MudGrid>
+            <MudItem xs="12">
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["AddVaccination"]</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudTextField @bind-Value="searchModel.Name" Label="@Localizer["Name"]" Variant="Variant.Outlined" Margin="Margin.Dense" Placeholder="@Localizer["EnterName"]" />
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudTextField @bind-Value="searchModel.Surname" Label="@Localizer["Surname"]" Variant="Variant.Outlined" Margin="Margin.Dense" Placeholder="@Localizer["EnterSurname"]" />
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudTextField @bind-Value="searchModel.Pesel" Label="@Localizer["PESEL"]"
+                                              Variant="Variant.Outlined" Margin="Margin.Dense"
+                                              Mask="@(new PatternMask("00000000000"))" Placeholder="00000000000" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="false" Class="ml-2 mb-2 px-6">@Localizer["Search"]</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["DailyStats"]</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid Class="align-center justify-center">
+                            <MudItem xs="12" sm="6" Class="d-flex justify-center">
+                                <MudChart ChartType="ChartType.Donut" Width="150px" Height="150px"
+                                          InputData="@statData" InputLabels="@statLabels"
+                                          ChartOptions="@statOptions">
+                                </MudChart>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="6" Class="d-flex flex-column align-center justify-center">
+                                <MudText Typo="Typo.h2" Color="Color.Primary"><b>34</b></MudText>
+                                <MudText Typo="Typo.h6" Class="mud-text-secondary" Align="Align.Center">@Localizer["BookletsToVerify"]</MudText>
+                            </MudItem>
+                        </MudGrid>
+
+                        <div class="d-flex justify-center mt-4 gap-4 flex-wrap">
+                            <div class="d-flex align-center"><MudIcon Icon="@Icons.Material.Filled.Circle" Style="color: #5c6bc0; font-size: 0.8rem;" Class="mr-1" /> <MudText Typo="Typo.caption">@Localizer["NotReviewed"]</MudText></div>
+                            <div class="d-flex align-center"><MudIcon Icon="@Icons.Material.Filled.Circle" Style="color: #00c853; font-size: 0.8rem;" Class="mr-1" /> <MudText Typo="Typo.caption">@Localizer["Accepted"]</MudText></div>
+                            <div class="d-flex align-center"><MudIcon Icon="@Icons.Material.Filled.Circle" Style="color: #ff1744; font-size: 0.8rem;" Class="mr-1" /> <MudText Typo="Typo.caption">@Localizer["Denied"]</MudText></div>
+                        </div>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+
+    <MudItem xs="12" md="7">
+        <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center" Class="mb-4">@Localizer["BookletsTitle"]</MudText>
+
+        <div class="d-flex flex-column gap-3">
+            @foreach (var item in bookletsQueue)
+            {
+                <MudPaper Elevation="1" Class="pa-4 d-flex justify-space-between align-center" Height="300">
+                    <div>
+                        <MudText Typo="Typo.body1"><b>@item.FullName</b></MudText>
+                        <MudText Typo="Typo.body2" Class="mud-text-secondary">@Localizer["SubmissionDate"]: @item.SubmissionDate</MudText>
+                    </div>
+
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                               OnClick="@(() => OpenVerification(item.Id))">
+                        @Localizer["Verify"]
+                    </MudButton>
+                </MudPaper>
+            }
+        </div>
+
+        <div class="d-flex justify-center mt-6">
+            <MudPagination Color="Color.Primary" Count="5" Selected="1" />
+        </div>
+    </MudItem>
+</MudGrid>
 
 @code {
+    private SearchPatientModel searchModel = new();
 
+    private double[] statData = { 70, 20, 10 };
+    private string[] statLabels;
+    private ChartOptions statOptions = new ChartOptions();
+
+    private List<BookletItem> bookletsQueue = new();
+
+    protected override void OnInitialized()
+    {
+        statLabels = new[] { Localizer["NotReviewed"].Value, Localizer["Accepted"].Value, Localizer["Denied"].Value };
+
+        statOptions.ChartPalette = new[] { "#5c6bc0", "#00e676", "#ff1744" };
+        statOptions.ShowLegend = false; // Ukrywamy wbudowaną legendę, bo zrobiliśmy własną ładniejszą
+
+        bookletsQueue = new List<BookletItem>
+        {
+            new BookletItem { Id = 1, FullName = "Adam Nowak", SubmissionDate = "10.10.2025" },
+            new BookletItem { Id = 2, FullName = "Klaudia Kowalska", SubmissionDate = "12.10.2025" },
+            new BookletItem { Id = 3, FullName = "Monika Wiśniewska", SubmissionDate = "12.10.2025" },
+            new BookletItem { Id = 4, FullName = "Anna Wójcik", SubmissionDate = "13.10.2025" },
+            new BookletItem { Id = 5, FullName = "Tomasz Kowalczyk", SubmissionDate = "15.10.2025" },
+        };
+    }
+
+    private void OpenVerification(int id)
+    {
+        // Tutaj logika przejścia do widoku szczegółów weryfikacji (zdjęcie + OCR)
+        NavigationManager.NavigateTo($"/verification/{id}");
+    }
+
+    public class SearchPatientModel
+    {
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string Pesel { get; set; }
+    }
+
+    public class BookletItem
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; }
+        public string SubmissionDate { get; set; }
+    }
 }

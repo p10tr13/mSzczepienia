@@ -12,9 +12,8 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Color="Color.Primary" Elevation="1">
+    <MudAppBar Color="Color.Primary" Elevation="2">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h6">mSzczepienia UI</MudText>
         <MudSpacer />
 
         <MudTooltip Text="@Localizer["Theme"]">
@@ -28,9 +27,9 @@
         </MudTooltip>
     </MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen" Color="Color.Primary" Elevation="1">
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <MudDrawerHeader>
-            <MudText Typo="Typo.h6">Menu</MudText>
+            <MudText Typo="Typo.h6" Color="Color.Primary"><b>mSzczepienia</b></MudText>
         </MudDrawerHeader>
         <NavMenu />
     </MudDrawer>

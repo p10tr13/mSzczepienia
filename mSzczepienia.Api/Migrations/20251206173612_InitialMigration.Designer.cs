@@ -12,7 +12,11 @@ using mSzczepienia.Api;
 namespace mSzczepienia.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
+<<<<<<<< HEAD:mSzczepienia.Api/Migrations/20251206181220_InitialMigration.Designer.cs
     [Migration("20251206181220_InitialMigration")]
+========
+    [Migration("20251206173612_InitialMigration")]
+>>>>>>>> development:mSzczepienia.Api/Migrations/20251206173612_InitialMigration.Designer.cs
     partial class InitialMigration
     {
         /// <inheritdoc />

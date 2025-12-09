@@ -13,10 +13,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
   @override
   Widget build(BuildContext context) {
-
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         return Layout(
@@ -26,48 +24,46 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   const SizedBox(height: 40),
                   Text(
-                    'Logged in', 
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    'Logged in',
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 20),
                   Text(
                     state is Authenticated ? state.user.email : '',
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
+                    style: TextStyle(fontSize: 18),
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
                       context.read<AuthCubit>().logoutRequested();
-                    }, 
-                    child: state is AuthLoading ? CircularProgressIndicator(color: Colors.black,) : Text(
-                      'Log out',
-                      style: TextStyle(color: Colors.black),
-                    )
+                    },
+                    child: state is AuthLoading
+                        ? CircularProgressIndicator(color: Colors.black)
+                        : Text(
+                            'Log out',
+                            style: TextStyle(color: Colors.black),
+                          ),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context, 
+                      Navigator.push(
+                        context,
                         MaterialPageRoute(
                           builder: (context) => const AccountPage(),
                         ),
                       );
-                    }, 
+                    },
                     child: Text(
                       'Account',
                       style: TextStyle(color: Colors.black),
-                    )
+                    ),
                   ),
                 ],
               ),
             ),
-          )
+          ),
         );
-      }
+      },
     );
   }
 }

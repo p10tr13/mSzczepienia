@@ -16,4 +16,14 @@ class CitizenRepository {
       throw Exception("Unknown Error");
     }
   }
+
+  Future<void> createCitizenDetails(CitizenDetailsModel citizenDetails) async {
+    try {
+      return await remoteDataSource.createCitizenDetails(citizenDetails);
+    } on DioException catch (e) {
+      throw Exception(e.response?.data ?? "Connection Error");
+    } catch (e) {
+      throw Exception("Unknown Error");
+    }
+  }
 }

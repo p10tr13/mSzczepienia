@@ -7,7 +7,7 @@ namespace mSzczepienia.Shared.Models
         public int citizenId { get; set; }
         public Guid accountId { get; set; }
         public Account account { get; set; } = null!;
-        public required string peselHash { get; set; }
+        public required string pesel { get; set; }
         public int facilityId { get; set; }
         public MedicalFacility medicalFacility { get; set; } = null!;
         public SubmissionStatus submissionStatus { get; set; }

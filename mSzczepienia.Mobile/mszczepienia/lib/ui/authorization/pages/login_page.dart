@@ -15,7 +15,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   final formKey = GlobalKey<FormState>();
 
   final _emailController = TextEditingController();
@@ -27,19 +26,21 @@ class _LoginPageState extends State<LoginPage> {
     _passwordController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
-
-
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
-
         return Layout(
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child: Padding(
-              padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 8.0, bottom: 20.0),
+              padding: const EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                top: 8.0,
+                bottom: 20.0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -63,14 +64,14 @@ class _LoginPageState extends State<LoginPage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                
+
                       const SizedBox(height: 30),
-                
+
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.black, width: 1.0)
+                          border: Border.all(color: Colors.black, width: 1.0),
                         ),
                         child: Form(
                           key: formKey,
@@ -93,9 +94,9 @@ class _LoginPageState extends State<LoginPage> {
                                     return null;
                                   },
                                 ),
-                                
+
                                 const SizedBox(height: 16),
-                          
+
                                 CustomTextField(
                                   label: "Password",
                                   controller: _passwordController,
@@ -113,8 +114,8 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 15,),
-                    
+                      const SizedBox(height: 15),
+
                       Center(
                         child: Text(
                           state is AuthError ? state.message : '',
@@ -129,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
                   const SizedBox(height: 270),
-            
+
                   Column(
                     children: [
                       SizedBox(
@@ -140,30 +141,35 @@ class _LoginPageState extends State<LoginPage> {
                             if (formKey.currentState!.validate()) {
                               final email = _emailController.text;
                               final password = _passwordController.text;
-                    
-                              context.read<AuthCubit>().loginRequested(email, password);
+
+                              context.read<AuthCubit>().loginRequested(
+                                email,
+                                password,
+                              );
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.buttonBlue, 
+                            backgroundColor: AppColors.buttonBlue,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: state is AuthLoading ? CircularProgressIndicator(color: Colors.white,) : Text(
-                            'Log In',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
+                          child: state is AuthLoading
+                              ? CircularProgressIndicator(color: Colors.white)
+                              : Text(
+                                  'Log In',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 16),
-                
+
                       SizedBox(
                         width: double.infinity,
                         height: 56,
@@ -172,7 +178,10 @@ class _LoginPageState extends State<LoginPage> {
                             context.go('/signup');
                           },
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.black, width: 1.5),
+                            side: const BorderSide(
+                              color: Colors.black,
+                              width: 1.5,
+                            ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
@@ -187,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16)
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ],
@@ -195,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         );
-      }
+      },
     );
   }
 }

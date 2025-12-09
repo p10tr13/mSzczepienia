@@ -5,6 +5,7 @@ import 'package:mszczepienia/core/theme/app_colors.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/logic/auth/auth_state.dart';
 import 'package:mszczepienia/ui/authorization/custom_text_field.dart';
+import 'package:mszczepienia/ui/authorization/medical_facility_field.dart';
 import 'package:mszczepienia/ui/layout/layout.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -15,33 +16,43 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-
   final formKey = GlobalKey<FormState>();
 
   final _nameController = TextEditingController();
   final _surnameController = TextEditingController();
   final _peselController = TextEditingController();
-  final _defaultMedicalFacilityController = TextEditingController();
+  final _dateOfBirthController = TextEditingController();
+  final _medicalFacilityController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _repeatPasswordController = TextEditingController();
 
   @override
   void dispose() {
+    _nameController.dispose();
+    _surnameController.dispose();
+    _peselController.dispose();
+    _dateOfBirthController.dispose();
+    _medicalFacilityController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
-      builder: (context, state) {
-
+      builder: (context, authState) {
         return Layout(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 8.0, bottom: 20.0),
+              padding: const EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                top: 8.0,
+                bottom: 20.0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -65,14 +76,14 @@ class _SignUpPageState extends State<SignUpPage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                
+
                       const SizedBox(height: 30),
-                
+
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.black, width: 1.0)
+                          border: Border.all(color: Colors.black, width: 1.0),
                         ),
                         child: Form(
                           key: formKey,
@@ -92,9 +103,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                     return null;
                                   },
                                 ),
-                                
+
                                 const SizedBox(height: 16),
-            
+
                                 CustomTextField(
                                   label: "Surname",
                                   controller: _surnameController,
@@ -107,9 +118,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                     return null;
                                   },
                                 ),
-                                
+
                                 const SizedBox(height: 16),
-            
+
                                 CustomTextField(
                                   label: "PESEL",
                                   controller: _peselController,
@@ -125,9 +136,34 @@ class _SignUpPageState extends State<SignUpPage> {
                                     return null;
                                   },
                                 ),
-                                
+
                                 const SizedBox(height: 16),
-            
+
+                                CustomTextField(
+                                  label: "Date of Birth",
+                                  controller: _dateOfBirthController,
+                                  showEyeIcon: false,
+                                  keyboardType: TextInputType.datetime,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter date of birth';
+                                    }
+                                    if (value.length != 10) {
+                                      return 'Date of birth has to be in format YYYY-MM-DD';
+                                    }
+                                    return null;
+                                  },
+                                  hintText: 'YYYY-MM-DD',
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                MedicalFacilityField(
+                                  controller: _medicalFacilityController,
+                                ),
+
+                                const SizedBox(height: 16),
+
                                 CustomTextField(
                                   label: "Email",
                                   controller: _emailController,
@@ -143,24 +179,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                     return null;
                                   },
                                 ),
-                                
+
                                 const SizedBox(height: 16),
-            
-                                CustomTextField(
-                                  label: "Default medical facility",
-                                  controller: _defaultMedicalFacilityController,
-                                  showEyeIcon: false,
-                                  keyboardType: TextInputType.name,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Enter medical facility name';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                
-                                const SizedBox(height: 16),
-                          
+
                                 CustomTextField(
                                   label: "Password",
                                   controller: _passwordController,
@@ -176,15 +197,44 @@ class _SignUpPageState extends State<SignUpPage> {
                                     return null;
                                   },
                                 ),
+
+                                const SizedBox(height: 16),
+
+                                CustomTextField(
+                                  label: "Repeat Password",
+                                  controller: _repeatPasswordController,
+                                  obscureText: true,
+                                  showEyeIcon: true,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Repeat password';
+                                    }
+                                    if (value != _passwordController.text) {
+                                      return 'Passwords do not match';
+                                    }
+                                    return null;
+                                  },
+                                ),
                               ],
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 15,),
+                      const SizedBox(height: 15),
+
+                      Center(
+                        child: Text(
+                          authState is AuthError ? authState.message : '',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.logoRed,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-            
+
                   Column(
                     children: [
                       SizedBox(
@@ -196,33 +246,45 @@ class _SignUpPageState extends State<SignUpPage> {
                               final name = _nameController.text;
                               final surname = _surnameController.text;
                               final pesel = _peselController.text;
-                              final defaultMedicalFacility = _defaultMedicalFacilityController.text;
+                              final dateOfBirth = _dateOfBirthController.text;
+                              final defaultMedicalFacility =
+                                  _medicalFacilityController.text;
                               final email = _emailController.text;
                               final password = _passwordController.text;
-                    
-                              context.read<AuthCubit>().signUpRequested(pesel, name, surname, '', defaultMedicalFacility, email, password);
+
+                              context.read<AuthCubit>().signUpRequested(
+                                pesel,
+                                name,
+                                surname,
+                                dateOfBirth,
+                                defaultMedicalFacility,
+                                email,
+                                password,
+                              );
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.buttonBlue, 
+                            backgroundColor: AppColors.buttonBlue,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: state is AuthLoading ? CircularProgressIndicator(color: Colors.white,) : Text(
-                            'Sign Up',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
+                          child: authState is AuthLoading
+                              ? CircularProgressIndicator(color: Colors.white)
+                              : Text(
+                                  'Sign Up',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 16),
-                
+
                       SizedBox(
                         width: double.infinity,
                         height: 56,
@@ -231,7 +293,10 @@ class _SignUpPageState extends State<SignUpPage> {
                             context.go('/login');
                           },
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.black, width: 1.5),
+                            side: const BorderSide(
+                              color: Colors.black,
+                              width: 1.5,
+                            ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
@@ -246,7 +311,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16)
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ],
@@ -254,7 +319,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
         );
-      }
+      },
     );
   }
 }

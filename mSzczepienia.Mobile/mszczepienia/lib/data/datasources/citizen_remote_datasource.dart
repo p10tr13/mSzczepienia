@@ -7,8 +7,15 @@ class CitizenRemoteDataSource {
   CitizenRemoteDataSource(this.dio);
 
   Future<CitizenDetailsModel> fetchCitizenDetails() async {
-    final response = await dio.get('/citizen-details');
-    
+    final response = await dio.get('/citizens/citizen-details');
+
     return CitizenDetailsModel.fromJson(response.data);
+  }
+
+  Future<void> createCitizenDetails(CitizenDetailsModel citizenDetails) async {
+    await dio.post(
+      '/citizens/new-citizen-details',
+      data: citizenDetails.toJson(),
+    );
   }
 }

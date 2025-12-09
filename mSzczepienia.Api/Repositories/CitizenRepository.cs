@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Api.Repositories.Interfaces;
-using mSzczepienia.Shared.DTO;
+using mSzczepienia.Shared.DTO.Citizens;
+using mSzczepienia.Shared.Enums;
 using mSzczepienia.Shared.Models;
 
 namespace mSzczepienia.Api.Repositories
@@ -13,7 +14,7 @@ namespace mSzczepienia.Api.Repositories
             _dbContext = context;
         }
 
-        public async Task<CitizenDetailsDto?> GetCitizenDetailsByUidAsync(string firebaseUid)
+        public async Task<CitizenDetailsDto?> GetCitizenDetailsByUidAsync(string firebaseUid, CancellationToken ct)
         {
             return await _dbContext.citizens
                 .Where(c => c.account.firebaseUid == firebaseUid)
@@ -24,17 +25,40 @@ namespace mSzczepienia.Api.Repositories
                     email = c.account.email,
                     dateOfBirth = c.account.dateOfBirth,
                     creationDate = c.account.creationDate,
-
-                    peselHash = c.peselHash,
+                    pesel = c.pesel,
                     submissionStatus = c.submissionStatus.ToString(),
-
                     facilityName = c.medicalFacility.facilityName,
                 })
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(ct);
         }
 
-        public async Task AddCitizenAsync(Citizen citizen)
+        public async Task AddCitizenAsync(string firebaseUid, CitizenDetailsDto dto, CancellationToken ct)
         {
+            var existingFacility = await _dbContext.medicalFacilities
+                .Where(f => f.facilityName == dto.facilityName)
+                .FirstOrDefaultAsync(ct);
+
+            if (existingFacility == null)
+            {
+                throw new InvalidOperationException($"Facility has not been found: {dto.facilityName}");
+            }
+
+            var citizen = new Citizen
+            {
+                pesel = dto.pesel,
+                submissionStatus = SubmissionStatus.NotUploaded,
+                account = new Account
+                {
+                    firebaseUid = firebaseUid,
+                    name = dto.name,
+                    surname = dto.surname,
+                    email = dto.email,
+                    dateOfBirth = dto.dateOfBirth,
+                    creationDate = DateTime.UtcNow
+                },
+                medicalFacility = existingFacility
+            };
+
             await _dbContext.citizens.AddAsync(citizen);
             await _dbContext.SaveChangesAsync();
         }

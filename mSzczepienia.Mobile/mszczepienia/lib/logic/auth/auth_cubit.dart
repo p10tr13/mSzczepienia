@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mszczepienia/logic/auth/auth_repository.dart';
 import 'package:mszczepienia/logic/auth/auth_state.dart';
 
-
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;
 
@@ -12,7 +11,6 @@ class AuthCubit extends Cubit<AuthState> {
 
   // CHECKING IF USER IS LOGGED IN
   Future<void> checkAppStart() async {
-    
     emit(AuthLoading());
     try {
       final user = await _authRepository.getCurrentUser();
@@ -29,11 +27,10 @@ class AuthCubit extends Cubit<AuthState> {
 
   /// LOGIN
   Future<void> loginRequested(String email, String password) async {
-    
     emit(AuthLoading());
     try {
       final user = await _authRepository.login(email, password);
-      
+
       if (user != null) {
         emit(Authenticated(user));
       } else {
@@ -45,13 +42,28 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   /// SIGN UP
-  Future<void> signUpRequested(String pesel, String name, String surname, String dateOfBirth, String defaultMedicalFacility, String email, String password) async {
-    
+  Future<void> signUpRequested(
+    String pesel,
+    String name,
+    String surname,
+    String dateOfBirth,
+    String defaultMedicalFacility,
+    String email,
+    String password,
+  ) async {
     emit(AuthLoading());
 
     try {
-      final user = await _authRepository.signUp(pesel, name, surname, dateOfBirth, defaultMedicalFacility, email, password);
-      
+      final user = await _authRepository.signUp(
+        pesel,
+        name,
+        surname,
+        dateOfBirth,
+        defaultMedicalFacility,
+        email,
+        password,
+      );
+
       if (user != null) {
         emit(Authenticated(user));
       } else {
@@ -62,10 +74,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-
   /// LOGOUT
   Future<void> logoutRequested() async {
-    
     emit(AuthLoading());
 
     try {

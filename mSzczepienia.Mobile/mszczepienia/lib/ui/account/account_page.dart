@@ -18,28 +18,29 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
-
         return Layout(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 8.0, bottom: 20.0),
+              padding: const EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                top: 8.0,
+                bottom: 20.0,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     'Your Account',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 20),
                   Container(
                     padding: const EdgeInsets.all(20),
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.black, width: 1.0)
+                      border: Border.all(color: Colors.black, width: 1.0),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -56,13 +57,13 @@ class _AccountPageState extends State<AccountPage> {
                               foregroundColor: AppColors.lightGrey,
                             ),
                             child: Icon(
-                              Icons.person, 
+                              Icons.person,
                               color: AppColors.naturalGrey,
-                              size: 25.0
+                              size: 25.0,
                             ),
-                          )
+                          ),
                         ),
-                        const SizedBox(width: 10,),
+                        const SizedBox(width: 10),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -76,11 +77,9 @@ class _AccountPageState extends State<AccountPage> {
                             const SizedBox(height: 10),
                             Text(
                               state is Authenticated ? state.user.name : '',
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(fontSize: 14),
                             ),
-                            const SizedBox(height: 15,),
+                            const SizedBox(height: 15),
                             const Text(
                               "Surname",
                               style: TextStyle(
@@ -91,11 +90,9 @@ class _AccountPageState extends State<AccountPage> {
                             const SizedBox(height: 10),
                             Text(
                               state is Authenticated ? state.user.surname : '',
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(fontSize: 14),
                             ),
-                            const SizedBox(height: 15,),
+                            const SizedBox(height: 15),
                             const Text(
                               "Email",
                               style: TextStyle(
@@ -106,11 +103,9 @@ class _AccountPageState extends State<AccountPage> {
                             const SizedBox(height: 10),
                             Text(
                               state is Authenticated ? state.user.email : '',
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(fontSize: 14),
                             ),
-                            const SizedBox(height: 15,),
+                            const SizedBox(height: 15),
                             const Text(
                               "Date of birth",
                               style: TextStyle(
@@ -120,12 +115,14 @@ class _AccountPageState extends State<AccountPage> {
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              state is Authenticated ? DatetimeFormatter().datetimeFormatter(state.user.dateOfBirth) : '',
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              state is Authenticated
+                                  ? DatetimeFormatter().datetimeFormatter(
+                                      state.user.dateOfBirth,
+                                    )
+                                  : '',
+                              style: TextStyle(fontSize: 14),
                             ),
-                            const SizedBox(height: 15,),
+                            const SizedBox(height: 15),
                             const Text(
                               "Account creation date",
                               style: TextStyle(
@@ -135,12 +132,14 @@ class _AccountPageState extends State<AccountPage> {
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              state is Authenticated ? DatetimeFormatter().datetimeFormatter(state.user.creationDate) : '',
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              state is Authenticated
+                                  ? DatetimeFormatter().datetimeFormatter(
+                                      state.user.creationDate,
+                                    )
+                                  : '',
+                              style: TextStyle(fontSize: 14),
                             ),
-                            const SizedBox(height: 15,),
+                            const SizedBox(height: 15),
                             const Text(
                               "PESEL",
                               style: TextStyle(
@@ -151,11 +150,9 @@ class _AccountPageState extends State<AccountPage> {
                             const SizedBox(height: 10),
                             Text(
                               state is Authenticated ? state.user.pesel : '',
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(fontSize: 14),
                             ),
-                            const SizedBox(height: 15,),
+                            const SizedBox(height: 15),
                             const Text(
                               "Default Medical Facility",
                               style: TextStyle(
@@ -165,22 +162,22 @@ class _AccountPageState extends State<AccountPage> {
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              state is Authenticated ? state.user.defaultMedicalFacility : '',
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              state is Authenticated
+                                  ? state.user.defaultMedicalFacility
+                                  : '',
+                              style: TextStyle(fontSize: 14),
                             ),
                           ],
                         ),
                       ],
-                    )
+                    ),
                   ),
-                ]
-              )
-            )
-          )
+                ],
+              ),
+            ),
+          ),
         );
-      }
+      },
     );
   }
 }

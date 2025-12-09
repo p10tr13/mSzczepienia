@@ -3,6 +3,10 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using mSzczepienia.Api.Middlewares;
+using mSzczepienia.Api.Repositories.Interfaces;
+using mSzczepienia.Api.Repositories;
+using mSzczepienia.Api.Services.Interfaces;
+using mSzczepienia.Api.Services;
 using System.Security.Claims;
 
 namespace mSzczepienia.Api;
@@ -100,6 +104,8 @@ public static class DependencyInjection
         services.AddScoped<Repositories.Interfaces.IFacilityRepository, Repositories.FacilityRepository>();
         services.AddScoped<Repositories.Interfaces.IStatsRepository, Repositories.StatsRepository>();
         services.AddScoped<Repositories.Interfaces.IVaccineRepository, Repositories.VaccineRepository>();
+        services.AddScoped<Repositories.Interfaces.ICitizenRepository, Repositories.CitizenRepository>();
+
         return services;
     }
 
@@ -108,6 +114,8 @@ public static class DependencyInjection
         services.AddScoped<Services.Interfaces.IFacilityService, Services.FacilityService>();
         services.AddScoped<Services.Interfaces.IStatsService, Services.StatsService>();
         services.AddScoped<Services.Interfaces.IVaccineService, Services.VaccineService>();
+        services.AddScoped<Services.Interfaces.ICitizenService, Services.CitizenService>();
+
         return services;
     }
 }

@@ -50,7 +50,9 @@ namespace mSzczepienia.Api.Migrations
                     facilityId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     facilityName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    address = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    city = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    street = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    country = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     nip = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     creationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -82,7 +84,7 @@ namespace mSzczepienia.Api.Migrations
                     citizenId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     accountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    peselHash = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    pesel = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     facilityId = table.Column<int>(type: "int", nullable: false),
                     submissionStatus = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
                 },

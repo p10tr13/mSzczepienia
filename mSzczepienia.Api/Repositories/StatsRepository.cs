@@ -21,9 +21,9 @@ public class StatsRepository : IStatsRepository
             .Select(g => new DashboardStatsDto
             {
                 TotalBooklets = g.Count(),
-                AcceptedCount = g.Count(s => s.status == SubmissionStatus.Accepted),
-                NotReviewedCount = g.Count(s => s.status == SubmissionStatus.Pending),
-                RejectedCount = g.Count(s => s.status == SubmissionStatus.Rejected)
+                AcceptedCount = g.Count(s => s.status == OcrSubmissionStatus.Accepted),
+                NotReviewedCount = g.Count(s => s.status == OcrSubmissionStatus.Pending),
+                RejectedCount = g.Count(s => s.status == OcrSubmissionStatus.Rejected)
             })
             .FirstOrDefaultAsync(ct) ?? new DashboardStatsDto();
     }

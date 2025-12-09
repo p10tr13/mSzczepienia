@@ -7,7 +7,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      
+
       // Definicja ColorScheme (serce kolorów w Material 3)
       colorScheme: const ColorScheme.light(
         primary: AppColors.defaultBlue,
@@ -23,7 +23,7 @@ class AppTheme {
   //   return ThemeData(
   //     useMaterial3: true,
   //     brightness: Brightness.dark,
-      
+
   //     colorScheme: const ColorScheme.dark(
   //       primary: AppColors.emeraldGreen,
   //       surface: AppColors.darkGrey,

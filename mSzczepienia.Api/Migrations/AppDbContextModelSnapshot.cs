@@ -79,10 +79,10 @@ namespace mSzczepienia.Api.Migrations
                     b.Property<int>("facilityId")
                         .HasColumnType("int");
 
-                    b.Property<string>("peselHash")
+                    b.Property<string>("pesel")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("submissionStatus")
                         .IsRequired()
@@ -130,10 +130,15 @@ namespace mSzczepienia.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("facilityId"));
 
-                    b.Property<string>("address")
+                    b.Property<string>("city")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("country")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("creationDate")
                         .HasColumnType("datetime2");
@@ -147,6 +152,11 @@ namespace mSzczepienia.Api.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("street")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("facilityId");
 

@@ -16,9 +16,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 builder.Services.AddScoped<AppDbContextSeed>();
 
-builder.Services.AddScoped<ICitizenRepository, CitizenRepository>();
-builder.Services.AddScoped<ICitizenService, CitizenService>();
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

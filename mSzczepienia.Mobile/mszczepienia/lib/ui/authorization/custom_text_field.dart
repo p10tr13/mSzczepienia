@@ -10,6 +10,7 @@ class CustomTextField extends StatefulWidget {
     this.showEyeIcon = false,
     this.validator,
     this.keyboardType,
+    this.hintText,
   });
 
   final String label;
@@ -18,6 +19,7 @@ class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
+  final String? hintText;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -41,14 +43,18 @@ class _CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         labelText: widget.label,
+        hintText: widget.hintText,
         labelStyle: const TextStyle(
           color: AppColors.naturalGrey,
           fontWeight: FontWeight.w500,
         ),
         filled: true,
         fillColor: AppColors.textFieldFill,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: AppColors.textFieldBorder),
@@ -72,7 +78,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
         suffixIcon: widget.showEyeIcon
             ? IconButton(
                 icon: Icon(
-                  _isObscured ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                  _isObscured
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
                   color: Colors.black54,
                 ),
                 onPressed: () {

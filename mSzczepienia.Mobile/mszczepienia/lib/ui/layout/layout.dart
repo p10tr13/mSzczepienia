@@ -11,7 +11,7 @@ class Layout extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        centerTitle: false, 
+        centerTitle: false,
         toolbarHeight: 70.0,
         title: Padding(
           padding: const EdgeInsets.only(top: 20.0, bottom: 20.0, left: 8.0),
@@ -24,11 +24,7 @@ class Layout extends StatelessWidget {
                   color: AppColors.logoRed,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
-                  Icons.shield,
-                  color: Colors.white,
-                  size: 20,
-                ),
+                child: const Icon(Icons.shield, color: Colors.white, size: 20),
               ),
               const SizedBox(width: 12),
               const Text(
@@ -36,7 +32,7 @@ class Layout extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black, 
+                  color: Colors.black,
                 ),
               ),
             ],

@@ -178,7 +178,9 @@ namespace mSzczepienia.Api
         {
             var faker = new Faker<MedicalFacility>("pl")
                 .RuleFor(m => m.facilityName, f => "NFZ " + f.Company.CompanyName())
-                .RuleFor(m => m.address, f => f.Address.FullAddress())
+                .RuleFor(m => m.street, f => f.Address.StreetAddress())
+                .RuleFor(m => m.city, f => f.Address.City())
+                .RuleFor(m => m.country, f => "Poland")
                 .RuleFor(m => m.nip, f => f.Random.ReplaceNumbers("##########"))
                 .RuleFor(m => m.creationDate, f => f.Date.Past(5));
 
@@ -242,7 +244,7 @@ namespace mSzczepienia.Api
                 {
                     accountId = account.accountId,
                     facilityId = faker.PickRandom(facilitiesList).facilityId,
-                    peselHash = faker.Person.Pesel(),
+                    pesel = faker.Person.Pesel(),
                     submissionStatus = faker.PickRandom<SubmissionStatus>()
                 };
                 citizens.Add(citizen);

@@ -8,12 +8,13 @@ import 'package:mszczepienia/core/router/app_router.dart';
 import 'package:mszczepienia/core/theme/app_theme.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/logic/citizen/citizen_cubit.dart';
+import 'package:mszczepienia/logic/facility/facilities_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await di.init();
-  
+
   runApp(const MyApp());
 }
 
@@ -32,21 +33,22 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthCubit>(
           create: (context) => sl<AuthCubit>()..checkAppStart(),
         ),
-        BlocProvider<CitizenCubit>(
-          create: (context) => sl<CitizenCubit>(), 
+        BlocProvider<CitizenCubit>(create: (context) => sl<CitizenCubit>()),
+        BlocProvider<FacilitiesCubit>(
+          create: (context) => sl<FacilitiesCubit>(),
         ),
       ],
       child: Builder(
         builder: (context) {
           final appRouter = AppRouter(authCubit: context.read<AuthCubit>());
-    
+
           return MaterialApp.router(
             title: 'mSzczepienia',
             theme: AppTheme.lightTheme,
             routerConfig: appRouter.router,
-            debugShowCheckedModeBanner: false
+            debugShowCheckedModeBanner: false,
           );
-        }
+        },
       ),
     );
   }

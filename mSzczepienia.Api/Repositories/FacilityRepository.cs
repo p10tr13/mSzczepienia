@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Api.Repositories.Interfaces;
+using mSzczepienia.Shared.DTO.Citizens;
+using mSzczepienia.Shared.DTO.Facilities;
 using mSzczepienia.Shared.Models;
 
 namespace mSzczepienia.Api.Repositories;
@@ -19,7 +21,7 @@ public class FacilityRepository : IFacilityRepository
 
         List<MedicalFacility> facilities = await q.ToListAsync(ct);
 
-        var cities = facilities.Select(x => x.address.Split(',')[1].Trim()).ToList();
+        var cities = facilities.Select(x => x.city).ToList();
 
         if (string.IsNullOrWhiteSpace(query))
         {
@@ -48,5 +50,17 @@ public class FacilityRepository : IFacilityRepository
         //    .OrderBy(x => x)
         //    .Take(10)
         //    .ToListAsync(ct);
+    }
+
+    public async Task<List<FacilityListDto>> GetFacilityNamesAsync(CancellationToken ct)
+    {
+        return await _dbContext.medicalFacilities
+            .OrderBy(f => f.facilityName)
+            .Select(f => new FacilityListDto
+            {
+                facilityId = f.facilityId,
+                facilityName = f.facilityName,
+            })
+            .ToListAsync(ct);
     }
 }

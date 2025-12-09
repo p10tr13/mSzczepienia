@@ -4,7 +4,9 @@
     {
         public int facilityId { get; set; }
         public required string facilityName { get; set; }
-        public required string address { get; set; }
+        public required string city { get; set; }
+        public required string street { get; set; }
+        public required string country { get; set; }
         public required string nip { get; set; }
         public DateTime creationDate { get; set; }
 

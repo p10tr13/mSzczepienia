@@ -1,0 +1,325 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mszczepienia/core/theme/app_colors.dart';
+import 'package:mszczepienia/logic/auth/auth_cubit.dart';
+import 'package:mszczepienia/logic/auth/auth_state.dart';
+import 'package:mszczepienia/ui/authorization/custom_text_field.dart';
+import 'package:mszczepienia/ui/authorization/medical_facility_field.dart';
+import 'package:mszczepienia/ui/layout/layout.dart';
+
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
+
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final formKey = GlobalKey<FormState>();
+
+  final _nameController = TextEditingController();
+  final _surnameController = TextEditingController();
+  final _peselController = TextEditingController();
+  final _dateOfBirthController = TextEditingController();
+  final _medicalFacilityController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _repeatPasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _surnameController.dispose();
+    _peselController.dispose();
+    _dateOfBirthController.dispose();
+    _medicalFacilityController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, authState) {
+        return Layout(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                top: 8.0,
+                bottom: 20.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Good afternoon!',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Sign up to the application',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.naturalGrey,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.black, width: 1.0),
+                        ),
+                        child: Form(
+                          key: formKey,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                CustomTextField(
+                                  label: "Name",
+                                  controller: _nameController,
+                                  showEyeIcon: false,
+                                  keyboardType: TextInputType.name,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter name';
+                                    }
+                                    return null;
+                                  },
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                CustomTextField(
+                                  label: "Surname",
+                                  controller: _surnameController,
+                                  showEyeIcon: false,
+                                  keyboardType: TextInputType.name,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter surname';
+                                    }
+                                    return null;
+                                  },
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                CustomTextField(
+                                  label: "PESEL",
+                                  controller: _peselController,
+                                  showEyeIcon: false,
+                                  keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter PESEL';
+                                    }
+                                    if (value.length != 11) {
+                                      return 'PESEL has to be 11 digits long';
+                                    }
+                                    return null;
+                                  },
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                CustomTextField(
+                                  label: "Date of Birth",
+                                  controller: _dateOfBirthController,
+                                  showEyeIcon: false,
+                                  keyboardType: TextInputType.datetime,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter date of birth';
+                                    }
+                                    if (value.length != 10) {
+                                      return 'Date of birth has to be in format YYYY-MM-DD';
+                                    }
+                                    return null;
+                                  },
+                                  hintText: 'YYYY-MM-DD',
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                MedicalFacilityField(
+                                  controller: _medicalFacilityController,
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                CustomTextField(
+                                  label: "Email",
+                                  controller: _emailController,
+                                  showEyeIcon: false,
+                                  keyboardType: TextInputType.emailAddress,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter email address';
+                                    }
+                                    if (!value.contains('@')) {
+                                      return 'Email has to contain @';
+                                    }
+                                    return null;
+                                  },
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                CustomTextField(
+                                  label: "Password",
+                                  controller: _passwordController,
+                                  obscureText: true,
+                                  showEyeIcon: true,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter password';
+                                    }
+                                    if (value.length < 6) {
+                                      return 'Password has to be at least 6 characters long';
+                                    }
+                                    return null;
+                                  },
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                CustomTextField(
+                                  label: "Repeat Password",
+                                  controller: _repeatPasswordController,
+                                  obscureText: true,
+                                  showEyeIcon: true,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Repeat password';
+                                    }
+                                    if (value != _passwordController.text) {
+                                      return 'Passwords do not match';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+
+                      Center(
+                        child: Text(
+                          authState is AuthError ? authState.message : '',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.logoRed,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              final name = _nameController.text;
+                              final surname = _surnameController.text;
+                              final pesel = _peselController.text;
+                              final dateOfBirth = _dateOfBirthController.text;
+                              final defaultMedicalFacility =
+                                  _medicalFacilityController.text;
+                              final email = _emailController.text;
+                              final password = _passwordController.text;
+
+                              context.read<AuthCubit>().signUpRequested(
+                                pesel,
+                                name,
+                                surname,
+                                dateOfBirth,
+                                defaultMedicalFacility,
+                                email,
+                                password,
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.buttonBlue,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          child: authState is AuthLoading
+                              ? CircularProgressIndicator(color: Colors.white)
+                              : Text(
+                                  'Sign Up',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            context.go('/login');
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              color: Colors.black,
+                              width: 1.5,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          child: const Text(
+                            'Log In',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

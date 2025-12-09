@@ -33,6 +33,9 @@ namespace mSzczepienia.Api
                 e.Property(a => a.accountId)
                     .IsRequired()
                     .HasDefaultValueSql("NEWID()"); // Generates a new GUID by default
+                e.Property(a => a.firebaseUid)
+                    .IsRequired()
+                    .HasMaxLength(128);
                 e.Property(a => a.email)
                     .IsRequired()
                     .HasMaxLength(100);
@@ -64,9 +67,9 @@ namespace mSzczepienia.Api
                     .ValueGeneratedOnAdd(); // Auto-incremented ID
                 e.Property(c => c.accountId)
                     .IsRequired();
-                e.Property(c => c.peselHash)
+                e.Property(c => c.pesel)
                     .IsRequired()
-                    .HasMaxLength(100);
+                    .HasMaxLength(20);
                 e.Property(c => c.facilityId)
                     .IsRequired();
                 e.Property(c => c.submissionStatus)
@@ -133,9 +136,15 @@ namespace mSzczepienia.Api
                 e.Property(mf => mf.facilityName)
                     .IsRequired()
                     .HasMaxLength(100);
-                e.Property(mf => mf.address)
+                e.Property(mf => mf.street)
                     .IsRequired()
-                    .HasMaxLength(255);
+                    .HasMaxLength(200);
+                e.Property(mf => mf.city)
+                    .IsRequired()
+                    .HasMaxLength(200);
+                e.Property(mf => mf.country)
+                    .IsRequired()
+                    .HasMaxLength(200);
                 e.Property(mf => mf.nip)
                     .IsRequired()
                     .HasMaxLength(20);

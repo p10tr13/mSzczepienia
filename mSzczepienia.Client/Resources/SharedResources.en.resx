@@ -330,4 +330,19 @@
   <data name="Verify" xml:space="preserve">
     <value>Verify</value>
   </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filters</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="MedicalFacilities" xml:space="preserve">
+    <value>Medical Facilities</value>
+  </data>
+  <data name="NoFacilitiesFound" xml:space="preserve">
+    <value>No facilities found</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
 </root>

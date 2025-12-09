@@ -1,0 +1,226 @@
+﻿@page "/facilities"
+@attribute [Authorize(Roles = "admin")]
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<SharedResources> Localizer
+@inject IFacilityClient FacilityClient
+@using mSzczepienia.Shared.DTO
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-8">
+    <MudGrid Spacing="4">
+
+        <MudItem xs="12" md="4">
+            <MudPaper Elevation="4" Class="pa-4" Width="100%">
+                <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.Center" Class="mb-4">
+                    @Localizer["Filters"]
+                </MudText>
+                <MudDivider Class="mb-4" />
+
+                <MudStack Spacing="3">
+                    <MudAutocomplete T="string" @bind-Value="City" Label="@Localizer["City"]" Variant="Variant.Outlined"
+                                     Margin="Margin.Dense" Placeholder="@Localizer["EnterCity"]" ResetValueOnEmptyText="true" SearchFunc="@GetCitiesAsync"
+                                     CoerceText="false" DebounceInterval="1000" AdornmentIcon="@Icons.Material.Filled.Search" />
+                    <MudTextField @bind-Value="Street" Label="@Localizer["Street"]" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                  Placeholder="@Localizer["EnterStreet"]" />
+                    <MudTextField @bind-Value="PostalCode" Label="@Localizer["PostalCode"]" Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" Placeholder="@Localizer["EnterPostalCode"]" Mask="@(new PatternMask("00-000"))" />
+                    <MudTextField @bind-Value="Id" Label="@Localizer["ID"]" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                  Placeholder="@Localizer["EnterID"]" InputType="InputType.Number" />
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" FullWidth="true" OnClick="ApplyFilters" Class="mt-2">
+                        @Localizer["Apply"]
+                    </MudButton>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="8">
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Center" Class="mb-6">
+                @Localizer["MedicalFacilities"]
+            </MudText>
+
+            @if (isLoading)
+            {
+                <div class="d-flex justify-center my-8">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                </div>
+            }
+            else if (facilities.Items == null || !facilities.Items.Any())
+            {
+                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="my-4">
+                    @Localizer["NoFacilitiesFound"]
+                </MudAlert>
+            }
+            else
+            {
+                <MudStack Spacing="4">
+                    @foreach (var facility in facilities.Items)
+                    {
+                        <MudPaper Elevation="4" Class="pa-4 hover-elevation transition-ease" Style="border-left: 5px solid var(--mud-palette-primary);">
+                            <MudGrid Class="align-center">
+                                <MudItem xs="12" sm="8">
+                                    <MudText Typo="Typo.h6"><b>@facility.Name</b></MudText>
+                                    <MudStack Row="true" Spacing="1" Class="mt-1">
+                                        <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" Color="Color.Default" />
+                                        <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                                            @facility.Street, @facility.PostalCode @facility.City
+                                        </MudText>
+                                    </MudStack>
+                                </MudItem>
+                                <MudItem xs="12" sm="4" Class="d-flex justify-end align-center">
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Primary"
+                                               EndIcon="@Icons.Material.Filled.ArrowForward"
+                                               OnClick="@(() => OpenDetails(facility.Id))">
+                                        @Localizer["Details"]
+                                    </MudButton>
+                                </MudItem>
+                            </MudGrid>
+                        </MudPaper>
+                    }
+                </MudStack>
+
+                <div class="d-flex flex-column align-center mt-8">
+                    <MudPagination Color="Color.Primary" Count="@facilities.TotalPages" Selected="@Page" SelectedChanged="OnPageChanged" />
+                </div>
+            }
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+<style>
+    .hover-elevation:hover {
+        box-shadow: 0px 4px 20px rgba(0,0,0,0.12);
+        transform: translateY(-2px);
+    }
+
+    .transition-ease {
+        transition: all 0.3s ease;
+    }
+</style>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "City")]
+    public string? City { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "Street")]
+    public string? Street { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "PostalCode")]
+    public string? PostalCode { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "Id")]
+    public string? Id { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "Page")]
+    public int Page { get; set; } = 1;
+
+    public int PageSize { get; set; } = 6;
+
+    private PagedResult<FacilityMock> facilities = new();
+    private bool isLoading = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        isLoading = true;
+        if (Page < 1)
+            Page = 1;
+
+        facilities = new PagedResult<FacilityMock>
+            {
+                Items = GenerateMockData().Skip((Page - 1) * PageSize).Take(PageSize).ToList(),
+                TotalCount = GenerateMockData().Count,
+                PageSize = PageSize,
+            };
+        if (Page > facilities.TotalPages && facilities.TotalPages > 0)
+        {
+            Page = facilities.TotalPages;
+            UpdateUrl();
+        }
+        await Task.Delay(1000);
+        isLoading = false;
+
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task<IEnumerable<string>> GetCitiesAsync(string value, CancellationToken token)
+    {
+        if (string.IsNullOrEmpty(value) || value.Length < 2)
+            return new List<string>();
+        return await FacilityClient.GetCitiesAutocompleteAsync(value, token);
+    }
+
+    private void ApplyFilters()
+    {
+        Page = 1;
+        UpdateUrl();
+    }
+
+    private void OnPageChanged(int page)
+    {
+        if (page == Page) return;
+        Page = page;
+        UpdateUrl();
+    }
+
+    private void OpenDetails(int id)
+    {
+        NavigationManager.NavigateTo($"/facilities/{id}");
+    }
+
+    private void UpdateUrl()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        query.Remove("City");
+        query.Remove("Street");
+        query.Remove("PostalCode");
+        query.Remove("Id");
+        query.Remove("Page");
+
+        query.Add("Page", Page.ToString());
+
+        if (!string.IsNullOrWhiteSpace(City))
+            query["City"] = City;
+        if (!string.IsNullOrWhiteSpace(Street))
+            query["Street"] = Street;
+        if (!string.IsNullOrWhiteSpace(PostalCode))
+            query["PostalCode"] = PostalCode;
+        if (!string.IsNullOrWhiteSpace(Id))
+            query["Id"] = Id;
+        var newUri = $"{uri.GetLeftPart(UriPartial.Path)}?{query}";
+        NavigationManager.NavigateTo(newUri, forceLoad: false);
+    }
+
+    private List<FacilityMock> GenerateMockData()
+    {
+        var list = new List<FacilityMock>
+        {
+            new FacilityMock { Id = 1, Name = "Przychodnia Family Medica", Street = "Prystora 4/4", City = "Warszawa", PostalCode = "02-497" },
+            new FacilityMock { Id = 2, Name = "Centrum Medyczne Sadyba", Street = "Urle 1", City = "Warszawa", PostalCode = "02-943" },
+            new FacilityMock { Id = 3, Name = "Zdrowa Rodzina", Street = "Pełczyńskiego 22J", City = "Warszawa", PostalCode = "01-471" },
+            new FacilityMock { Id = 4, Name = "Poradnia Witoślin", Street = "Łukowska 1", City = "Warszawa", PostalCode = "04-113" },
+            new FacilityMock { Id = 5, Name = "Szpital Św. Rodziny", Street = "Madalińskiego 25", City = "Warszawa", PostalCode = "02-544" },
+            new FacilityMock { Id = 6, Name = "Medicover Centrum", Street = "Grunwaldzka 10", City = "Gdańsk", PostalCode = "80-001" },
+            new FacilityMock { Id = 7, Name = "LuxMed", Street = "Puławska 15", City = "Piaseczno", PostalCode = "05-500" },
+            new FacilityMock { Id = 8, Name = "Przychodnia Rejonowa nr 1", Street = "Dworcowa 5", City = "Kraków", PostalCode = "30-001" },
+            new FacilityMock { Id = 9, Name = "Centrum Zdrowia Dziecka", Street = "Dzieci Polskich 20", City = "Warszawa", PostalCode = "04-730" },
+            new FacilityMock { Id = 10, Name = "Szpital Bielański", Street = "Cegłowska 80", City = "Warszawa", PostalCode = "01-809" },
+            new FacilityMock { Id = 11, Name = "Medyk", Street = "Wojska Polskiego 2", City = "Wrocław", PostalCode = "50-001" },
+            new FacilityMock { Id = 12, Name = "Eskulap", Street = "Słowackiego 3", City = "Poznań", PostalCode = "60-001" }
+        };
+        return list;
+    }
+
+    public class FacilityMock
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string PostalCode { get; set; }
+    }
+}

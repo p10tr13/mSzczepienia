@@ -153,6 +153,11 @@ namespace mSzczepienia.Api.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("postalCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.Property<string>("street")
                         .IsRequired()
                         .HasMaxLength(200)

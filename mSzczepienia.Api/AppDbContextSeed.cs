@@ -182,7 +182,8 @@ namespace mSzczepienia.Api
                 .RuleFor(m => m.city, f => f.Address.City())
                 .RuleFor(m => m.country, f => "Poland")
                 .RuleFor(m => m.nip, f => f.Random.ReplaceNumbers("##########"))
-                .RuleFor(m => m.creationDate, f => f.Date.Past(5));
+                .RuleFor(m => m.creationDate, f => f.Date.Past(5))
+                .RuleFor(m => m.postalCode, f => f.Address.ZipCode("##-###"));
 
             return faker.Generate(count);
         }

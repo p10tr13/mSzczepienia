@@ -1,4 +1,6 @@
-﻿namespace mSzczepienia.Shared.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace mSzczepienia.Shared.Models
 {
     public class MedicalFacility
     {
@@ -8,6 +10,8 @@
         public required string street { get; set; }
         public required string country { get; set; }
         public required string nip { get; set; }
+        [MaxLength(10)]
+        public required string postalCode { get; set; }
         public DateTime creationDate { get; set; }
 
         // Relations

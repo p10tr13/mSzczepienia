@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mszczepienia/core/l10n/app_localizations.dart';
 import 'package:mszczepienia/core/theme/app_colors.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/logic/auth/auth_state.dart';
@@ -41,6 +42,10 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final borderColor = Theme.of(context).colorScheme.outline;
+    final grey = Theme.of(context).colorScheme.onSurfaceVariant;
+
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, authState) {
         return Layout(
@@ -60,19 +65,19 @@ class _SignUpPageState extends State<SignUpPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Good afternoon!',
+                      Text(
+                        l10n.goodMorning,
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'Sign up to the application',
+                      Text(
+                        l10n.signUpTitle,
                         style: TextStyle(
                           fontSize: 16,
-                          color: AppColors.naturalGrey,
+                          color: grey,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -83,7 +88,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.black, width: 1.0),
+                          border: Border.all(color: borderColor, width: 1.1),
                         ),
                         child: Form(
                           key: formKey,
@@ -92,13 +97,13 @@ class _SignUpPageState extends State<SignUpPage> {
                             child: Column(
                               children: [
                                 CustomTextField(
-                                  label: "Name",
+                                  label: l10n.name,
                                   controller: _nameController,
                                   showEyeIcon: false,
                                   keyboardType: TextInputType.name,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Enter name';
+                                      return l10n.enterName;
                                     }
                                     return null;
                                   },
@@ -107,13 +112,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                 const SizedBox(height: 16),
 
                                 CustomTextField(
-                                  label: "Surname",
+                                  label: l10n.surname,
                                   controller: _surnameController,
                                   showEyeIcon: false,
                                   keyboardType: TextInputType.name,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Enter surname';
+                                      return l10n.enterSurname;
                                     }
                                     return null;
                                   },
@@ -122,16 +127,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                 const SizedBox(height: 16),
 
                                 CustomTextField(
-                                  label: "PESEL",
+                                  label: l10n.pesel,
                                   controller: _peselController,
                                   showEyeIcon: false,
                                   keyboardType: TextInputType.number,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Enter PESEL';
+                                      return l10n.enterPesel;
                                     }
                                     if (value.length != 11) {
-                                      return 'PESEL has to be 11 digits long';
+                                      return l10n.peselCondition;
                                     }
                                     return null;
                                   },
@@ -140,16 +145,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                 const SizedBox(height: 16),
 
                                 CustomTextField(
-                                  label: "Date of Birth",
+                                  label: l10n.dateOfBirth,
                                   controller: _dateOfBirthController,
                                   showEyeIcon: false,
                                   keyboardType: TextInputType.datetime,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Enter date of birth';
+                                      return l10n.enterDateOfBirth;
                                     }
                                     if (value.length != 10) {
-                                      return 'Date of birth has to be in format YYYY-MM-DD';
+                                      return l10n.dateOfBirthCondition;
                                     }
                                     return null;
                                   },
@@ -165,16 +170,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                 const SizedBox(height: 16),
 
                                 CustomTextField(
-                                  label: "Email",
+                                  label: l10n.email,
                                   controller: _emailController,
                                   showEyeIcon: false,
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Enter email address';
+                                      return l10n.enterEmail;
                                     }
                                     if (!value.contains('@')) {
-                                      return 'Email has to contain @';
+                                      return l10n.emailCondition;
                                     }
                                     return null;
                                   },
@@ -183,16 +188,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                 const SizedBox(height: 16),
 
                                 CustomTextField(
-                                  label: "Password",
+                                  label: l10n.password,
                                   controller: _passwordController,
                                   obscureText: true,
                                   showEyeIcon: true,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Enter password';
+                                      return l10n.enterPassword;
                                     }
                                     if (value.length < 6) {
-                                      return 'Password has to be at least 6 characters long';
+                                      return l10n.passwordCondition;
                                     }
                                     return null;
                                   },
@@ -201,16 +206,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                 const SizedBox(height: 16),
 
                                 CustomTextField(
-                                  label: "Repeat Password",
+                                  label: l10n.repeatPassword,
                                   controller: _repeatPasswordController,
                                   obscureText: true,
                                   showEyeIcon: true,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Repeat password';
+                                      return l10n.enterRepeatPassword;
                                     }
                                     if (value != _passwordController.text) {
-                                      return 'Passwords do not match';
+                                      return l10n.repeatPasswordCondition;
                                     }
                                     return null;
                                   },
@@ -273,7 +278,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           child: authState is AuthLoading
                               ? CircularProgressIndicator(color: Colors.white)
                               : Text(
-                                  'Sign Up',
+                                  l10n.signUpButton,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -293,20 +298,16 @@ class _SignUpPageState extends State<SignUpPage> {
                             context.go('/login');
                           },
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                              color: Colors.black,
-                              width: 1.5,
-                            ),
+                            side: BorderSide(color: borderColor, width: 1.5),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: const Text(
-                            'Log In',
+                          child: Text(
+                            l10n.logInButton,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black,
                             ),
                           ),
                         ),

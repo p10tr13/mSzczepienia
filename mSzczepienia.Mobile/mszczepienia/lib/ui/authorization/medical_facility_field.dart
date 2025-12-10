@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mszczepienia/core/l10n/app_localizations.dart';
 import 'package:mszczepienia/core/theme/app_colors.dart';
 import 'package:mszczepienia/data/models/medical_facility_model.dart';
 import 'package:mszczepienia/logic/facility/facilities_cubit.dart';
@@ -45,6 +46,8 @@ class _MedicalFacilityFieldState extends State<MedicalFacilityField> {
   }
 
   Widget _buildAutocompleteField(List<MedicalFacilityModel> facilities) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Autocomplete<String>(
       optionsBuilder: (TextEditingValue textEditingValue) {
         if (textEditingValue.text.isEmpty) {
@@ -78,29 +81,26 @@ class _MedicalFacilityFieldState extends State<MedicalFacilityField> {
               onChanged: (value) {
                 widget.controller.text = value;
               },
+              style: TextStyle(color: AppColors.darkGrey),
               decoration: InputDecoration(
-                labelText: 'Default Medical Facility',
+                labelText: l10n.medicalFacility,
                 labelStyle: const TextStyle(
                   color: AppColors.naturalGrey,
                   fontWeight: FontWeight.w500,
                 ),
                 filled: true,
-                fillColor: AppColors.textFieldFill,
+                fillColor: AppColors.lightGrey,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 16,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(
-                    color: AppColors.textFieldBorder,
-                  ),
+                  borderSide: const BorderSide(color: AppColors.naturalGrey),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(
-                    color: AppColors.textFieldBorder,
-                  ),
+                  borderSide: const BorderSide(color: AppColors.naturalGrey),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -112,12 +112,12 @@ class _MedicalFacilityFieldState extends State<MedicalFacilityField> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please select a medical facility';
+                  return l10n.selectMedicalFacility;
                 }
                 if (!facilities.any(
                   (facility) => facility.facilityName == value,
                 )) {
-                  return 'Please select a valid medical facility from the list';
+                  return l10n.validMedicalFacilityCondition;
                 }
                 return null;
               },

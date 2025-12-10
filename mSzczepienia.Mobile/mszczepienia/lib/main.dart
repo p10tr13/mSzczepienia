@@ -4,22 +4,29 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mszczepienia/core/di/dependency_injection.dart';
 import 'package:mszczepienia/core/di/dependency_injection.dart' as di;
+import 'package:mszczepienia/core/l10n/app_localizations.dart';
 import 'package:mszczepienia/core/router/app_router.dart';
 import 'package:mszczepienia/core/theme/app_theme.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/logic/citizen/citizen_cubit.dart';
 import 'package:mszczepienia/logic/facility/facilities_cubit.dart';
+import 'package:mszczepienia/logic/language/language_cubit.dart';
+import 'package:mszczepienia/logic/language/language_state.dart';
+import 'package:mszczepienia/logic/theme/theme_cubit.dart';
+import 'package:mszczepienia/logic/theme/theme_state.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await di.init();
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  late final appRouter = AppRouter(authCubit: null);
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +40,45 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthCubit>(
           create: (context) => sl<AuthCubit>()..checkAppStart(),
         ),
+        BlocProvider(create: (context) => sl<LanguageCubit>()..checkAppStart()),
+        BlocProvider(create: (context) => sl<ThemeCubit>()..checkAppStart()),
         BlocProvider<CitizenCubit>(create: (context) => sl<CitizenCubit>()),
         BlocProvider<FacilitiesCubit>(
           create: (context) => sl<FacilitiesCubit>(),
         ),
       ],
+      // Define auth state globally
       child: Builder(
         builder: (context) {
-          final appRouter = AppRouter(authCubit: context.read<AuthCubit>());
+          appRouter.authCubit ??= context.read<AuthCubit>();
 
-          return MaterialApp.router(
-            title: 'mSzczepienia',
-            theme: AppTheme.lightTheme,
-            routerConfig: appRouter.router,
-            debugShowCheckedModeBanner: false,
+          // Define theme globally
+          return BlocBuilder<ThemeCubit, ThemeState>(
+            builder: (context, themeState) {
+              final themeData = themeState is DarkTheme
+                  ? AppTheme.darkTheme
+                  : AppTheme.lightTheme;
+
+              // Define locale globally
+              return BlocBuilder<LanguageCubit, LanguageState>(
+                builder: (context, languageState) {
+                  final locale = languageState is LanguagePolish
+                      ? const Locale('pl')
+                      : const Locale('en');
+
+                  return MaterialApp.router(
+                    title: 'mSzczepienia',
+                    locale: locale,
+                    localizationsDelegates:
+                        AppLocalizations.localizationsDelegates,
+                    supportedLocales: AppLocalizations.supportedLocales,
+                    theme: themeData,
+                    routerConfig: appRouter.router,
+                    debugShowCheckedModeBanner: false,
+                  );
+                },
+              );
+            },
           );
         },
       ),

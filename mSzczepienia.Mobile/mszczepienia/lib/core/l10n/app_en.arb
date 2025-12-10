@@ -1,0 +1,70 @@
+{
+    "@@locale": "en",
+    "appTitle": "mSzczepienia",
+    "goodMorning": "Good morning!",
+    "goodAfternoon": "Good afternoon",
+    "goodEvening": "Good evening",
+    
+    "logInTitle": "Log in to the application",
+    "logInButton": "Log In",
+    "signUpTitle": "Sign up to the application",
+    "signUpButton": "Sign Up",
+
+    "email": "Email",
+    "enterEmail": "Enter your email address",
+    "emailCondition": "Email has to contain @",
+
+    "password": "Password",
+    "enterPassword": "Enter your password",
+    "passwordCondition": "Password must be at least 6 characters long",
+
+    "name": "Name",
+    "enterName": "Enter your name",
+
+    "surname": "Surname",
+    "enterSurname": "Enter your surname",
+
+    "pesel": "PESEL",
+    "enterPesel": "Enter your PESEL number",
+    "peselCondition": "PESEL must be exactly 11 digits long",
+
+    "dateOfBirth": "Date of birth",
+    "enterDateOfBirth": "Enter your date of birth (YYYY-MM-DD)",
+    "dateOfBirthCondition": "Date of birth must be in the format YYYY-MM-DD",
+
+    "medicalFacility": "Medical Facility",
+    "selectMedicalFacility": "Select your medical facility",
+    "validMedicalFacilityCondition": "Please select a valid medical facility from the list",
+
+    "repeatPassword": "Repeat Password",
+    "enterRepeatPassword": "Repeat your password",
+    "repeatPasswordCondition": "Passwords do not match",
+
+    "goodMorningUser": "Good morning, {userName}",
+    "@goodMorningUser": {
+        "placeholders": {
+        "userName": {
+            "type": "String"
+        }
+        }
+    },
+    "vaccinationBooklet": "Vaccination Booklet",
+    "vaccinationBookletDescription": "Add your vaccination booklet",
+    "vaccinationHistory": "Vaccination History",
+    "vaccinationHistoryDescription": "View your vaccination history",
+    "settings": "Settings",
+    "settingsDescription": "Change application settings",
+    "yourAccount": "Your Account",
+    "yourAccountDescription": "View your account details",
+
+    "theme": "Theme",
+    "changeDarkMode": "Change to dark mode",
+    "changeLightMode": "Change to light mode",
+    "language": "Language",
+    "changePolish": "Zmień język na polski",
+    "changeEnglish": "Change language to English",
+    
+    "accountCreationDate": "Account creation date",
+    "callSupport": "Call Support",
+    "logOut": "Log Out"
+}

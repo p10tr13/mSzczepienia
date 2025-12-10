@@ -1,0 +1,70 @@
+{
+    "@@locale": "pl",
+    "appTitle": "mSzczepienia",
+    "goodMorning": "Dzień dobry!",
+    "goodAfternoon": "Dzień dobry!",
+    "goodEvening": "Dobry wieczór",
+    
+    "logInTitle": "Zaloguj się do aplikacji",
+    "logInButton": "Zaloguj się",
+    "signUpTitle": "Zarejestruj się w aplikacji",
+    "signUpButton": "Zarejestruj się",
+
+    "email": "Email",
+    "enterEmail": "Wprowadź swój adres email",
+    "emailCondition": "Email musi zawierać @",
+
+    "password": "Hasło",
+    "enterPassword": "Wprowadź swoje hasło",
+    "passwordCondition": "Hasło musi mieć co najmniej 6 znaków",
+
+    "name": "Imię",
+    "enterName": "Wprowadź swoje imię",
+
+    "surname": "Nazwisko",
+    "enterSurname": "Wprowadź swoje nazwisko",
+
+    "pesel": "PESEL",
+    "enterPesel": "Wprowadź swój numer PESEL",
+    "peselCondition": "PESEL musi mieć dokładnie 11 cyfr",
+
+    "medicalFacility": "Placówka medyczna",
+    "selectMedicalFacility": "Wybierz swoją placówkę medyczną",
+    "validMedicalFacilityCondition": "Wybierz prawidłową placówkę medyczną z listy",
+
+    "dateOfBirth": "Data urodzenia",
+    "enterDateOfBirth": "Wprowadź swoją datę urodzenia (RRRR-MM-DD)",
+    "dateOfBirthCondition": "Data urodzenia musi być w formacie RRRR-MM-DD",
+
+    "repeatPassword": "Powtórz hasło",
+    "enterRepeatPassword": "Powtórz swoje hasło",
+    "repeatPasswordCondition": "Hasła nie są identyczne",
+
+    "goodMorningUser": "Dzień dobry, {userName}",
+    "@goodMorningUser": {
+        "placeholders": {
+        "userName": {
+            "type": "String"
+        }
+        }
+    },
+    "vaccinationBooklet": "Książeczka szczepień",
+    "vaccinationBookletDescription": "Dodaj swoją książeczkę szczepień",
+    "vaccinationHistory": "Historia szczepień",
+    "vaccinationHistoryDescription": "Sprawdź swoją historię szczepień",
+    "settings": "Ustawienia",
+    "settingsDescription": "Zmień ustawienia aplikacji",
+    "yourAccount": "Twoje konto",
+    "yourAccountDescription": "Sprawdź szczegóły swojego konta",
+
+    "theme": "Motyw",
+    "changeDarkMode": "Zmień na tryb ciemny",
+    "changeLightMode": "Zmień na tryb jasny",
+    "language": "Język",
+    "changePolish": "Zmień język na polski",
+    "changeEnglish": "Change language to English",
+
+    "accountCreationDate": "Data utworzenia konta",
+    "callSupport": "Zadzwoń do wsparcia",
+    "logOut": "Wyloguj się"
+}

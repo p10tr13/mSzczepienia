@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mszczepienia/core/l10n/app_localizations.dart';
 import 'package:mszczepienia/core/theme/app_colors.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/logic/auth/auth_state.dart';
@@ -29,6 +30,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final borderColor = Theme.of(context).colorScheme.outline;
+    final grey = Theme.of(context).colorScheme.onSurfaceVariant;
+
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         return Layout(
@@ -48,19 +53,19 @@ class _LoginPageState extends State<LoginPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Good afternoon!',
+                      Text(
+                        l10n.goodMorning,
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'Log in to the application',
+                      Text(
+                        l10n.logInTitle,
                         style: TextStyle(
                           fontSize: 16,
-                          color: AppColors.naturalGrey,
+                          color: grey,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -71,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.black, width: 1.0),
+                          border: Border.all(color: borderColor, width: 1.1),
                         ),
                         child: Form(
                           key: formKey,
@@ -80,16 +85,16 @@ class _LoginPageState extends State<LoginPage> {
                             child: Column(
                               children: [
                                 CustomTextField(
-                                  label: "Email",
+                                  label: l10n.email,
                                   controller: _emailController,
                                   showEyeIcon: false,
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Enter email address';
+                                      return l10n.enterEmail;
                                     }
                                     if (!value.contains('@')) {
-                                      return 'Email has to contain @';
+                                      return l10n.emailCondition;
                                     }
                                     return null;
                                   },
@@ -98,13 +103,13 @@ class _LoginPageState extends State<LoginPage> {
                                 const SizedBox(height: 16),
 
                                 CustomTextField(
-                                  label: "Password",
+                                  label: l10n.password,
                                   controller: _passwordController,
                                   obscureText: true,
                                   showEyeIcon: true,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Enter password';
+                                      return l10n.enterPassword;
                                     }
                                     return null;
                                   },
@@ -158,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: state is AuthLoading
                               ? CircularProgressIndicator(color: Colors.white)
                               : Text(
-                                  'Log In',
+                                  l10n.logInButton,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -178,20 +183,16 @@ class _LoginPageState extends State<LoginPage> {
                             context.go('/signup');
                           },
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                              color: Colors.black,
-                              width: 1.5,
-                            ),
+                            side: BorderSide(color: borderColor, width: 1.5),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: const Text(
-                            'Sign Up',
+                          child: Text(
+                            l10n.signUpButton,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black,
                             ),
                           ),
                         ),

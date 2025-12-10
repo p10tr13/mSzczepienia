@@ -11,6 +11,10 @@ import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/logic/auth/auth_repository.dart';
 import 'package:mszczepienia/logic/citizen/citizen_cubit.dart';
 import 'package:mszczepienia/logic/facility/facilities_cubit.dart';
+import 'package:mszczepienia/logic/language/language_cubit.dart';
+import 'package:mszczepienia/logic/language/language_repository.dart';
+import 'package:mszczepienia/logic/theme/theme_cubit.dart';
+import 'package:mszczepienia/logic/theme/theme_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -31,10 +35,18 @@ Future<void> init() async {
       sl<CitizenRepository>(),
     ),
   );
+  sl.registerLazySingleton(
+    () => LanguageRepository(storage: const FlutterSecureStorage()),
+  );
+  sl.registerLazySingleton(
+    () => ThemeRepository(storage: const FlutterSecureStorage()),
+  );
   sl.registerLazySingleton(() => MedicalFacilityRepository(sl()));
 
   // --- CUBITS ---
-  sl.registerFactory(() => CitizenCubit(sl()));
+  sl.registerFactory(() => LanguageCubit(sl()));
+  sl.registerFactory(() => ThemeCubit(sl()));
   sl.registerFactory(() => AuthCubit(sl()));
+  sl.registerFactory(() => CitizenCubit(sl()));
   sl.registerFactory(() => FacilitiesCubit(sl()));
 }

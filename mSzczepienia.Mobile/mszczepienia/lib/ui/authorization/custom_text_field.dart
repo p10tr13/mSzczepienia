@@ -41,15 +41,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
       obscureText: _isObscured,
       validator: widget.validator,
       keyboardType: widget.keyboardType,
+      style: TextStyle(color: AppColors.darkGrey),
       decoration: InputDecoration(
         labelText: widget.label,
         hintText: widget.hintText,
-        labelStyle: const TextStyle(
+        labelStyle: TextStyle(
           color: AppColors.naturalGrey,
           fontWeight: FontWeight.w500,
         ),
         filled: true,
-        fillColor: AppColors.textFieldFill,
+        fillColor: AppColors.lightGrey,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
@@ -57,11 +58,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.textFieldBorder),
+          borderSide: const BorderSide(color: AppColors.naturalGrey),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.textFieldBorder),
+          borderSide: const BorderSide(color: AppColors.naturalGrey),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -81,7 +82,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   _isObscured
                       ? Icons.visibility_off_outlined
                       : Icons.visibility_outlined,
-                  color: Colors.black54,
+                  color: AppColors.darkGrey,
                 ),
                 onPressed: () {
                   setState(() {

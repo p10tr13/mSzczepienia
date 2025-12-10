@@ -49,7 +49,7 @@ namespace mSzczepienia.Api
                     email = "piotrjac23@gmail.com",
                     firebaseUid = "UwJYlRuRKHfz6U1C3hFudMYxIOU2",
                     role = Role.Citizen,
-                    name = "Mateusz",
+                    name = "Piotr",
                     surname = "Jacak",
                     creationDate = DateTime.Now,
                     dateOfBirth = new DateTime(2003, 02, 06)

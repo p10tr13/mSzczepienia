@@ -8,11 +8,15 @@ class Layout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
+      extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         centerTitle: false,
         toolbarHeight: 70.0,
+        backgroundColor: Colors.transparent,
         title: Padding(
           padding: const EdgeInsets.only(top: 20.0, bottom: 20.0, left: 8.0),
           child: Row(
@@ -29,17 +33,29 @@ class Layout extends StatelessWidget {
               const SizedBox(width: 12),
               const Text(
                 'mSzczepienia',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],
           ),
         ),
       ),
-      body: child,
+      body: SafeArea(child: child),
+
+      // TEMPORATY DISABLED GRADIENT BACKGROUND FOR SMOOTHNESS OF THE APP
+      // body: Container(
+      //   width: double.infinity,
+      //   height: double.infinity,
+      //   decoration: BoxDecoration(
+      //     gradient: LinearGradient(
+      //       begin: Alignment.topLeft,
+      //       end: Alignment.bottomRight,
+      //       colors: isDarkMode
+      //           ? [AppColors.darkGrey, AppColors.defaultBlue]
+      //           : [AppColors.lightGrey, AppColors.lightBlue],
+      //     ),
+      //   ),
+      //   child: SafeArea(child: child),
+      // ),
     );
   }
 }

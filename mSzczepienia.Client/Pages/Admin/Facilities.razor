@@ -3,7 +3,9 @@
 @inject NavigationManager NavigationManager
 @inject IStringLocalizer<SharedResources> Localizer
 @inject IFacilityClient FacilityClient
+@inject ISnackbar Snackbar
 @using mSzczepienia.Shared.DTO
+@using mSzczepienia.Shared.DTO.Facilities
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-8">
     <MudGrid Spacing="4">
@@ -18,7 +20,7 @@
                 <MudStack Spacing="3">
                     <MudAutocomplete T="string" @bind-Value="City" Label="@Localizer["City"]" Variant="Variant.Outlined"
                                      Margin="Margin.Dense" Placeholder="@Localizer["EnterCity"]" ResetValueOnEmptyText="true" SearchFunc="@GetCitiesAsync"
-                                     CoerceText="false" DebounceInterval="1000" AdornmentIcon="@Icons.Material.Filled.Search" />
+                                     CoerceText="false" DebounceInterval="500" AdornmentIcon="@Icons.Material.Filled.Search" />
                     <MudTextField @bind-Value="Street" Label="@Localizer["Street"]" Variant="Variant.Outlined" Margin="Margin.Dense"
                                   Placeholder="@Localizer["EnterStreet"]" />
                     <MudTextField @bind-Value="PostalCode" Label="@Localizer["PostalCode"]" Variant="Variant.Outlined"
@@ -42,6 +44,21 @@
                 <div class="d-flex justify-center my-8">
                     <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
                 </div>
+            }
+            else if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="my-4" ContentAlignment="HorizontalAlignment.Center">
+                    <MudStack AlignItems="AlignItems.Center">
+                        <MudText>@errorMessage</MudText>
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Surface"
+                                   StartIcon="@Icons.Material.Filled.Refresh"
+                                   OnClick="OnRetryClick"
+                                   Style="color: var(--mud-palette-error);">
+                            @Localizer["TryAgain"]
+                        </MudButton>
+                    </MudStack>
+                </MudAlert>
             }
             else if (facilities.Items == null || !facilities.Items.Any())
             {
@@ -111,7 +128,7 @@
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "Id")]
-    public string? Id { get; set; }
+    public int? Id { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "Page")]
@@ -119,30 +136,53 @@
 
     public int PageSize { get; set; } = 6;
 
-    private PagedResult<FacilityMock> facilities = new();
+    private PagedResult<SearchFacilityDto> facilities = new();
     private bool isLoading = false;
+    private string? errorMessage = null;
 
     protected override async Task OnParametersSetAsync()
     {
+        await LoadData();
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task LoadData()
+    {
         isLoading = true;
+        errorMessage = null;
+
         if (Page < 1)
             Page = 1;
 
-        facilities = new PagedResult<FacilityMock>
-            {
-                Items = GenerateMockData().Skip((Page - 1) * PageSize).Take(PageSize).ToList(),
-                TotalCount = GenerateMockData().Count,
-                PageSize = PageSize,
-            };
+        try
+        {
+            facilities = await FacilityClient.GetFacilitiesAsync(City, Street, PostalCode, Id, Page, PageSize, new CancellationToken());
+        }
+        catch (HttpRequestException httpEx)
+        {
+            errorMessage = Localizer["ErrorLoadingFacilities"];
+            Snackbar.Add($"{errorMessage}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = Localizer["ErrorLoadingFacilities"];
+            Snackbar.Add($"{errorMessage}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+
         if (Page > facilities.TotalPages && facilities.TotalPages > 0)
         {
             Page = facilities.TotalPages;
             UpdateUrl();
         }
-        await Task.Delay(1000);
-        isLoading = false;
+    }
 
-        await base.OnParametersSetAsync();
+    private async Task OnRetryClick()
+    {
+        await LoadData();
     }
 
     private async Task<IEnumerable<string>> GetCitiesAsync(string value, CancellationToken token)
@@ -189,38 +229,9 @@
             query["Street"] = Street;
         if (!string.IsNullOrWhiteSpace(PostalCode))
             query["PostalCode"] = PostalCode;
-        if (!string.IsNullOrWhiteSpace(Id))
-            query["Id"] = Id;
+        if (Id.HasValue)
+            query["Id"] = Id.ToString();
         var newUri = $"{uri.GetLeftPart(UriPartial.Path)}?{query}";
         NavigationManager.NavigateTo(newUri, forceLoad: false);
-    }
-
-    private List<FacilityMock> GenerateMockData()
-    {
-        var list = new List<FacilityMock>
-        {
-            new FacilityMock { Id = 1, Name = "Przychodnia Family Medica", Street = "Prystora 4/4", City = "Warszawa", PostalCode = "02-497" },
-            new FacilityMock { Id = 2, Name = "Centrum Medyczne Sadyba", Street = "Urle 1", City = "Warszawa", PostalCode = "02-943" },
-            new FacilityMock { Id = 3, Name = "Zdrowa Rodzina", Street = "Pełczyńskiego 22J", City = "Warszawa", PostalCode = "01-471" },
-            new FacilityMock { Id = 4, Name = "Poradnia Witoślin", Street = "Łukowska 1", City = "Warszawa", PostalCode = "04-113" },
-            new FacilityMock { Id = 5, Name = "Szpital Św. Rodziny", Street = "Madalińskiego 25", City = "Warszawa", PostalCode = "02-544" },
-            new FacilityMock { Id = 6, Name = "Medicover Centrum", Street = "Grunwaldzka 10", City = "Gdańsk", PostalCode = "80-001" },
-            new FacilityMock { Id = 7, Name = "LuxMed", Street = "Puławska 15", City = "Piaseczno", PostalCode = "05-500" },
-            new FacilityMock { Id = 8, Name = "Przychodnia Rejonowa nr 1", Street = "Dworcowa 5", City = "Kraków", PostalCode = "30-001" },
-            new FacilityMock { Id = 9, Name = "Centrum Zdrowia Dziecka", Street = "Dzieci Polskich 20", City = "Warszawa", PostalCode = "04-730" },
-            new FacilityMock { Id = 10, Name = "Szpital Bielański", Street = "Cegłowska 80", City = "Warszawa", PostalCode = "01-809" },
-            new FacilityMock { Id = 11, Name = "Medyk", Street = "Wojska Polskiego 2", City = "Wrocław", PostalCode = "50-001" },
-            new FacilityMock { Id = 12, Name = "Eskulap", Street = "Słowackiego 3", City = "Poznań", PostalCode = "60-001" }
-        };
-        return list;
-    }
-
-    public class FacilityMock
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string PostalCode { get; set; }
     }
 }

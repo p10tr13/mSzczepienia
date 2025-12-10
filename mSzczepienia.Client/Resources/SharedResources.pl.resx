@@ -345,4 +345,10 @@
   <data name="Details" xml:space="preserve">
     <value>Szczegóły</value>
   </data>
+  <data name="ErrorLoadingFacilities" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania placówek</value>
+  </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>Spróbuj ponownie</value>
+  </data>
 </root>

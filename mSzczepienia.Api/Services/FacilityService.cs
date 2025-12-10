@@ -2,6 +2,8 @@
 using mSzczepienia.Api.Repositories.Interfaces;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO.Facilities;
+using mSzczepienia.Shared.DTO.Queries;
+using mSzczepienia.Shared.DTO;
 
 namespace mSzczepienia.Api.Services;
 
@@ -24,5 +26,27 @@ public class FacilityService : IFacilityService
         var facilityNames = await _facilityRepository.GetFacilityNamesAsync(ct);
 
         return facilityNames;
+    }
+
+    public async Task<PagedResult<SearchFacilityDto>> SearchFacilitiesAsync(GetFacilitiesQuery query, CancellationToken ct)
+    {
+        var pagedFacilities = await _facilityRepository.SearchFacilitiesAsync(query, ct);
+
+        var dtos = pagedFacilities.Items.Select(f => new SearchFacilityDto
+        {
+            Id = f.facilityId,
+            Name = f.facilityName,
+            Street = f.street,
+            City = f.city,
+            PostalCode = f.postalCode
+        }).ToList();
+
+        return new PagedResult<SearchFacilityDto>
+        {
+            Items = dtos,
+            TotalCount = pagedFacilities.TotalCount,
+            PageNumber = pagedFacilities.PageNumber,
+            PageSize = pagedFacilities.PageSize
+        };
     }
 }

@@ -345,4 +345,10 @@
   <data name="Details" xml:space="preserve">
     <value>Details</value>
   </data>
+  <data name="ErrorLoadingFacilities" xml:space="preserve">
+    <value>Error occured while loading facilities</value>
+  </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>Try Again</value>
+  </data>
 </root>

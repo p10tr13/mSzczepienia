@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO.Facilities;
+using mSzczepienia.Shared.DTO.Queries;
+using mSzczepienia.Shared.DTO;
 
 namespace mSzczepienia.Api.Controllers;
 
@@ -28,6 +30,24 @@ public class FacilityController : ControllerBase
     public async Task<ActionResult<List<FacilityListDto>>> GetFacilityNamesAsync(CancellationToken ct)
     {
         var result = await _facilityService.GetFacilityNamesAsync(ct);
+        return Ok(result);
+    }
+
+    [HttpGet("search")]
+    [Authorize(Roles = "admin")]
+    public async Task<ActionResult<PagedResult<SearchFacilityDto>>> SearchFacilitiesAsync([FromQuery] GetFacilitiesQuery query, CancellationToken ct)
+    {
+        if (query.PageNumber <= 0 || query.PageSize <= 0)
+        {
+            return BadRequest("PageNumber and PageSize must be greater than zero.");
+        }
+
+        if (query.PageSize > 100)
+        {
+            return BadRequest("PageSize must be less than or equal to 100.");
+        }
+
+        var result = await _facilityService.SearchFacilitiesAsync(query, ct);
         return Ok(result);
     }
 }

@@ -351,4 +351,10 @@
   <data name="TryAgain" xml:space="preserve">
     <value>Spróbuj ponownie</value>
   </data>
+  <data name="ErrorLoadingVaccines" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania szczepionek</value>
+  </data>
+  <data name="NoVaccinesFound" xml:space="preserve">
+    <value>Nie znaleziono żadnych szczepionek spełniających twoje kryteria</value>
+  </data>
 </root>

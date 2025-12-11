@@ -351,4 +351,10 @@
   <data name="TryAgain" xml:space="preserve">
     <value>Try Again</value>
   </data>
+  <data name="ErrorLoadingVaccines" xml:space="preserve">
+    <value>Error occured while loading vaccines</value>
+  </data>
+  <data name="NoVaccinesFound" xml:space="preserve">
+    <value>No vaccines found</value>
+  </data>
 </root>

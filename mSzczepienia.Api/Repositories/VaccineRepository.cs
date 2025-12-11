@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Api.Repositories.Interfaces;
-using mSzczepienia.Shared.Models;
+using mSzczepienia.Shared.DTO;
+using mSzczepienia.Shared.DTO.Vaccines;
+using mSzczepienia.Shared.DTO.Queries;
 
 namespace mSzczepienia.Api.Repositories;
 
@@ -45,5 +47,55 @@ public class VaccineRepository : IVaccineRepository
             .OrderBy(v => v)
             .Take(10)
             .ToListAsync(ct);
+    }
+
+    public async Task<PagedResult<VaccineDto>> GetVaccinesAsync(GetVaccinesQuery query, CancellationToken ct)
+    {
+        var queryable = _dbContext.vaccineDefinitions.AsNoTracking();
+
+        queryable = queryable.Include(v => v.vaccineDiseases).ThenInclude(vd => vd.disease);
+
+        if (query.Id.HasValue)
+        {
+            queryable = queryable.Where(v => v.vaccineId == query.Id);
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.Name))
+        {
+            queryable = queryable.Where(v => v.vaccineName.Contains(query.Name));
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.Manufacturer))
+        {
+            queryable = queryable.Where(v => v.manufacturer.Contains(query.Manufacturer));
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.Disease))
+        {
+            queryable = queryable.Where(v => v.vaccineDiseases.Any(vd => vd.disease.diseaseNameEn.Contains(query.Disease) || vd.disease.diseaseNamePl.Contains(query.Disease)));
+        }
+
+        var totalCount = await queryable.CountAsync(ct);
+
+        queryable = queryable.Skip((query.PageNumber - 1) * query.PageSize).Take(query.PageSize);
+
+        var items = await queryable
+            .Select(v => new VaccineDto
+            {
+                VaccineId = v.vaccineId,
+                VaccineName = v.vaccineName,
+                Manufacturer = v.manufacturer,
+                DiseasesEn = v.vaccineDiseases.Select(vd => vd.disease.diseaseNameEn).ToList(),
+                DiseasesPl = v.vaccineDiseases.Select(vd => vd.disease.diseaseNamePl).ToList()
+            })
+            .ToListAsync(ct);
+
+        return new PagedResult<VaccineDto>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = query.PageNumber,
+            PageSize = query.PageSize
+        };
     }
 }

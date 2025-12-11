@@ -1,5 +1,8 @@
-﻿using mSzczepienia.Api.Services.Interfaces;
-using mSzczepienia.Api.Repositories.Interfaces;
+﻿using mSzczepienia.Api.Repositories.Interfaces;
+using mSzczepienia.Api.Services.Interfaces;
+using mSzczepienia.Shared.DTO;
+using mSzczepienia.Shared.DTO.Queries;
+using mSzczepienia.Shared.DTO.Vaccines;
 
 namespace mSzczepienia.Api.Services;
 
@@ -20,5 +23,10 @@ public class VaccineService : IVaccineService
     public Task<List<string>> GetNamesAutocompleteAsync(string? query, CancellationToken ct)
     {
         return _vaccineRepository.GetNamesAutocompleteAsync(query, ct);
+    }
+
+    public async Task<PagedResult<VaccineDto>> GetVaccinesAsync(GetVaccinesQuery query, CancellationToken ct)
+    {
+        return await _vaccineRepository.GetVaccinesAsync(query, ct);
     }
 }

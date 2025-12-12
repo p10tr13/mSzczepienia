@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using mSzczepienia.Api;
 using mSzczepienia.Shared.Models;
+using mSzczepienia.Shared.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -212,6 +213,94 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             };
 
             context.vaccineDiseases.AddRange(vaccineDiseases);
+            context.SaveChanges();
+        }
+
+        // Add test OCR submissions for stats
+        if (!context.ocrSubmissions.Any())
+        {
+            // Create test citizens first
+            var citizens = new List<Citizen>
+            {
+                new Citizen
+                {
+                    citizenId = 1,
+                    accountId = Guid.NewGuid(),
+                    pesel = "12345678901",
+                    facilityId = 1,
+                    submissionStatus = SubmissionStatus.Pending
+                },
+                new Citizen
+                {
+                    citizenId = 2,
+                    accountId = Guid.NewGuid(),
+                    pesel = "98765432101",
+                    facilityId = 2,
+                    submissionStatus = SubmissionStatus.Pending
+                },
+                new Citizen
+                {
+                    citizenId = 3,
+                    accountId = Guid.NewGuid(),
+                    pesel = "55555555555",
+                    facilityId = 3,
+                    submissionStatus = SubmissionStatus.Pending
+                }
+            };
+
+            context.citizens.AddRange(citizens);
+            context.SaveChanges();
+
+            // Create OCR submissions with different statuses
+            var ocrSubmissions = new List<OcrSubmission>
+            {
+                new OcrSubmission
+                {
+                    submissionId = 1,
+                    citizenId = 1,
+                    photoUrl = "https://example.com/photo1.jpg",
+                    status = OcrSubmissionStatus.Accepted,
+                    submissionDate = DateTime.UtcNow.AddDays(-5),
+                    verificationDate = DateTime.UtcNow.AddDays(-4)
+                },
+                new OcrSubmission
+                {
+                    submissionId = 2,
+                    citizenId = 2,
+                    photoUrl = "https://example.com/photo2.jpg",
+                    status = OcrSubmissionStatus.Accepted,
+                    submissionDate = DateTime.UtcNow.AddDays(-3),
+                    verificationDate = DateTime.UtcNow.AddDays(-2)
+                },
+                new OcrSubmission
+                {
+                    submissionId = 3,
+                    citizenId = 1,
+                    photoUrl = "https://example.com/photo3.jpg",
+                    status = OcrSubmissionStatus.Pending,
+                    submissionDate = DateTime.UtcNow.AddDays(-1)
+                },
+                new OcrSubmission
+                {
+                    submissionId = 4,
+                    citizenId = 2,
+                    photoUrl = "https://example.com/photo4.jpg",
+                    status = OcrSubmissionStatus.Pending,
+                    submissionDate = DateTime.UtcNow
+                },
+                new OcrSubmission
+                {
+                    submissionId = 5,
+                    citizenId = 3,
+                    photoUrl = "https://example.com/photo5.jpg",
+                    status = OcrSubmissionStatus.Rejected,
+                    submissionDate = DateTime.UtcNow.AddDays(-2),
+                    verifierNotes = "Poor quality image",
+                    verificationDate = DateTime.UtcNow.AddDays(-1)
+                }
+            };
+
+            context.ocrSubmissions.AddRange(ocrSubmissions);
             context.SaveChanges();
         }
     }

@@ -32,9 +32,7 @@ public class CitizenServiceTests
             submissionStatus = "Accepted"
         };
 
-        _citizenRepositoryMock
-            .GetCitizenDetailsByUidAsync(firebaseUid, Arg.Any<CancellationToken>())
-            .Returns(expectedDto);
+        _citizenRepositoryMock.GetCitizenDetailsByUidAsync(firebaseUid, Arg.Any<CancellationToken>()).Returns(expectedDto);
 
         // Act
         var result = await _sut.GetCitizenDetailsAsync(firebaseUid, CancellationToken.None);
@@ -43,8 +41,7 @@ public class CitizenServiceTests
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(expectedDto);
 
-        await _citizenRepositoryMock.Received(1)
-            .GetCitizenDetailsByUidAsync(firebaseUid, Arg.Any<CancellationToken>());
+        await _citizenRepositoryMock.Received(1).GetCitizenDetailsByUidAsync(firebaseUid, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -53,9 +50,7 @@ public class CitizenServiceTests
         // Arrange
         var firebaseUid = "unknown-user";
 
-        _citizenRepositoryMock
-            .GetCitizenDetailsByUidAsync(firebaseUid, Arg.Any<CancellationToken>())
-            .Returns((CitizenDetailsDto?)null);
+        _citizenRepositoryMock.GetCitizenDetailsByUidAsync(firebaseUid, Arg.Any<CancellationToken>()).Returns((CitizenDetailsDto?)null);
 
         // Act
         var result = await _sut.GetCitizenDetailsAsync(firebaseUid, CancellationToken.None);
@@ -85,7 +80,6 @@ public class CitizenServiceTests
         await _sut.CreateCitizenAsync(firebaseUid, dto, CancellationToken.None);
 
         // Assert
-        await _citizenRepositoryMock.Received(1)
-            .AddCitizenAsync(firebaseUid, dto, Arg.Any<CancellationToken>());
+        await _citizenRepositoryMock.Received(1).AddCitizenAsync(firebaseUid, dto, Arg.Any<CancellationToken>());
     }
 }

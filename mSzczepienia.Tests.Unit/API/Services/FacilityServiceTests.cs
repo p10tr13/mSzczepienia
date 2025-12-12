@@ -25,9 +25,7 @@ public class FacilityServiceTests
         var query = "War";
         var expectedCities = new List<string> { "Warszawa", "Warka" };
 
-        _facilityRepositoryMock
-            .GetCitiesAutocompleteAsync(query, Arg.Any<CancellationToken>())
-            .Returns(expectedCities);
+        _facilityRepositoryMock.GetCitiesAutocompleteAsync(query, Arg.Any<CancellationToken>()).Returns(expectedCities);
 
         // Act
         var result = await _sut.GetCitiesAutocompleteAsync(query, CancellationToken.None);
@@ -37,8 +35,7 @@ public class FacilityServiceTests
         result.Should().HaveCount(2);
         result.Should().Contain("Warszawa");
 
-        await _facilityRepositoryMock.Received(1)
-            .GetCitiesAutocompleteAsync(query, Arg.Any<CancellationToken>());
+        await _facilityRepositoryMock.Received(1).GetCitiesAutocompleteAsync(query, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -51,9 +48,7 @@ public class FacilityServiceTests
             new FacilityListDto { facilityId = 2, facilityName = "Szpital B" }
         };
 
-        _facilityRepositoryMock
-            .GetFacilityNamesAsync(Arg.Any<CancellationToken>())
-            .Returns(expectedDtos);
+        _facilityRepositoryMock.GetFacilityNamesAsync(Arg.Any<CancellationToken>()).Returns(expectedDtos);
 
         // Act
         var result = await _sut.GetFacilityNamesAsync(CancellationToken.None);
@@ -90,9 +85,7 @@ public class FacilityServiceTests
             PageSize = 10
         };
 
-        _facilityRepositoryMock
-            .SearchFacilitiesAsync(query, Arg.Any<CancellationToken>())
-            .Returns(pagedResultFromRepo);
+        _facilityRepositoryMock.SearchFacilitiesAsync(query, Arg.Any<CancellationToken>()).Returns(pagedResultFromRepo);
 
         // Act
         var result = await _sut.SearchFacilitiesAsync(query, CancellationToken.None);
@@ -122,9 +115,7 @@ public class FacilityServiceTests
             TotalCount = 0
         };
 
-        _facilityRepositoryMock
-            .SearchFacilitiesAsync(query, Arg.Any<CancellationToken>())
-            .Returns(emptyRepoResult);
+        _facilityRepositoryMock.SearchFacilitiesAsync(query, Arg.Any<CancellationToken>()).Returns(emptyRepoResult);
 
         // Act
         var result = await _sut.SearchFacilitiesAsync(query, CancellationToken.None);

@@ -24,9 +24,7 @@ public class VaccineServiceTests
         var query = "Pfi";
         var expectedResult = new List<string> { "Pfizer", "Pfizer-BioNTech" };
 
-        _vaccineRepositoryMock
-            .GetManufacturersAutocompleteAsync(query, Arg.Any<CancellationToken>())
-            .Returns(expectedResult);
+        _vaccineRepositoryMock.GetManufacturersAutocompleteAsync(query, Arg.Any<CancellationToken>()).Returns(expectedResult);
 
         // Act
         var result = await _sut.GetManufacturersAutocompleteAsync(query, CancellationToken.None);
@@ -34,8 +32,7 @@ public class VaccineServiceTests
         // Assert
         result.Should().BeEquivalentTo(expectedResult);
 
-        await _vaccineRepositoryMock.Received(1)
-            .GetManufacturersAutocompleteAsync(query, Arg.Any<CancellationToken>());
+        await _vaccineRepositoryMock.Received(1).GetManufacturersAutocompleteAsync(query, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -45,9 +42,7 @@ public class VaccineServiceTests
         var query = "War";
         var expectedResult = new List<string> { "Warszawa", "Warka" };
 
-        _vaccineRepositoryMock
-            .GetNamesAutocompleteAsync(query, Arg.Any<CancellationToken>())
-            .Returns(expectedResult);
+        _vaccineRepositoryMock.GetNamesAutocompleteAsync(query, Arg.Any<CancellationToken>()).Returns(expectedResult);
 
         // Act
         var result = await _sut.GetNamesAutocompleteAsync(query, CancellationToken.None);
@@ -55,8 +50,7 @@ public class VaccineServiceTests
         // Assert
         result.Should().BeEquivalentTo(expectedResult);
 
-        await _vaccineRepositoryMock.Received(1)
-            .GetNamesAutocompleteAsync(query, Arg.Any<CancellationToken>());
+        await _vaccineRepositoryMock.Received(1).GetNamesAutocompleteAsync(query, Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -86,9 +80,7 @@ public class VaccineServiceTests
             PageSize = 10
         };
 
-        _vaccineRepositoryMock
-            .GetVaccinesAsync(query, Arg.Any<CancellationToken>())
-            .Returns(expectedPagedResult);
+        _vaccineRepositoryMock.GetVaccinesAsync(query, Arg.Any<CancellationToken>()).Returns(expectedPagedResult);
 
         // Act
         var result = await _sut.GetVaccinesAsync(query, CancellationToken.None);
@@ -98,7 +90,6 @@ public class VaccineServiceTests
         result.Items.Should().HaveCount(1);
         result.Items.First().VaccineName.Should().Be("Spikevax");
 
-        await _vaccineRepositoryMock.Received(1)
-            .GetVaccinesAsync(query, Arg.Any<CancellationToken>());
+        await _vaccineRepositoryMock.Received(1).GetVaccinesAsync(query, Arg.Any<CancellationToken>());
     }
 }

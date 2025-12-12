@@ -133,6 +133,87 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             );
             context.SaveChanges();
         }
+
+        // Add test diseases
+        if (!context.diseases.Any())
+        {
+            context.diseases.AddRange(
+                new Disease
+                {
+                    diseaseId = 1,
+                    diseaseNameEn = "Influenza",
+                    diseaseNamePl = "Grypa"
+                },
+                new Disease
+                {
+                    diseaseId = 2,
+                    diseaseNameEn = "COVID-19",
+                    diseaseNamePl = "COVID-19"
+                },
+                new Disease
+                {
+                    diseaseId = 3,
+                    diseaseNameEn = "Measles",
+                    diseaseNamePl = "Odra"
+                }
+            );
+            context.SaveChanges();
+        }
+
+        // Add test vaccines
+        if (!context.vaccineDefinitions.Any())
+        {
+            var vaccines = new List<VaccineDefinition>
+            {
+                new VaccineDefinition
+                {
+                    vaccineId = 1,
+                    vaccineName = "Pfizer-BioNTech",
+                    manufacturer = "Pfizer",
+                    vaccineDescription = "mRNA COVID-19 vaccine",
+                    creationDate = DateTime.UtcNow
+                },
+                new VaccineDefinition
+                {
+                    vaccineId = 2,
+                    vaccineName = "Moderna",
+                    manufacturer = "Moderna",
+                    vaccineDescription = "mRNA COVID-19 vaccine",
+                    creationDate = DateTime.UtcNow
+                },
+                new VaccineDefinition
+                {
+                    vaccineId = 3,
+                    vaccineName = "Fluzone",
+                    manufacturer = "Sanofi",
+                    vaccineDescription = "Seasonal influenza vaccine",
+                    creationDate = DateTime.UtcNow
+                },
+                new VaccineDefinition
+                {
+                    vaccineId = 4,
+                    vaccineName = "M-M-R II",
+                    manufacturer = "Merck",
+                    vaccineDescription = "Measles, mumps, rubella vaccine",
+                    creationDate = DateTime.UtcNow
+                }
+            };
+
+            context.vaccineDefinitions.AddRange(vaccines);
+            context.SaveChanges();
+
+            // Add vaccine-disease relationships
+            var vaccineDiseases = new List<VaccineDisease>
+            {
+                new VaccineDisease { vaccineId = 1, diseaseId = 2 },
+                new VaccineDisease { vaccineId = 2, diseaseId = 2 },
+                new VaccineDisease { vaccineId = 3, diseaseId = 1 },
+                new VaccineDisease { vaccineId = 4, diseaseId = 3 }
+            };
+
+            context.vaccineDiseases.AddRange(vaccineDiseases);
+            context.SaveChanges();
+        }
     }
 
     public HttpClient CreateClientWithAuth(string? role = null)

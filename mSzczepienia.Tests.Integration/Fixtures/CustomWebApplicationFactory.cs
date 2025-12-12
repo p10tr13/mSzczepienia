@@ -1,0 +1,182 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using mSzczepienia.Api;
+using mSzczepienia.Shared.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+
+namespace mSzczepienia.Tests.Integration.Fixtures;
+
+public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
+{
+    private string _databaseName = "TestDatabase_" + Guid.NewGuid().ToString();
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureServices(services =>
+        {
+            // Remove ALL DbContext-related services
+            var dbContextDescriptor = services.FirstOrDefault(
+                d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
+            if (dbContextDescriptor != null)
+            {
+                services.Remove(dbContextDescriptor);
+            }
+
+            // Remove EntityFrameworkCore.SqlServer if it's registered
+            var sqlServerDescriptor = services.FirstOrDefault(
+                d => d.ServiceType.Namespace?.Contains("SqlServer") == true);
+            if (sqlServerDescriptor != null)
+            {
+                services.Remove(sqlServerDescriptor);
+            }
+
+            // Add in-memory database for testing - USE SAME NAME FOR ALL REQUESTS
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseInMemoryDatabase(_databaseName);
+            });
+
+            // Override JWT Bearer scheme for testing
+            services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.Authority = null;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = false,
+                    ValidateIssuerSigningKey = false,
+                    IssuerSigningKey = GetSymmetricSecurityKey(),
+                    RoleClaimType = ClaimTypes.Role,
+                    NameClaimType = "user_id"
+                };
+            });
+
+            // DO NOT build service provider - let the application build it during initialization
+            // Instead, add this as a startup task
+            services.AddSingleton<IHostedService>(sp =>
+            {
+                return new TestDataSeeder(sp);
+            });
+        });
+
+        builder.UseEnvironment("Testing");
+    }
+
+    private class TestDataSeeder : IHostedService
+    {
+        private readonly IServiceProvider _serviceProvider;
+
+        public TestDataSeeder(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            context.Database.EnsureCreated();
+            SeedTestData(context);
+            await Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    }
+
+    private static void SeedTestData(AppDbContext context)
+    {
+        // Add test facilities
+        if (!context.medicalFacilities.Any())
+        {
+            context.medicalFacilities.AddRange(
+                new MedicalFacility
+                {
+                    facilityId = 1,
+                    facilityName = "Test Clinic 1",
+                    street = "Main St",
+                    city = "Warsaw",
+                    postalCode = "00-001",
+                    country = "Poland",
+                    nip = "1234567890",
+                    creationDate = DateTime.UtcNow
+                },
+                new MedicalFacility
+                {
+                    facilityId = 2,
+                    facilityName = "Test Clinic 2",
+                    street = "Park Ave",
+                    city = "Krakow",
+                    postalCode = "31-001",
+                    country = "Poland",
+                    nip = "0987654321",
+                    creationDate = DateTime.UtcNow
+                },
+                new MedicalFacility
+                {
+                    facilityId = 3,
+                    facilityName = "Test Hospital",
+                    street = "Hospital Rd",
+                    city = "Warsaw",
+                    postalCode = "00-002",
+                    country = "Poland",
+                    nip = "1111111111",
+                    creationDate = DateTime.UtcNow
+                }
+            );
+            context.SaveChanges();
+        }
+    }
+
+    public HttpClient CreateClientWithAuth(string? role = null)
+    {
+        var client = CreateClient();
+        var token = GenerateTestJwtToken(role);
+        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        return client;
+    }
+
+    public HttpClient CreateClientWithoutAuth()
+    {
+        return CreateClient();
+    }
+
+    public string GenerateTestJwtToken(string? role = null)
+    {
+        var key = GetSymmetricSecurityKey();
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new List<Claim>
+        {
+            new Claim("user_id", "test-user-id"),
+            new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
+            new Claim(ClaimTypes.Name, "Test User")
+        };
+
+        if (!string.IsNullOrEmpty(role))
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
+        var token = new JwtSecurityToken(
+            issuer: "test-issuer",
+            audience: "test-audience",
+            claims: claims,
+            expires: DateTime.UtcNow.AddHours(1),
+            signingCredentials: creds);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private static SymmetricSecurityKey GetSymmetricSecurityKey()
+    {
+        return new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this-is-a-very-long-secret-key-for-testing-purposes-only-12345"));
+    }
+}

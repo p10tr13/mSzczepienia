@@ -86,15 +86,26 @@ public static class DependencyInjection
 
     public static IServiceCollection AddFirebaseAdmin(this IServiceCollection services, IConfiguration config)
     {
+        // Don't initialize Firebase in testing environment
+        var environment = services.BuildServiceProvider().GetService<IHostEnvironment>();
+        if (environment?.IsEnvironment("Testing") == true)
+        {
+            return services;
+        }
+
         var jsonPath = config["Firebase:ServiceAccountKeyPath"];
 
         var serviceAccountCredential = CredentialFactory.FromFile<ServiceAccountCredential>(jsonPath);
         var googleCredential = serviceAccountCredential.ToGoogleCredential();
 
-        FirebaseApp.Create(new AppOptions
+        // Only create if not already created
+        if (FirebaseApp.DefaultInstance == null)
         {
-            Credential = googleCredential
-        });
+            FirebaseApp.Create(new AppOptions
+            {
+                Credential = googleCredential
+            });
+        }
 
         return services;
     }

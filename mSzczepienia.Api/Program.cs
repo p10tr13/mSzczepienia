@@ -10,10 +10,14 @@ using mSzczepienia.Api.Services.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<AppDbContext>(options =>
+// Skip DbContext registration for testing - will be overridden in test factory
+if (!builder.Environment.IsEnvironment("Testing"))
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    });
+}
 builder.Services.AddScoped<AppDbContextSeed>();
 
 builder.Services.AddControllers();
@@ -43,7 +47,12 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var dbContext = services.GetRequiredService<AppDbContext>();
-        dbContext.Database.Migrate();
+        // Only migrate if not using in-memory database (for testing)
+        var environment = services.GetRequiredService<IHostEnvironment>();
+        if (!environment.IsEnvironment("Testing"))
+        {
+            dbContext.Database.Migrate();
+        }
     }
     catch (Exception ex)
     {
@@ -53,8 +62,13 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        var seeder = services.GetRequiredService<AppDbContextSeed>();
-        seeder.Seed();
+        // Skip seeding in testing environment
+        var environment = services.GetRequiredService<IHostEnvironment>();
+        if (!environment.IsEnvironment("Testing"))
+        {
+            var seeder = services.GetRequiredService<AppDbContextSeed>();
+            seeder.Seed();
+        }
     }
     catch (Exception ex)
     {
@@ -82,3 +96,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

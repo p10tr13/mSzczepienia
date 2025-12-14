@@ -101,6 +101,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get repeatPasswordCondition => 'Hasła nie są identyczne';
 
   @override
+  String get incorrectCredentials => 'Nieprawidłowy email lub hasło';
+
+  @override
+  String get signUpError => 'Błąd rejestracji';
+
+  @override
   String goodMorningUser(String userName) {
     return 'Dzień dobry, $userName';
   }
@@ -157,4 +163,75 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get logOut => 'Wyloguj się';
+
+  @override
+  String get yourVaccinations => 'Twoje szczepienia';
+
+  @override
+  String get sort => 'Sortuj';
+
+  @override
+  String get alphabetical_az => 'Alfabetycznie (A-Z)';
+
+  @override
+  String get alphabetical_za => 'Alfabetycznie (Z-A)';
+
+  @override
+  String get date_newest => 'Data (od najnowszych)';
+
+  @override
+  String get date_oldest => 'Data (od najstarszych)';
+
+  @override
+  String get dose => 'Dawka';
+
+  @override
+  String get last => 'Ostatnia:';
+
+  @override
+  String get noOfDoses => 'Dawki:';
+
+  @override
+  String get noVaccinations => 'Brak znalezionych szczepień.';
+
+  @override
+  String get errorLoadingVaccinationRecords =>
+      'Błąd podczas ładowania historii szczepień.';
+
+  @override
+  String get errorLoadingVaccinationDetails =>
+      'Błąd podczas ładowania szczegółów szczepienia.';
+
+  @override
+  String get doseNumber => 'Numer dawki';
+
+  @override
+  String get vaccinationDate => 'Data szczepienia';
+
+  @override
+  String get batchNo => 'Numer serii';
+
+  @override
+  String get remarks => 'Uwagi';
+
+  @override
+  String get aboutVaccine => 'O tej szczepionce';
+
+  @override
+  String get vaccineDescription => 'Opis szczepionki';
+
+  @override
+  String get diseasesPrevented => 'Choroby, którym zapobiega';
+
+  @override
+  String get vaccineCreationDate => 'Data powstania szczepionki';
+
+  @override
+  String get producer => 'Producent';
+
+  @override
+  String get nextVaccination => 'Następne szczepienie za';
+
+  @override
+  String get days => 'dni';
 }

@@ -7,6 +7,8 @@ import 'package:mszczepienia/ui/authorization/pages/login_page.dart';
 import 'package:mszczepienia/ui/authorization/pages/sign_up_page.dart';
 import 'package:mszczepienia/ui/home/home_page.dart';
 import 'package:mszczepienia/ui/settings/settings_page.dart';
+import 'package:mszczepienia/ui/vaccination_details/vaccination_details_page.dart';
+import 'package:mszczepienia/ui/vaccination_history/vaccination_history_page.dart';
 
 class AppRouter {
   AuthCubit? authCubit;
@@ -40,6 +42,17 @@ class AppRouter {
 
     routes: [
       GoRoute(path: '/', builder: (context, state) => const HomePage()),
+      GoRoute(
+        path: '/history/details',
+        builder: (context, state) {
+          final vaccineId = state.uri.queryParameters['vaccineId'];
+          return VaccinationDetailsPage(vaccineId: int.parse(vaccineId!));
+        },
+      ),
+      GoRoute(
+        path: '/history',
+        builder: (context, state) => const VaccinationHistoryPage(),
+      ),
       GoRoute(
         path: '/settings',
         builder: (context, state) => const SettingsPage(),

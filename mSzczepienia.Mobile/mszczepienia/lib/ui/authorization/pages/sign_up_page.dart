@@ -265,6 +265,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 defaultMedicalFacility,
                                 email,
                                 password,
+                                l10n.signUpError,
                               );
                             }
                           },

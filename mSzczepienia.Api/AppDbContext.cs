@@ -282,7 +282,10 @@ namespace mSzczepienia.Api
                 e.Property(vd => vd.manufacturer)
                     .IsRequired()
                     .HasMaxLength(100);
-                e.Property(vd => vd.vaccineDescription)
+                e.Property(vd => vd.vaccineDescriptionEn)
+                    .IsRequired()
+                    .HasMaxLength(500);
+                e.Property(vd => vd.vaccineDescriptionPl)
                     .IsRequired()
                     .HasMaxLength(500);
                 e.Property(vd => vd.creationDate)

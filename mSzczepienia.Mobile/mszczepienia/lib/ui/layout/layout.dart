@@ -17,6 +17,7 @@ class Layout extends StatelessWidget {
         centerTitle: false,
         toolbarHeight: 70.0,
         backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
         title: Padding(
           padding: const EdgeInsets.only(top: 20.0, bottom: 20.0, left: 8.0),
           child: Row(
@@ -41,7 +42,7 @@ class Layout extends StatelessWidget {
       ),
       body: SafeArea(child: child),
 
-      // TEMPORATY DISABLED GRADIENT BACKGROUND FOR SMOOTHNESS OF THE APP
+      //TEMPORATY DISABLED GRADIENT BACKGROUND FOR SMOOTHNESS OF THE APP
       // body: Container(
       //   width: double.infinity,
       //   height: double.infinity,

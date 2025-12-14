@@ -47,7 +47,7 @@ void main() {
     mockFacilitiesCubit = MockFacilitiesCubit();
     
     // Setup stubs
-    when(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any())).thenAnswer((_) async {});
+    when(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any())).thenAnswer((_) async {});
     when(() => mockFacilitiesCubit.loadFacilities()).thenAnswer((_) async {});
   });
 
@@ -150,7 +150,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // signUpRequested should not be called because PESEL is too short
-      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any()));
+      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any()));
     });
 
     testWidgets('Email field validates format', (WidgetTester tester) async {
@@ -169,7 +169,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // signUpRequested should not be called
-      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any()));
+      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any()));
     });
 
     testWidgets('Password field validates minimum length', (WidgetTester tester) async {
@@ -188,7 +188,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // signUpRequested should not be called
-      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any()));
+      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any()));
     });
 
     testWidgets('Form validates empty fields', (WidgetTester tester) async {
@@ -200,7 +200,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // signUpRequested should not be called
-      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any()));
+      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any()));
     });
 
     testWidgets('Name field is required', (WidgetTester tester) async {
@@ -220,7 +220,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // signUpRequested should not be called
-      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any()));
+      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any()));
     });
 
     testWidgets('Surname field is required', (WidgetTester tester) async {
@@ -240,7 +240,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // signUpRequested should not be called
-      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any()));
+      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any()));
     });
 
     testWidgets('Container border uses theme outline color', (WidgetTester tester) async {

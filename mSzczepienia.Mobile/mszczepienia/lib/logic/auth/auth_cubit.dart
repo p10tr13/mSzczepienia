@@ -26,7 +26,11 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   /// LOGIN
-  Future<void> loginRequested(String email, String password) async {
+  Future<void> loginRequested(
+    String email,
+    String password,
+    String errorMessage,
+  ) async {
     emit(AuthLoading());
     try {
       final user = await _authRepository.login(email, password);
@@ -34,7 +38,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (user != null) {
         emit(Authenticated(user));
       } else {
-        emit(AuthError('Incorrect credentials'));
+        emit(AuthError(errorMessage));
       }
     } catch (e) {
       emit(AuthError(e.toString()));
@@ -50,6 +54,7 @@ class AuthCubit extends Cubit<AuthState> {
     String defaultMedicalFacility,
     String email,
     String password,
+    String errorMessage,
   ) async {
     emit(AuthLoading());
 
@@ -67,7 +72,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (user != null) {
         emit(Authenticated(user));
       } else {
-        emit(AuthError('Sign up error'));
+        emit(AuthError(errorMessage));
       }
     } catch (e) {
       emit(AuthError(e.toString()));

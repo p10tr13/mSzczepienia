@@ -101,6 +101,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get repeatPasswordCondition => 'Passwords do not match';
 
   @override
+  String get incorrectCredentials => 'Incorrect email or password';
+
+  @override
+  String get signUpError => 'Sign up error';
+
+  @override
   String goodMorningUser(String userName) {
     return 'Good morning, $userName';
   }
@@ -155,4 +161,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logOut => 'Log Out';
+
+  @override
+  String get yourVaccinations => 'Your Vaccinations';
+
+  @override
+  String get sort => 'Sort';
+
+  @override
+  String get alphabetical_az => 'Alphabetical (A-Z)';
+
+  @override
+  String get alphabetical_za => 'Alphabetical (Z-A)';
+
+  @override
+  String get date_newest => 'Date (Newest first)';
+
+  @override
+  String get date_oldest => 'Date (Oldest first)';
+
+  @override
+  String get dose => 'Dose';
+
+  @override
+  String get last => 'Last:';
+
+  @override
+  String get noOfDoses => 'Doses:';
+
+  @override
+  String get noVaccinations => 'No vaccinations found.';
+
+  @override
+  String get errorLoadingVaccinationRecords =>
+      'Error loading vaccination records.';
+
+  @override
+  String get errorLoadingVaccinationDetails =>
+      'Error loading vaccination details.';
+
+  @override
+  String get doseNumber => 'Dose Number';
+
+  @override
+  String get vaccinationDate => 'Vaccination Date';
+
+  @override
+  String get batchNo => 'Batch Number';
+
+  @override
+  String get remarks => 'Remarks';
+
+  @override
+  String get aboutVaccine => 'About this vaccine';
+
+  @override
+  String get vaccineDescription => 'Vaccine Description';
+
+  @override
+  String get diseasesPrevented => 'Diseases Prevented';
+
+  @override
+  String get vaccineCreationDate => 'Vaccine Creation Date';
+
+  @override
+  String get producer => 'Manufacturer';
+
+  @override
+  String get nextVaccination => 'Next Vaccination In';
+
+  @override
+  String get days => 'days';
 }

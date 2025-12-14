@@ -62,7 +62,9 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 22),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  context.push('/history');
+                },
                 child: HomeCustomContainer(
                   icon: Icons.history_rounded,
                   title: l10n.vaccinationHistory,

@@ -77,7 +77,7 @@ namespace mSzczepienia.Api
                 var existingCitizens = _dbContext.citizens.ToList();
                 var existingVerifiers = _dbContext.personnel.ToList();
 
-                var submissions = GenerateOcrSubmissions(50, existingCitizens, existingVerifiers);
+                var submissions = GenerateOcrSubmissions(existingCitizens, existingVerifiers);
                 _dbContext.ocrSubmissions.AddRange(submissions);
                 _dbContext.SaveChanges();
             }
@@ -107,7 +107,8 @@ namespace mSzczepienia.Api
                     {
                         vaccineName = x.vaccineName,
                         manufacturer = x.manufacturer,
-                        vaccineDescription = x.vaccineDescription,
+                        vaccineDescriptionEn = x.vaccineDescriptionEn,
+                        vaccineDescriptionPl = x.vaccineDescriptionPl,
                         creationDate = x.creationDate
                     });
 
@@ -256,35 +257,38 @@ namespace mSzczepienia.Api
 
         // 5. GENERATING OCR SUBMISSIONS
         private IEnumerable<OcrSubmission> GenerateOcrSubmissions(
-            int count,
             IEnumerable<Citizen> citizens,
             IEnumerable<Personnel> verifiers)
         {
             var citizensList = citizens.ToList();
             var verifiersList = verifiers.ToList();
 
-            var faker = new Faker<OcrSubmission>("pl")
-                .RuleFor(s => s.citizenId, f => f.PickRandom(citizensList).citizenId)
-                .RuleFor(s => s.photoUrl, f => f.Internet.Url() + "/scan.jpg")
-                .RuleFor(s => s.status, f => f.PickRandom<OcrSubmissionStatus>())
-                .RuleFor(s => s.submissionDate, f => f.Date.Past(1));
+            var faker = new Faker("pl");
 
-            // Logic for records which have been verified
-            return faker.Generate(count).Select(s =>
+            return citizensList.Select(citizen =>
             {
-                if (s.status != OcrSubmissionStatus.Pending)
+                var submission = new OcrSubmission
                 {
-                    s.verifierId = new Faker().PickRandom(verifiersList).personnelId;
-                    s.verificationDate = s.submissionDate.AddHours(new Faker().Random.Int(1, 48));
-                    s.verifierNotes = new Faker("pl").Lorem.Sentence();
+                    citizenId = citizen.citizenId,
+                    photoUrl = faker.Internet.Url() + "/scan.jpg",
+                    status = faker.PickRandom<OcrSubmissionStatus>(),
+                    submissionDate = faker.Date.Past(1)
+                };
+
+                if (submission.status != OcrSubmissionStatus.Pending)
+                {
+                    submission.verifierId = faker.PickRandom(verifiersList).personnelId;
+                    submission.verificationDate = submission.submissionDate.AddHours(faker.Random.Int(1, 48));
+                    submission.verifierNotes = faker.Lorem.Sentence();
                 }
                 else
                 {
-                    s.verifierId = null;
-                    s.verificationDate = null;
-                    s.verifierNotes = null;
+                    submission.verifierId = null;
+                    submission.verificationDate = null;
+                    submission.verifierNotes = null;
                 }
-                return s;
+
+                return submission;
             });
         }
 
@@ -301,23 +305,32 @@ namespace mSzczepienia.Api
             var faker = new Faker("pl");
             foreach (var ocrSubmission in ocrSubmissionList)
             {
-                for (int i = 0; i < 5; i++) 
-                {
-                    var randomVaccine = faker.PickRandom(vaccineDefinitionsList);
-                    var randomBatch = faker.Random.AlphaNumeric(10).ToUpper();
-                    var randomDate = faker.Date.Past(1).ToString("yyyy-MM-dd");
+                // Generate 10 different vaccines
+                var randomVaccines = faker.PickRandom(vaccineDefinitionsList, 10).ToList();
 
-                    var entry = new VaccinationEntry
+                foreach (var vaccine in randomVaccines) 
+                {
+                    var randomBatch = faker.Random.AlphaNumeric(10).ToUpper();
+                    var randomDate = faker.Date.Past(1);
+
+                    // Max 3 doses for each vaccine
+                    int doses = faker.Random.Int(1, 3);
+                    for (int i = 0; i < doses; i++)
                     {
-                        ocrSubmissionId = ocrSubmission.submissionId,
-                        batchOcr = randomBatch,
-                        vaccineNameOcr = randomVaccine.vaccineName,
-                        dateOcr = randomDate,
-                        vaccineId = randomVaccine.vaccineId,
-                        batch = randomBatch,
-                        date = DateTime.Parse(randomDate),
-                    };
-                    vaccinationEntries.Add(entry);
+                        randomDate = randomDate.AddDays(faker.Random.Int(20, 60));
+
+                        var entry = new VaccinationEntry
+                        {
+                            ocrSubmissionId = ocrSubmission.submissionId,
+                            batchOcr = randomBatch,
+                            vaccineNameOcr = vaccine.vaccineName,
+                            dateOcr = randomDate.ToString("yyyy-MM-dd"),
+                            vaccineId = vaccine.vaccineId,
+                            batch = randomBatch,
+                            date = DateTime.Parse(randomDate.ToString("yyyy-MM-dd")),
+                        };
+                        vaccinationEntries.Add(entry);
+                    }
                 }
             }
 
@@ -328,31 +341,35 @@ namespace mSzczepienia.Api
         private IEnumerable<VaccinationRecord> GenerateVaccinationRecords(IEnumerable<VaccinationEntry> vaccinationEntries)
         {
             var vaccinationEntriesList = vaccinationEntries.ToList();
-
             var vaccinationRecords = new List<VaccinationRecord>();
-
             var faker = new Faker("pl");
-            foreach (var vaccinationEntry in vaccinationEntriesList)
+
+            var groupedEntries = vaccinationEntriesList
+                .Where(x => x.ocrSubmission != null && x.vaccineId != null && x.date != null)
+                .GroupBy(x => new { x.ocrSubmission.citizenId, x.vaccineId });
+
+            foreach (var group in groupedEntries)
             {
-                if (vaccinationEntry.vaccineId != null &&
-                    vaccinationEntry.batch != null &&
-                    vaccinationEntry.date != null)
+                var sortedDoses = group.OrderBy(x => x.date).ToList();
+                for (int i = 0; i < sortedDoses.Count; i++)
                 {
+                    var entry = sortedDoses[i];
+                    var calculatedDoseNumber = (i + 1).ToString();
+
                     var record = new VaccinationRecord
                     {
-
-                        citizenId = vaccinationEntry.ocrSubmission.citizenId,
-                        vaccineId = (int)vaccinationEntry.vaccineId,
-                        batch = vaccinationEntry.batch,
-                        vaccinationDate = (DateTime)vaccinationEntry.date,
-                        doseNumber = faker.Random.Int(1, 3).ToString(),
-                        sourceEntryId = vaccinationEntry.vaccinationEntryId,
+                        citizenId = entry.ocrSubmission.citizenId,
+                        vaccineId = (int)entry.vaccineId!,
+                        batch = entry.batch!,
+                        vaccinationDate = (DateTime)entry.date!,
+                        doseNumber = calculatedDoseNumber,
+                        sourceEntryId = entry.vaccinationEntryId,
                         creationDate = DateTime.Now,
                     };
                     vaccinationRecords.Add(record);
                 }
-
             }
+
             return vaccinationRecords;
         }
     }

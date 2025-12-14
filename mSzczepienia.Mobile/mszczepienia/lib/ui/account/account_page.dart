@@ -90,12 +90,12 @@ class _AccountPageState extends State<AccountPage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 5),
                               Text(
                                 state is Authenticated ? state.user.name : '',
                                 style: TextStyle(fontSize: 14),
                               ),
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 20),
                               Text(
                                 l10n.surname,
                                 style: TextStyle(
@@ -103,14 +103,14 @@ class _AccountPageState extends State<AccountPage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 5),
                               Text(
                                 state is Authenticated
                                     ? state.user.surname
                                     : '',
                                 style: TextStyle(fontSize: 14),
                               ),
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 20),
                               Text(
                                 l10n.email,
                                 style: TextStyle(
@@ -118,12 +118,12 @@ class _AccountPageState extends State<AccountPage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 5),
                               Text(
                                 state is Authenticated ? state.user.email : '',
                                 style: TextStyle(fontSize: 14),
                               ),
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 20),
                               Text(
                                 l10n.dateOfBirth,
                                 style: TextStyle(
@@ -131,7 +131,7 @@ class _AccountPageState extends State<AccountPage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 5),
                               Text(
                                 state is Authenticated
                                     ? DatetimeFormatter().datetimeFormatter(
@@ -140,7 +140,7 @@ class _AccountPageState extends State<AccountPage> {
                                     : '',
                                 style: TextStyle(fontSize: 14),
                               ),
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 20),
                               Text(
                                 l10n.accountCreationDate,
                                 style: TextStyle(
@@ -148,7 +148,7 @@ class _AccountPageState extends State<AccountPage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 5),
                               Text(
                                 state is Authenticated
                                     ? DatetimeFormatter().datetimeFormatter(
@@ -157,7 +157,7 @@ class _AccountPageState extends State<AccountPage> {
                                     : '',
                                 style: TextStyle(fontSize: 14),
                               ),
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 20),
                               Text(
                                 l10n.pesel,
                                 style: TextStyle(
@@ -165,12 +165,12 @@ class _AccountPageState extends State<AccountPage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 5),
                               Text(
                                 state is Authenticated ? state.user.pesel : '',
                                 style: TextStyle(fontSize: 14),
                               ),
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 20),
                               Text(
                                 l10n.medicalFacility,
                                 style: TextStyle(
@@ -178,7 +178,7 @@ class _AccountPageState extends State<AccountPage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 5),
                               Text(
                                 state is Authenticated
                                     ? state.user.defaultMedicalFacility

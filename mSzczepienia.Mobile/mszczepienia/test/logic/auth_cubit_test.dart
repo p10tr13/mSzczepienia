@@ -86,7 +86,7 @@ void main() {
       build: () => AuthCubit(mockAuthRepository),
       act: (cubit) async {
         await Future.delayed(const Duration(milliseconds: 50));
-        await cubit.loginRequested('john@example.com', 'password123');
+        await cubit.loginRequested('john@example.com', 'password123', 'error');
       },
       wait: const Duration(milliseconds: 100),
       expect: () => [
@@ -111,7 +111,7 @@ void main() {
       build: () => AuthCubit(mockAuthRepository),
       act: (cubit) async {
         await Future.delayed(const Duration(milliseconds: 50));
-        await cubit.loginRequested('john@example.com', 'wrongpassword');
+        await cubit.loginRequested('john@example.com', 'wrongpassword', 'error');
       },
       wait: const Duration(milliseconds: 100),
       expect: () => [
@@ -136,7 +136,7 @@ void main() {
       build: () => AuthCubit(mockAuthRepository),
       act: (cubit) async {
         await Future.delayed(const Duration(milliseconds: 50));
-        await cubit.loginRequested('john@example.com', 'password123');
+        await cubit.loginRequested('john@example.com', 'password123', 'error');
       },
       wait: const Duration(milliseconds: 100),
       expect: () => [
@@ -178,6 +178,7 @@ void main() {
           'Test Hospital',
           'john@example.com',
           'password123',
+          'error'
         );
       },
       wait: const Duration(milliseconds: 100),
@@ -225,6 +226,7 @@ void main() {
           'Test Hospital',
           'john@example.com',
           'password123',
+          'error'
         );
       },
       wait: const Duration(milliseconds: 100),

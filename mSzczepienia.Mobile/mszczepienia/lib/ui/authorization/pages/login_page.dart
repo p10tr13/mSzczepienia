@@ -150,6 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                               context.read<AuthCubit>().loginRequested(
                                 email,
                                 password,
+                                l10n.incorrectCredentials,
                               );
                             }
                           },

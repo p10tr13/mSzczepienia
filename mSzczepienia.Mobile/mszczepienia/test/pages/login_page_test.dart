@@ -22,7 +22,7 @@ void main() {
   setUp(() {
     mockAuthCubit = MockAuthCubit();
     // Setup stub for loginRequested
-    when(() => mockAuthCubit.loginRequested(any(), any())).thenAnswer((_) async {});
+    when(() => mockAuthCubit.loginRequested(any(), any(), any())).thenAnswer((_) async {});
   });
 
   Widget createWidgetUnderTest() {
@@ -144,7 +144,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // loginRequested should not be called
-      verifyNever(() => mockAuthCubit.loginRequested(any(), any()));
+      verifyNever(() => mockAuthCubit.loginRequested(any(), any(), any()));
     });
 
     testWidgets('Form validation works - invalid email shows error', (WidgetTester tester) async {
@@ -161,7 +161,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // loginRequested should not be called
-      verifyNever(() => mockAuthCubit.loginRequested(any(), any()));
+      verifyNever(() => mockAuthCubit.loginRequested(any(), any(), any()));
     });
 
     testWidgets('Container widgets present', (WidgetTester tester) async {

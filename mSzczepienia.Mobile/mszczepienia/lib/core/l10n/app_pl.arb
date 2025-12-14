@@ -40,6 +40,9 @@
     "enterRepeatPassword": "Powtórz swoje hasło",
     "repeatPasswordCondition": "Hasła nie są identyczne",
 
+    "incorrectCredentials": "Nieprawidłowy email lub hasło",
+    "signUpError": "Błąd rejestracji",
+
     "goodMorningUser": "Dzień dobry, {userName}",
     "@goodMorningUser": {
         "placeholders": {
@@ -66,5 +69,30 @@
 
     "accountCreationDate": "Data utworzenia konta",
     "callSupport": "Zadzwoń do wsparcia",
-    "logOut": "Wyloguj się"
+    "logOut": "Wyloguj się",
+
+    "yourVaccinations": "Twoje szczepienia",
+    "sort": "Sortuj",
+    "alphabetical_az": "Alfabetycznie (A-Z)",
+    "alphabetical_za": "Alfabetycznie (Z-A)",
+    "date_newest": "Data (od najnowszych)",
+    "date_oldest": "Data (od najstarszych)",
+    "dose": "Dawka",
+    "last": "Ostatnia:",
+    "noOfDoses": "Dawki:",
+    "noVaccinations": "Brak znalezionych szczepień.",
+    "errorLoadingVaccinationRecords": "Błąd podczas ładowania historii szczepień.",
+
+    "errorLoadingVaccinationDetails": "Błąd podczas ładowania szczegółów szczepienia.",
+    "doseNumber": "Numer dawki",
+    "vaccinationDate": "Data szczepienia",
+    "batchNo": "Numer serii",
+    "remarks": "Uwagi",
+    "aboutVaccine": "O tej szczepionce",
+    "vaccineDescription": "Opis szczepionki",
+    "diseasesPrevented": "Choroby, którym zapobiega",
+    "vaccineCreationDate": "Data powstania szczepionki",
+    "producer": "Producent",
+    "nextVaccination": "Następne szczepienie za",
+    "days": "dni"
 }

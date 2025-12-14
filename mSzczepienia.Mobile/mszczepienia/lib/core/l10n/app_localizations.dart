@@ -278,6 +278,18 @@ abstract class AppLocalizations {
   /// **'Passwords do not match'**
   String get repeatPasswordCondition;
 
+  /// No description provided for @incorrectCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect email or password'**
+  String get incorrectCredentials;
+
+  /// No description provided for @signUpError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up error'**
+  String get signUpError;
+
   /// No description provided for @goodMorningUser.
   ///
   /// In en, this message translates to:
@@ -385,6 +397,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log Out'**
   String get logOut;
+
+  /// No description provided for @yourVaccinations.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Vaccinations'**
+  String get yourVaccinations;
+
+  /// No description provided for @sort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get sort;
+
+  /// No description provided for @alphabetical_az.
+  ///
+  /// In en, this message translates to:
+  /// **'Alphabetical (A-Z)'**
+  String get alphabetical_az;
+
+  /// No description provided for @alphabetical_za.
+  ///
+  /// In en, this message translates to:
+  /// **'Alphabetical (Z-A)'**
+  String get alphabetical_za;
+
+  /// No description provided for @date_newest.
+  ///
+  /// In en, this message translates to:
+  /// **'Date (Newest first)'**
+  String get date_newest;
+
+  /// No description provided for @date_oldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Date (Oldest first)'**
+  String get date_oldest;
+
+  /// No description provided for @dose.
+  ///
+  /// In en, this message translates to:
+  /// **'Dose'**
+  String get dose;
+
+  /// No description provided for @last.
+  ///
+  /// In en, this message translates to:
+  /// **'Last:'**
+  String get last;
+
+  /// No description provided for @noOfDoses.
+  ///
+  /// In en, this message translates to:
+  /// **'Doses:'**
+  String get noOfDoses;
+
+  /// No description provided for @noVaccinations.
+  ///
+  /// In en, this message translates to:
+  /// **'No vaccinations found.'**
+  String get noVaccinations;
+
+  /// No description provided for @errorLoadingVaccinationRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading vaccination records.'**
+  String get errorLoadingVaccinationRecords;
+
+  /// No description provided for @errorLoadingVaccinationDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading vaccination details.'**
+  String get errorLoadingVaccinationDetails;
+
+  /// No description provided for @doseNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Dose Number'**
+  String get doseNumber;
+
+  /// No description provided for @vaccinationDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccination Date'**
+  String get vaccinationDate;
+
+  /// No description provided for @batchNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch Number'**
+  String get batchNo;
+
+  /// No description provided for @remarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Remarks'**
+  String get remarks;
+
+  /// No description provided for @aboutVaccine.
+  ///
+  /// In en, this message translates to:
+  /// **'About this vaccine'**
+  String get aboutVaccine;
+
+  /// No description provided for @vaccineDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine Description'**
+  String get vaccineDescription;
+
+  /// No description provided for @diseasesPrevented.
+  ///
+  /// In en, this message translates to:
+  /// **'Diseases Prevented'**
+  String get diseasesPrevented;
+
+  /// No description provided for @vaccineCreationDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine Creation Date'**
+  String get vaccineCreationDate;
+
+  /// No description provided for @producer.
+  ///
+  /// In en, this message translates to:
+  /// **'Manufacturer'**
+  String get producer;
+
+  /// No description provided for @nextVaccination.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Vaccination In'**
+  String get nextVaccination;
+
+  /// No description provided for @days.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get days;
 }
 
 class _AppLocalizationsDelegate

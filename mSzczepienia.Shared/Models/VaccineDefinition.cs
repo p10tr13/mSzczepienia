@@ -5,7 +5,9 @@
         public int vaccineId { get; set; }
         public required string vaccineName { get; set; }
         public required string manufacturer { get; set; }
-        public required string vaccineDescription { get; set; }
+        public required string vaccineDescriptionEn { get; set; }
+        public required string vaccineDescriptionPl { get; set; }
+
         public DateTime creationDate { get; set; }
 
         // Relations

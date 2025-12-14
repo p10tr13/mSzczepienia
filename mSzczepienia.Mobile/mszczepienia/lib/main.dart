@@ -14,6 +14,8 @@ import 'package:mszczepienia/logic/language/language_cubit.dart';
 import 'package:mszczepienia/logic/language/language_state.dart';
 import 'package:mszczepienia/logic/theme/theme_cubit.dart';
 import 'package:mszczepienia/logic/theme/theme_state.dart';
+import 'package:mszczepienia/logic/vaccination_record/vaccination_records_cubit.dart';
+import 'package:mszczepienia/logic/vaccination_record_details/vaccination_record_details_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +47,12 @@ class MyApp extends StatelessWidget {
         BlocProvider<CitizenCubit>(create: (context) => sl<CitizenCubit>()),
         BlocProvider<FacilitiesCubit>(
           create: (context) => sl<FacilitiesCubit>(),
+        ),
+        BlocProvider<VaccinationRecordsCubit>(
+          create: (context) => sl<VaccinationRecordsCubit>(),
+        ),
+        BlocProvider<VaccinationRecordDetailsCubit>(
+          create: (context) => sl<VaccinationRecordDetailsCubit>(),
         ),
       ],
       // Define auth state globally

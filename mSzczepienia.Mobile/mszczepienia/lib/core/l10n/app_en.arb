@@ -40,6 +40,9 @@
     "enterRepeatPassword": "Repeat your password",
     "repeatPasswordCondition": "Passwords do not match",
 
+    "incorrectCredentials": "Incorrect email or password",
+    "signUpError": "Sign up error",
+
     "goodMorningUser": "Good morning, {userName}",
     "@goodMorningUser": {
         "placeholders": {
@@ -66,5 +69,30 @@
     
     "accountCreationDate": "Account creation date",
     "callSupport": "Call Support",
-    "logOut": "Log Out"
+    "logOut": "Log Out",
+
+    "yourVaccinations": "Your Vaccinations",
+    "sort": "Sort",
+    "alphabetical_az": "Alphabetical (A-Z)",
+    "alphabetical_za": "Alphabetical (Z-A)",
+    "date_newest": "Date (Newest first)",
+    "date_oldest": "Date (Oldest first)",
+    "dose": "Dose",
+    "last": "Last:",
+    "noOfDoses": "Doses:",
+    "noVaccinations": "No vaccinations found.",
+    "errorLoadingVaccinationRecords": "Error loading vaccination records.",
+
+    "errorLoadingVaccinationDetails": "Error loading vaccination details.",
+    "doseNumber": "Dose Number",
+    "vaccinationDate": "Vaccination Date",
+    "batchNo": "Batch Number",
+    "remarks": "Remarks",
+    "aboutVaccine": "About this vaccine",
+    "vaccineDescription": "Vaccine Description",
+    "diseasesPrevented": "Diseases Prevented",
+    "vaccineCreationDate": "Vaccine Creation Date",
+    "producer": "Manufacturer",
+    "nextVaccination": "Next Vaccination In",
+    "days": "days"
 }

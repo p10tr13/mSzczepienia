@@ -62,11 +62,11 @@ void main() {
       expect(appRouter.authCubit, mockAuthCubit);
     });
 
-    test('has 5 routes defined', () {
+    test('has 6 routes defined', () {
       appRouter = AppRouter(authCubit: mockAuthCubit);
       final routes = appRouter.router.configuration.routes;
 
-      expect(routes.length, 5);
+      expect(routes.length, 6);
     });
 
     test('has correct route paths', () {
@@ -173,7 +173,7 @@ void main() {
       final initialCount = notifyCount;
 
       // Emit multiple values
-      for (var i = 0; i < 5; i++) {
+      for (var i = 0; i < 6; i++) {
         streamController.add(i);
       }
       await Future.delayed(const Duration(milliseconds: 100));

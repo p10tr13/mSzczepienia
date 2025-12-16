@@ -116,6 +116,8 @@ public static class DependencyInjection
         services.AddScoped<Repositories.Interfaces.IStatsRepository, Repositories.StatsRepository>();
         services.AddScoped<Repositories.Interfaces.IVaccineRepository, Repositories.VaccineRepository>();
         services.AddScoped<Repositories.Interfaces.ICitizenRepository, Repositories.CitizenRepository>();
+        services.AddScoped<Repositories.Interfaces.IAccountRepository, Repositories.AccountRepository>();
+        services.AddScoped<Repositories.Interfaces.IPersonnelRepository, Repositories.PersonnelRepository>();
         services.AddScoped<Repositories.Interfaces.IVaccinationRecordRepository, Repositories.VaccinationRecordRepository>();
 
         return services;
@@ -126,6 +128,7 @@ public static class DependencyInjection
         services.AddScoped<Services.Interfaces.IFacilityService, Services.FacilityService>();
         services.AddScoped<Services.Interfaces.IStatsService, Services.StatsService>();
         services.AddScoped<Services.Interfaces.IVaccineService, Services.VaccineService>();
+        services.AddScoped<Services.Interfaces.IUserManagementService, Services.UserManagementService>();
         services.AddScoped<Services.Interfaces.ICitizenService, Services.CitizenService>();
         services.AddScoped<Services.Interfaces.IVaccinationRecordService, Services.VaccinationRecordService>();
 

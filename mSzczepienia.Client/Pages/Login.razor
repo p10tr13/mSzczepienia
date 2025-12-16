@@ -23,9 +23,9 @@
             <div style="text-align:center">
                 <h4 class="mud-theme-secondary-text mud-typography-h4 mud-text-center mud-pa-6" style="margin:auto;">@Localizer["logIn"]</h4>
             </div>
-            <MudTextField @bind-Value="userEmail" Label="@Localizer["userLoginEmail"]" HelperText="@Localizer["userLoginEmailHT"]"
+            <MudTextField @bind-Value="userEmail" Label="@Localizer["Email"]" HelperText="@Localizer["EnterEmail"]"
                           Required="true" Variant="@Variant.Filled" FullWidth="true" Clearable="true" ShrinkLabel="true"/>
-            <MudTextField @bind-Value="userPassword" Label="@Localizer["userLoginPassword"]" InputType="InputType.Password" HelperText="@Localizer["userLoginPasswordHT"]"
+            <MudTextField @bind-Value="userPassword" Label="@Localizer["Password"]" InputType="InputType.Password" HelperText="@Localizer["EnterPassword"]"
                           Required="true" Variant="Variant.Filled" FullWidth="true" Clearable="true" ShrinkLabel="true" />
             <MudButton OnClick="onLoginClicked" Variant="Variant.Filled" Color="Color.Success" style="width:200px">
                 @if (isProcessing) { <MudProgressCircular Size="Size.Small" Indeterminate="true" Color="Color.Inherit"/>}

@@ -1,34 +1,40 @@
-﻿using FirebaseAdmin.Auth;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using mSzczepienia.Api.Services.Interfaces;
+using mSzczepienia.Shared.DTO.Users;
 
 namespace YourApp.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/users-management")]
 public class UserManagementController : ControllerBase
 {
-    [Authorize(Roles = "admin")]
-    [HttpPost("set-role")]
-    public async Task<IActionResult> SetUserRole([FromBody] SetRoleRequest request)
+    private readonly IUserManagementService _userManagementService;
+
+    public UserManagementController(IUserManagementService userManagementService)
     {
-        if (request == null || string.IsNullOrWhiteSpace(request.UserId) || string.IsNullOrWhiteSpace(request.Role))
-            return BadRequest("Invalid payload");
-        
-        if (request.Role != "admin" && request.Role != "worker")
-            return BadRequest("Invalid role");
-
-        await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(request.UserId, new Dictionary<string, object>
-        {
-            { "role", request.Role }
-        });
-
-        return Ok($"Role '{request.Role}' assigned to user '{request.UserId}'");
+        _userManagementService = userManagementService;
     }
-}
 
-public class SetRoleRequest
-{
-    public string UserId { get; set; }
-    public string Role { get; set; }
+    [Authorize(Roles = "admin")]
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserDto request, CancellationToken ct)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        try
+        {
+            await _userManagementService.CreateUserAsync(request, ct);
+            return Ok(new { message = "User created successfully" });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Internal Server Error", details = ex.Message });
+        }
+    }
 }

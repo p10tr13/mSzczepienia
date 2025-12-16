@@ -36,13 +36,13 @@
             </MudItem>
 
             <MudItem xs="12">
-                <MudCard Elevation="2" Class="pa-4">
+                <MudCard Elevation="2" Class="pa-4 d-flex flex-column">
                     <MudCardHeader>
                         <CardHeaderContent>
                             <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["DailyStats"]</MudText>
                         </CardHeaderContent>
                     </MudCardHeader>
-                    <MudCardContent>
+                    <MudCardContent Class="flex-grow-1 d-flex flex-column justify-space-around">
                         <MudGrid Class="align-center justify-center">
                             <MudItem xs="12" sm="6" Class="d-flex justify-center">
                                 <MudChart ChartType="ChartType.Donut" Width="150px" Height="150px"
@@ -58,7 +58,7 @@
                         </MudGrid>
 
                         <div class="d-flex justify-center mt-4 gap-4 flex-wrap">
-                            <div class="d-flex align-center"><MudIcon Icon="@Icons.Material.Filled.Circle" Style="color: #5c6bc0; font-size: 0.8rem;" Class="mr-1" /> <MudText Typo="Typo.caption">@Localizer["NotReviewed"]</MudText></div>
+                            <div class="d-flex align-center"><MudIcon Icon="@Icons.Material.Filled.Circle" Style="color: #2979ff; font-size: 0.8rem;" Class="mr-1" /> <MudText Typo="Typo.caption">@Localizer["NotReviewed"]</MudText></div>
                             <div class="d-flex align-center"><MudIcon Icon="@Icons.Material.Filled.Circle" Style="color: #00c853; font-size: 0.8rem;" Class="mr-1" /> <MudText Typo="Typo.caption">@Localizer["Accepted"]</MudText></div>
                             <div class="d-flex align-center"><MudIcon Icon="@Icons.Material.Filled.Circle" Style="color: #ff1744; font-size: 0.8rem;" Class="mr-1" /> <MudText Typo="Typo.caption">@Localizer["Denied"]</MudText></div>
                         </div>
@@ -71,7 +71,7 @@
     <MudItem xs="12" md="7">
         <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center" Class="mb-4">@Localizer["BookletsTitle"]</MudText>
 
-        <div class="d-flex flex-column gap-3">
+        <div class="d-flex flex-column gap-4">
             @foreach (var item in bookletsQueue)
             {
                 <MudPaper Elevation="1" Class="pa-4 d-flex justify-space-between align-center" Height="300">

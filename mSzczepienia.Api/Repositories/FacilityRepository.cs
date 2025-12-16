@@ -21,37 +21,17 @@ public class FacilityRepository : IFacilityRepository
     {
         var q = _dbContext.medicalFacilities.AsNoTracking();
 
-        List<MedicalFacility> facilities = await q.ToListAsync(ct);
-
-        var cities = facilities.Select(x => x.city).ToList();
-
-        if (string.IsNullOrWhiteSpace(query))
+        if (!string.IsNullOrWhiteSpace(query))
         {
-            return cities
-                .Distinct()
-                .OrderBy(x => x)
-                .Take(10)
-                .ToList();
+            q = q.Where(x => x.city.StartsWith(query));
         }
 
-        return cities
-            .Where(x => x.StartsWith(query, StringComparison.OrdinalIgnoreCase))
+        return await q
+            .Select(x => x.city)
             .Distinct()
             .OrderBy(x => x)
             .Take(10)
-            .ToList();
-
-        // To do: tak powinno być
-        //if (!string.IsNullOrWhiteSpace(query))
-        //{
-        //    query = query.Where(x => x.City.StartsWith(query));
-        //}
-        //return await q
-        //    .Select(x => x.City)
-        //    .Distinct()
-        //    .OrderBy(x => x)
-        //    .Take(10)
-        //    .ToListAsync(ct);
+            .ToListAsync(ct);
     }
 
     public async Task<List<FacilityListDto>> GetFacilityNamesAsync(CancellationToken ct)
@@ -70,24 +50,39 @@ public class FacilityRepository : IFacilityRepository
     {
         var queryable = _dbContext.medicalFacilities.AsNoTracking().AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(query.City))
+        if (!string.IsNullOrWhiteSpace(query.SearchPhrase))
         {
-            queryable = queryable.Where(f => f.city.Contains(query.City));
-        }
+            var term = query.SearchPhrase.Trim().ToLower();
 
-        if (!string.IsNullOrWhiteSpace(query.Street))
-        {
-            queryable = queryable.Where(f => f.street.Contains(query.Street));
+            queryable = queryable.Where(f =>
+                f.facilityName.ToLower().Contains(term) ||
+                f.nip.ToLower().Contains(term) ||
+                f.city.ToLower().Contains(term) ||
+                f.street.ToLower().Contains(term) ||
+                f.postalCode.ToLower().Contains(term)
+            );
         }
-
-        if (!string.IsNullOrWhiteSpace(query.ZipCode))
+        else
         {
-            queryable = queryable.Where(f => f.postalCode.Contains(query.ZipCode));
-        }
+            if (!string.IsNullOrWhiteSpace(query.City))
+            {
+                queryable = queryable.Where(f => f.city.Contains(query.City));
+            }
 
-        if (query.Id.HasValue)
-        {
-            queryable = queryable.Where(f => f.facilityId == query.Id.Value);
+            if (!string.IsNullOrWhiteSpace(query.Street))
+            {
+                queryable = queryable.Where(f => f.street.Contains(query.Street));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.ZipCode))
+            {
+                queryable = queryable.Where(f => f.postalCode.Contains(query.ZipCode));
+            }
+
+            if (query.Id.HasValue)
+            {
+                queryable = queryable.Where(f => f.facilityId == query.Id.Value);
+            }
         }
 
         var totalItems = await queryable.CountAsync();

@@ -46,6 +46,7 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().Cre
 builder.Services.AddScoped<IFacilityClient, FacilityClient>();
 builder.Services.AddScoped<IStatsClient, StatsClient>();
 builder.Services.AddScoped<IVaccineClient, VaccineClient>();
+builder.Services.AddScoped<IUserManagementClient, UserManagementClient>();
 
 var host = builder.Build();
 

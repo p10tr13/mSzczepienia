@@ -5,6 +5,8 @@ public class GetFacilitiesQuery
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 10;
 
+    public string? SearchPhrase { get; set; }
+
     public string? Street { get; set; }
     public string? City { get; set; }
     public string? ZipCode { get; set; }

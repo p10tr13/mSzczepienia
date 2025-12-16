@@ -38,7 +38,8 @@ public class FacilityService : IFacilityService
             Name = f.facilityName,
             Street = f.street,
             City = f.city,
-            PostalCode = f.postalCode
+            PostalCode = f.postalCode,
+            Nip = f.nip
         }).ToList();
 
         return new PagedResult<SearchFacilityDto>

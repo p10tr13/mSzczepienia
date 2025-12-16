@@ -144,16 +144,16 @@
   <data name="SelectLanguage" xml:space="preserve">
     <value>Wybierz język</value>
   </data>
-  <data name="userLoginEmail" xml:space="preserve">
+  <data name="Email" xml:space="preserve">
     <value>Adres email</value>
   </data>
-  <data name="userLoginEmailHT" xml:space="preserve">
+  <data name="EnterEmail" xml:space="preserve">
     <value>Podaj adres email</value>
   </data>
-  <data name="userLoginPassword" xml:space="preserve">
+  <data name="Password" xml:space="preserve">
     <value>Hasło</value>
   </data>
-  <data name="userLoginPasswordHT" xml:space="preserve">
+  <data name="EnterPassword" xml:space="preserve">
     <value>Podaj hasło</value>
   </data>
   <data name="AccessDenied" xml:space="preserve">
@@ -330,6 +330,63 @@
   <data name="Verify" xml:space="preserve">
     <value>Weryfikuj</value>
   </data>
+  <data name="First Name" xml:space="preserve">
+    <value>Imie</value>
+  </data>
+  <data name="AddEmployee" xml:space="preserve">
+    <value>Dodaj pracownika</value>
+  </data>
+  <data name="BasicInfo" xml:space="preserve">
+    <value>Podstawowe informacje</value>
+  </data>
+  <data name="InitialPassword" xml:space="preserve">
+    <value>Hasło początkowe</value>
+  </data>
+  <data name="DateOfBirth" xml:space="preserve">
+    <value>Data urodzenia</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Rola</value>
+  </data>
+  <data name="Healthcare Worker" xml:space="preserve">
+    <value>Pracownik służby zdrowia</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Administrator</value>
+  </data>
+  <data name="PWZ" xml:space="preserve">
+    <value>PWZ</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Wymagane</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Stanowisko</value>
+  </data>
+  <data name="MedicalFacility" xml:space="preserve">
+    <value>Placówka medyczna</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Przetwarzanie</value>
+  </data>
+  <data name="CreateAccount" xml:space="preserve">
+    <value>Stwórz konto</value>
+  </data>
+  <data name="FillMedicalFields" xml:space="preserve">
+    <value>Uzupełnij wszystkie pola dla pracownika medycznego</value>
+  </data>
+  <data name="UserCreated" xml:space="preserve">
+    <value>Użytkownik utworzony pomyślnie</value>
+  </data>
+  <data name="ErrorCreatingUser" xml:space="preserve">
+    <value>Wystąpił błąd podczas tworzenia użytkownika</value>
+  </data>
+  <data name="MedicalInfo" xml:space="preserve">
+    <value>Dane wymagane do utworzenia konta pracownika medycznego</value>
+  </data>
   <data name="Filters" xml:space="preserve">
     <value>Filtry</value>
   </data>
@@ -356,5 +413,8 @@
   </data>
   <data name="NoVaccinesFound" xml:space="preserve">
     <value>Nie znaleziono żadnych szczepionek spełniających twoje kryteria</value>
+  </data>
+  <data name="SearchByNipNameCity" xml:space="preserve">
+    <value>Wyszukaj placówkę po nip-ie, nazwie, ulicy, kodzie pocztowym lub mieście</value>
   </data>
 </root>

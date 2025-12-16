@@ -144,16 +144,16 @@
   <data name="SelectLanguage" xml:space="preserve">
     <value>Select language</value>
   </data>
-  <data name="userLoginEmail" xml:space="preserve">
+  <data name="Email" xml:space="preserve">
     <value>Email address</value>
   </data>
-  <data name="userLoginEmailHT" xml:space="preserve">
+  <data name="EnterEmail" xml:space="preserve">
     <value>Enter email address</value>
   </data>
-  <data name="userLoginPassword" xml:space="preserve">
+  <data name="Password" xml:space="preserve">
     <value>Password</value>
   </data>
-  <data name="userLoginPasswordHT" xml:space="preserve">
+  <data name="EnterPassword" xml:space="preserve">
     <value>Enter password</value>
   </data>
   <data name="AccessDenied" xml:space="preserve">
@@ -330,6 +330,63 @@
   <data name="Verify" xml:space="preserve">
     <value>Verify</value>
   </data>
+  <data name="First Name" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="AddEmployee" xml:space="preserve">
+    <value>Add Employee</value>
+  </data>
+  <data name="BasicInfo" xml:space="preserve">
+    <value>Basic Info</value>
+  </data>
+  <data name="InitialPassword" xml:space="preserve">
+    <value>Initial Password</value>
+  </data>
+  <data name="DateOfBirth" xml:space="preserve">
+    <value>Date of birth</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="Healthcare Worker" xml:space="preserve">
+    <value>Healthcare Worker</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="PWZ" xml:space="preserve">
+    <value>PWZ</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="MedicalFacility" xml:space="preserve">
+    <value>Medical Facility</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Processing</value>
+  </data>
+  <data name="CreateAccount" xml:space="preserve">
+    <value>Create Account</value>
+  </data>
+  <data name="FillMedicalFields" xml:space="preserve">
+    <value>Fill all medical fields</value>
+  </data>
+  <data name="UserCreated" xml:space="preserve">
+    <value>User created successfully</value>
+  </data>
+  <data name="ErrorCreatingUser" xml:space="preserve">
+    <value>Error while creating user</value>
+  </data>
+  <data name="MedicalInfo" xml:space="preserve">
+    <value>Information needed for creating healthcare worker account</value>
+  </data>
   <data name="Filters" xml:space="preserve">
     <value>Filters</value>
   </data>
@@ -356,5 +413,8 @@
   </data>
   <data name="NoVaccinesFound" xml:space="preserve">
     <value>No vaccines found</value>
+  </data>
+  <data name="SearchByNipNameCity" xml:space="preserve">
+    <value>Search facility by nip, name, street, postal code or city</value>
   </data>
 </root>

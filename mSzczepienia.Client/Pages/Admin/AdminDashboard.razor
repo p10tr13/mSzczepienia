@@ -37,7 +37,7 @@
                 </MudGrid>
             </MudCardContent>
             <MudCardActions>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-2 mb-2">@Localizer["Search"]</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-2 mb-2" OnClick="@GoToFacilityList">@Localizer["Search"]</MudButton>
             </MudCardActions>
         </MudCard>
     </MudItem>
@@ -72,19 +72,19 @@
                 </MudGrid>
             </MudCardContent>
             <MudCardActions>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-2 mb-2">@Localizer["Search"]</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-2 mb-2" OnClick="@GoToVaccinesList">@Localizer["Search"]</MudButton>
             </MudCardActions>
         </MudCard>
     </MudItem>
 
     <MudItem xs="12" md="6">
-        <MudCard Elevation="2" Class="pa-4" Style="height: 100%;">
+        <MudCard Elevation="2" Class="pa-4 d-flex flex-column" Style="height: 100%;">
             <MudCardHeader>
                 <CardHeaderContent>
                     <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["Stats"]</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
-            <MudCardContent>
+            <MudCardContent Class="flex-grow-1 d-flex flex-column justify-space-around">
                 <MudGrid Class="align-center justify-center">
                     <MudItem xs="12" sm="6" Class="d-flex justify-center">
                         @if(stats == null)
@@ -162,9 +162,10 @@
 
         donutLabels = new[] { Localizer["Reviewed"].Value, Localizer["NotReviewed"].Value, Localizer["Rejected"].Value };
         donutOptions.ChartPalette = new[] { "#00e676", "#2979ff", "#ff1744" };
+        donutOptions.ShowLegend = false;
 
-        barSeries.Add(new ChartSeries() { Name = Localizer["Reviewed"], Data = new double[] { 40, 41, 40, 42, 40, 41, 40, 41, 40 } });
-        barSeries.Add(new ChartSeries() { Name = Localizer["NotReviewed"], Data = new double[] { 10, 8, 10, 8, 10, 8, 10, 8, 10 } });
+        barSeries.Add(new ChartSeries() { Name = Localizer["Reviewed"], Data = new double[] { 40, 31, 40, 42, 40, 41, 60, 41, 20 } });
+        barSeries.Add(new ChartSeries() { Name = Localizer["NotReviewed"], Data = new double[] { 15, 20, 10, 8, 5, 8, 10, 8, 10 } });
         barSeries.Add(new ChartSeries() { Name = Localizer["Rejected"], Data = new double[] { 2, 3, 2, 3, 2, 3, 2, 3, 2 } });
         barOptions.ChartPalette = new[] { "#2979ff", "#00e5ff", "#ffc400" };
     }
@@ -178,7 +179,7 @@
 
     private async Task<IEnumerable<string>> GetManufacturersAsync(string value, CancellationToken token)
     {
-        if (string.IsNullOrEmpty(value) /*|| value.Length < 2*/)
+        if (string.IsNullOrEmpty(value) || value.Length < 2)
             return new List<string>();
         return await VaccineClient.GetManufacturersAutocompleteAsync(value, token);
     }
@@ -188,6 +189,38 @@
         if (string.IsNullOrEmpty(value) || value.Length < 2)
             return new List<string>();
         return await VaccineClient.GetNamesAutocompleteAsync(value, token);
+    }
+
+    private void GoToFacilityList()
+    {
+        var query = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
+        if (!string.IsNullOrEmpty(searchFacilityModel.Street))
+            query["Street"] = searchFacilityModel.Street;
+        if (!string.IsNullOrEmpty(searchFacilityModel.City))
+            query["City"] = searchFacilityModel.City;
+        if (!string.IsNullOrEmpty(searchFacilityModel.PostalCode))
+            query["PostalCode"] = searchFacilityModel.PostalCode;
+        if (!string.IsNullOrEmpty(searchFacilityModel.Id))
+            query["Id"] = searchFacilityModel.Id;
+
+        NavigationManager.NavigateTo($"/facilities?{query}");
+    }
+
+    private void GoToVaccinesList()
+    {
+        var query = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
+        if (!string.IsNullOrEmpty(searchVaccineModel.Name))
+            query["Name"] = searchVaccineModel.Name;
+        if (!string.IsNullOrEmpty(searchVaccineModel.Manufacturer))
+            query["Manufacturer"] = searchVaccineModel.Manufacturer;
+        if (!string.IsNullOrEmpty(searchVaccineModel.TargetDisease))
+            query["Disease"] = searchVaccineModel.TargetDisease;
+        if (!string.IsNullOrEmpty(searchVaccineModel.Id))
+            query["Id"] = searchVaccineModel.Id;
+
+        NavigationManager.NavigateTo($"/vaccines?{query}");
     }
 
     public class FacilityModel

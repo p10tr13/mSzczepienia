@@ -1,8 +1,9 @@
-﻿using mSzczepienia.Client.Services.Interfaces;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using mSzczepienia.Client.Services.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Facilities;
+using mSzczepienia.Shared.DTO.Queries;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace mSzczepienia.Client.Services;
 
@@ -33,6 +34,36 @@ public class FacilityClient : IFacilityClient
             { "Id", Id?.ToString() },
             { "PageNumber", Page.ToString() },
             { "PageSize", PageSize.ToString() }
+        };
+
+        var url = QueryHelpers.AddQueryString("api/facilities/search", queryParams);
+
+        var response = await _httpClient.GetAsync(url, ct);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<PagedResult<SearchFacilityDto>>(cancellationToken: ct);
+            return result ?? new PagedResult<SearchFacilityDto>();
+        }
+        else
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
+
+    public async Task<PagedResult<SearchFacilityDto>> GetFacilitiesAsync(GetFacilitiesQuery query,CancellationToken ct)
+    {
+        var queryParams = new Dictionary<string, string?>
+        {
+            { "City", query.City },
+            { "Street", query.Street },
+            { "ZipCode", query.ZipCode },
+            { "Id", query.Id?.ToString() },
+            { "SearchPhrase", query.SearchPhrase },
+            { "PageNumber", query.PageNumber.ToString() },
+            { "PageSize", query.PageSize.ToString() }
         };
 
         var url = QueryHelpers.AddQueryString("api/facilities/search", queryParams);

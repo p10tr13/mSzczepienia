@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mszczepienia/data/models/citizen_details_model.dart';
 import 'package:mszczepienia/data/repositories/citizen_repository.dart';
-import 'package:mszczepienia/logic/auth/auth_repository.dart';
+import 'package:mszczepienia/data/repositories/auth_repository.dart';
 
 // Mocks
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
@@ -134,7 +134,7 @@ void main() {
       expect(result.surname, equals('Doe'));
       expect(result.email, equals('john@example.com'));
       expect(result.pesel, equals('12345678901'));
-      expect(result.defaultMedicalFacility, equals('Test Hospital'));
+      expect(result.facilityName, equals('Test Hospital'));
 
       verify(() => mockFirebaseAuth.signInWithEmailAndPassword(
             email: 'john@example.com',
@@ -222,7 +222,7 @@ void main() {
       expect(result.surname, equals('Doe'));
       expect(result.email, equals('john@example.com'));
       expect(result.pesel, equals('12345678901'));
-      expect(result.defaultMedicalFacility, equals('Test Hospital'));
+      expect(result.facilityName, equals('Test Hospital'));
 
       verify(() => mockFirebaseAuth.createUserWithEmailAndPassword(
             email: 'john@example.com',

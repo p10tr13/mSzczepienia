@@ -1,9 +1,9 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:mszczepienia/data/internal/app_user.dart';
+import 'package:mszczepienia/data/models/citizen_details_model.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
-import 'package:mszczepienia/logic/auth/auth_repository.dart';
+import 'package:mszczepienia/data/repositories/auth_repository.dart';
 import 'package:mszczepienia/logic/auth/auth_state.dart';
 
 // Mock AuthRepository
@@ -12,14 +12,15 @@ class MockAuthRepository extends Mock implements AuthRepository {}
 void main() {
   late MockAuthRepository mockAuthRepository;
 
-  final testUser = AppUser(
+  final testUser = CitizenDetailsModel(
     name: 'John',
     surname: 'Doe',
     email: 'john@example.com',
     dateOfBirth: DateTime(1990, 1, 15),
     creationDate: DateTime(2024, 1, 1),
     pesel: '12345678901',
-    defaultMedicalFacility: 'Test Hospital',
+    facilityName: 'Test Hospital',
+    submissionStatus: 'NotUploaded',
   );
 
   setUp(() {

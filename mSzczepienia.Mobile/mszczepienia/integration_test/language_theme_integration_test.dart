@@ -8,7 +8,6 @@ import 'package:mszczepienia/core/router/app_router.dart';
 import 'package:mszczepienia/core/theme/app_theme.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/logic/auth/auth_state.dart';
-import 'package:mszczepienia/logic/citizen/citizen_cubit.dart';
 import 'package:mszczepienia/logic/facility/facilities_cubit.dart';
 import 'package:mszczepienia/logic/language/language_cubit.dart';
 import 'package:mszczepienia/logic/language/language_repository.dart';
@@ -27,7 +26,6 @@ class MockAuthCubit extends Mock implements AuthCubit {
   Stream<AuthState> get stream => Stream.value(Unauthenticated());
 }
 
-class MockCitizenCubit extends Mock implements CitizenCubit {}
 
 class MockFacilitiesCubit extends Mock implements FacilitiesCubit {}
 
@@ -67,7 +65,6 @@ void main() {
 
   group('Settings Page Integration Tests', () {
     late MockAuthCubit mockAuthCubit;
-    late MockCitizenCubit mockCitizenCubit;
     late MockFacilitiesCubit mockFacilitiesCubit;
     late ThemeCubit themeCubit;
     late LanguageCubit languageCubit;
@@ -75,7 +72,6 @@ void main() {
 
     setUp(() {
       mockAuthCubit = MockAuthCubit();
-      mockCitizenCubit = MockCitizenCubit();
       mockFacilitiesCubit = MockFacilitiesCubit();
     });
 
@@ -90,7 +86,6 @@ void main() {
           BlocProvider<AuthCubit>.value(value: mockAuthCubit),
           BlocProvider<ThemeCubit>.value(value: themeCubit),
           BlocProvider<LanguageCubit>.value(value: languageCubit),
-          BlocProvider<CitizenCubit>.value(value: mockCitizenCubit),
           BlocProvider<FacilitiesCubit>.value(value: mockFacilitiesCubit),
         ],
         child: BlocBuilder<ThemeCubit, ThemeState>(

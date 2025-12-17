@@ -48,7 +48,7 @@ void main() {
     
     // Setup stubs
     when(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any())).thenAnswer((_) async {});
-    when(() => mockFacilitiesCubit.loadFacilities()).thenAnswer((_) async {});
+    when(() => mockFacilitiesCubit.loadFacilities('szp')).thenAnswer((_) async {});
   });
 
   Widget createWidgetUnderTest({bool loading = false}) {

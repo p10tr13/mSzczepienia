@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:mszczepienia/data/internal/app_user.dart';
+import 'package:mszczepienia/data/models/citizen_details_model.dart';
 
 abstract class AuthState extends Equatable {
   const AuthState();
@@ -13,7 +13,7 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 class Authenticated extends AuthState {
-  final AppUser user;
+  final CitizenDetailsModel user;
 
   const Authenticated(this.user);
 

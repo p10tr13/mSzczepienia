@@ -27,9 +27,9 @@ public class FacilityController : ControllerBase
     }
 
     [HttpGet("facility-names")]
-    public async Task<ActionResult<List<FacilityListDto>>> GetFacilityNamesAsync(CancellationToken ct)
+    public async Task<ActionResult<List<FacilityListDto>>> GetFacilityNamesAutocompleteAsync([FromQuery] string? query, CancellationToken ct)
     {
-        var result = await _facilityService.GetFacilityNamesAsync(ct);
+        var result = await _facilityService.GetFacilityNamesAutocompleteAsync(query, ct);
         return Ok(result);
     }
 

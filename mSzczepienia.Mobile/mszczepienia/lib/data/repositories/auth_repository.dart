@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mszczepienia/data/internal/app_user.dart';
 import 'package:mszczepienia/data/models/citizen_details_model.dart';
 import 'package:mszczepienia/data/repositories/citizen_repository.dart';
 
@@ -14,12 +13,12 @@ class AuthRepository {
   AuthRepository(this.firebaseAuth, this.storage, this.citizenRepository);
 
   // Check if user is already logged in
-  Future<AppUser?> getCurrentUser() async {
+  Future<CitizenDetailsModel?> getCurrentUser() async {
     try {
       final jsonString = await storage.read(key: _userKey);
 
       if (jsonString != null) {
-        return AppUser.fromJson(jsonString);
+        return CitizenDetailsModel.fromJsonString(jsonString);
       }
     } catch (e) {
       // If there is an error delete whatever left
@@ -29,7 +28,7 @@ class AuthRepository {
   }
 
   // LOG IN
-  Future<AppUser?> login(String email, String password) async {
+  Future<CitizenDetailsModel?> login(String email, String password) async {
     // FIREBASE LOGIN
     try {
       await firebaseAuth.signInWithEmailAndPassword(
@@ -45,19 +44,9 @@ class AuthRepository {
       final CitizenDetailsModel citizenDetails = await citizenRepository
           .getCitizenDetails();
 
-      final loggedUser = AppUser(
-        name: citizenDetails.name,
-        surname: citizenDetails.surname,
-        email: email,
-        pesel: citizenDetails.pesel,
-        dateOfBirth: citizenDetails.dateOfBirth,
-        creationDate: citizenDetails.creationDate,
-        defaultMedicalFacility: citizenDetails.facilityName,
-      );
+      await storage.write(key: _userKey, value: citizenDetails.toJsonString());
 
-      await storage.write(key: _userKey, value: loggedUser.toJson());
-
-      return loggedUser;
+      return citizenDetails;
     } catch (e) {
       await firebaseAuth.signOut();
       throw Exception('Firebase login succeed but failed to load user data');
@@ -65,7 +54,7 @@ class AuthRepository {
   }
 
   // SIGN UP
-  Future<AppUser?> signUp(
+  Future<CitizenDetailsModel?> signUp(
     String pesel,
     String name,
     String surname,
@@ -94,9 +83,13 @@ class AuthRepository {
         creationDate: DateTime.now(),
         pesel: pesel,
         facilityName: defaultMedicalFacility,
-        submissionStatus: '',
+        submissionStatus: 'NotUploaded',
       );
       await citizenRepository.createCitizenDetails(newCitizen);
+
+      // Save to secure storage
+      await storage.write(key: _userKey, value: newCitizen.toJsonString());
+      return newCitizen;
     } catch (e) {
       // If failed to register citizen, delete firebase user
       await firebaseAuth.currentUser?.delete();
@@ -104,21 +97,6 @@ class AuthRepository {
         'Firebase sign up succeed but failed to register user in database',
       );
     }
-
-    // Save new user to class AppUser
-    final signedUpUser = AppUser(
-      name: name,
-      surname: surname,
-      email: email,
-      pesel: pesel,
-      dateOfBirth: DateTime.parse(dateOfBirth),
-      creationDate: DateTime.now(),
-      defaultMedicalFacility: defaultMedicalFacility,
-    );
-    // Save to secure storage
-    await storage.write(key: _userKey, value: signedUpUser.toJson());
-
-    return signedUpUser;
   }
 
   // LOG OUT

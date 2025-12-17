@@ -135,7 +135,7 @@ namespace mSzczepienia.Api
                     .ValueGeneratedOnAdd(); // Auto-incremented ID
                 e.Property(mf => mf.facilityName)
                     .IsRequired()
-                    .HasMaxLength(100);
+                    .HasMaxLength(500);
                 e.Property(mf => mf.street)
                     .IsRequired()
                     .HasMaxLength(200);
@@ -145,7 +145,13 @@ namespace mSzczepienia.Api
                 e.Property(mf => mf.country)
                     .IsRequired()
                     .HasMaxLength(200);
+                e.Property(mf => mf.postalCode)
+                    .IsRequired()
+                    .HasMaxLength(10);
                 e.Property(mf => mf.nip)
+                    .IsRequired()
+                    .HasMaxLength(20);
+                e.Property(mf => mf.phoneNumber)
                     .IsRequired()
                     .HasMaxLength(20);
                 e.Property(mf => mf.creationDate)

@@ -6,8 +6,13 @@ class MedicalFacilityRemoteDatasource {
 
   MedicalFacilityRemoteDatasource(this.dio);
 
-  Future<List<MedicalFacilityModel>> fetchMedicalFacilities() async {
-    final response = await dio.get('/facilities/facility-names');
+  Future<List<MedicalFacilityModel>> fetchMedicalFacilities(
+    String query,
+  ) async {
+    final response = await dio.get(
+      '/facilities/facility-names',
+      queryParameters: {'query': query},
+    );
 
     final data = response.data as List;
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class CitizenDetailsModel {
   final String name;
   final String surname;
@@ -44,4 +46,9 @@ class CitizenDetailsModel {
       'submissionStatus': submissionStatus,
     };
   }
+
+  String toJsonString() => json.encode(toJson());
+
+  factory CitizenDetailsModel.fromJsonString(String source) =>
+      CitizenDetailsModel.fromJson(json.decode(source));
 }

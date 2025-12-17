@@ -7,9 +7,9 @@ class MedicalFacilityRepository {
 
   MedicalFacilityRepository(this.remoteDataSource);
 
-  Future<List<MedicalFacilityModel>> getMedicalFacilities() async {
+  Future<List<MedicalFacilityModel>> getMedicalFacilities(String query) async {
     try {
-      return await remoteDataSource.fetchMedicalFacilities();
+      return await remoteDataSource.fetchMedicalFacilities(query);
     } on DioException catch (e) {
       throw Exception(e.response?.data ?? "Connection Error");
     } catch (e) {

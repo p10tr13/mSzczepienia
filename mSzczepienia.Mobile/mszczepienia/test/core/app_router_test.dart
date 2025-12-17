@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mszczepienia/core/router/app_router.dart';
 import 'package:mszczepienia/core/router/go_router_refresh_stream.dart';
-import 'package:mszczepienia/data/internal/app_user.dart';
+import 'package:mszczepienia/data/models/citizen_details_model.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/logic/auth/auth_state.dart';
 
@@ -35,14 +35,15 @@ void main() {
   late MockAuthCubit mockAuthCubit;
   late AppRouter appRouter;
 
-  final testUser = AppUser(
+  final testUser = CitizenDetailsModel(
     name: 'Test',
     surname: 'User',
     email: 'test@test.com',
     dateOfBirth: DateTime(1990, 1, 1),
     creationDate: DateTime.now(),
     pesel: '12345678901',
-    defaultMedicalFacility: 'Test Hospital',
+    facilityName: 'Test Hospital',
+    submissionStatus: 'NotUploaded'
   );
 
   setUp(() {

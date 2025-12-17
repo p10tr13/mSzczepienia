@@ -21,9 +21,9 @@ public class FacilityService : IFacilityService
         return await _facilityRepository.GetCitiesAutocompleteAsync(query, ct);
     }
 
-    public async Task<List<FacilityListDto>> GetFacilityNamesAsync(CancellationToken ct)
+    public async Task<List<FacilityListDto>> GetFacilityNamesAutocompleteAsync(string? query, CancellationToken ct)
     {
-        var facilityNames = await _facilityRepository.GetFacilityNamesAsync(ct);
+        var facilityNames = await _facilityRepository.GetFacilityNamesAutocompleteAsync(query, ct);
 
         return facilityNames;
     }

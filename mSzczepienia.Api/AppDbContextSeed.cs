@@ -23,9 +23,24 @@ namespace mSzczepienia.Api
             // Medical Facilities
             if (!_dbContext.medicalFacilities.Any())
             {
-                var facilities = GenerateMedicalFacilities(10);
-                _dbContext.medicalFacilities.AddRange(facilities);
-                _dbContext.SaveChanges();
+                using (var reader = new StreamReader("Data/Csv/seeds_facilities.csv"))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    var facilitiesRecords = csv.GetRecords<FacilitiesCsvModel>().ToList();
+                    var entities = facilitiesRecords.Select(x => new MedicalFacility {
+                        facilityName = x.facilityName,
+                        street = x.street,
+                        postalCode = x.postalCode,
+                        city = x.city,
+                        country = x.country,
+                        nip = x.nip,
+                        phoneNumber = x.phoneNumber,
+                        creationDate = x.creationDate
+                    });
+
+                    _dbContext.medicalFacilities.AddRange(entities);
+                    _dbContext.SaveChanges();
+                }
             }
 
             // Accounts, Personnel and Citizens
@@ -173,23 +188,7 @@ namespace mSzczepienia.Api
         }
 
 
-
-        // 1. GENERATING MEDICAL FACILITIES
-        private IEnumerable<MedicalFacility> GenerateMedicalFacilities(int count)
-        {
-            var faker = new Faker<MedicalFacility>("pl")
-                .RuleFor(m => m.facilityName, f => "NFZ " + f.Company.CompanyName())
-                .RuleFor(m => m.street, f => f.Address.StreetAddress())
-                .RuleFor(m => m.city, f => f.Address.City())
-                .RuleFor(m => m.country, f => "Poland")
-                .RuleFor(m => m.nip, f => f.Random.ReplaceNumbers("##########"))
-                .RuleFor(m => m.creationDate, f => f.Date.Past(5))
-                .RuleFor(m => m.postalCode, f => f.Address.ZipCode("##-###"));
-
-            return faker.Generate(count);
-        }
-
-        // 2. GENERATING ACCOUNTS (INDEPENDENTLY FOR EACH ROLE)
+        // 1. GENERATING ACCOUNTS (INDEPENDENTLY FOR EACH ROLE)
         private IEnumerable<Account> GenerateAccounts(int count, Role roleName)
         {
             var faker = new Faker<Account>("pl")
@@ -204,7 +203,7 @@ namespace mSzczepienia.Api
             return faker.Generate(count);
         }
 
-        // 3. GENERATING PERSONNEL 
+        // 2. GENERATING PERSONNEL 
         private IEnumerable<Personnel> GeneratePersonnels(
             IEnumerable<Account> accounts,
             IEnumerable<MedicalFacility> facilities)
@@ -229,7 +228,7 @@ namespace mSzczepienia.Api
             return personnels;
         }
 
-        // 4. GENERATING CITIZENS
+        // 3. GENERATING CITIZENS
         private IEnumerable<Citizen> GenerateCitizens(
             IEnumerable<Account> accounts,
             IEnumerable<MedicalFacility> facilities)
@@ -255,7 +254,7 @@ namespace mSzczepienia.Api
             return citizens;
         }
 
-        // 5. GENERATING OCR SUBMISSIONS
+        // 4. GENERATING OCR SUBMISSIONS
         private IEnumerable<OcrSubmission> GenerateOcrSubmissions(
             IEnumerable<Citizen> citizens,
             IEnumerable<Personnel> verifiers)
@@ -292,7 +291,7 @@ namespace mSzczepienia.Api
             });
         }
 
-        // 6. GENERATING VACCINATION ENTRIES
+        // 5. GENERATING VACCINATION ENTRIES
         private IEnumerable<VaccinationEntry> GenerateVaccinationEntries(
             IEnumerable<OcrSubmission> ocrSubmissions, 
             IEnumerable<VaccineDefinition> vaccineDefinitions)
@@ -337,7 +336,7 @@ namespace mSzczepienia.Api
             return vaccinationEntries;
         }
 
-        // 7. GENERATING VACCINATION RECORDS
+        // 6. GENERATING VACCINATION RECORDS
         private IEnumerable<VaccinationRecord> GenerateVaccinationRecords(IEnumerable<VaccinationEntry> vaccinationEntries)
         {
             var vaccinationEntriesList = vaccinationEntries.ToList();

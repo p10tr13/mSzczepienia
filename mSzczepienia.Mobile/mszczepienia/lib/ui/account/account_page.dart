@@ -181,7 +181,7 @@ class _AccountPageState extends State<AccountPage> {
                               const SizedBox(height: 5),
                               Text(
                                 state is Authenticated
-                                    ? state.user.defaultMedicalFacility
+                                    ? state.user.facilityName
                                     : '',
                                 style: TextStyle(fontSize: 14),
                               ),

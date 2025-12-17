@@ -18,6 +18,8 @@ void main() {
     MedicalFacilityModel(facilityId: 2, facilityName: 'Clinic B'),
   ];
 
+  final query = 'szpital';
+
   setUp(() {
     mockDatasource = MockMedicalFacilityRemoteDatasource();
     repository = MedicalFacilityRepository(mockDatasource);
@@ -26,31 +28,31 @@ void main() {
   group('MedicalFacilityRepository', () {
     group('getMedicalFacilities', () {
       test('returns list of facilities on success', () async {
-        when(() => mockDatasource.fetchMedicalFacilities())
+        when(() => mockDatasource.fetchMedicalFacilities(query))
             .thenAnswer((_) async => testFacilities);
 
-        final result = await repository.getMedicalFacilities();
+        final result = await repository.getMedicalFacilities(query);
 
         expect(result.length, 2);
         expect(result[0].facilityId, 1);
         expect(result[0].facilityName, 'Hospital A');
         expect(result[1].facilityId, 2);
         expect(result[1].facilityName, 'Clinic B');
-        verify(() => mockDatasource.fetchMedicalFacilities()).called(1);
+        verify(() => mockDatasource.fetchMedicalFacilities(query)).called(1);
       });
 
       test('returns empty list when no facilities', () async {
-        when(() => mockDatasource.fetchMedicalFacilities())
+        when(() => mockDatasource.fetchMedicalFacilities(query))
             .thenAnswer((_) async => []);
 
-        final result = await repository.getMedicalFacilities();
+        final result = await repository.getMedicalFacilities(query);
 
         expect(result, isEmpty);
       });
 
       test('throws exception with message on DioException with response data',
           () async {
-        when(() => mockDatasource.fetchMedicalFacilities()).thenThrow(
+        when(() => mockDatasource.fetchMedicalFacilities(query)).thenThrow(
           DioException(
             requestOptions: RequestOptions(path: '/facilities/facility-names'),
             response: Response(
@@ -62,7 +64,7 @@ void main() {
         );
 
         expect(
-          () => repository.getMedicalFacilities(),
+          () => repository.getMedicalFacilities(query),
           throwsA(
             isA<Exception>().having(
               (e) => e.toString(),
@@ -75,14 +77,14 @@ void main() {
 
       test('throws exception with Connection Error on DioException without response',
           () async {
-        when(() => mockDatasource.fetchMedicalFacilities()).thenThrow(
+        when(() => mockDatasource.fetchMedicalFacilities(query)).thenThrow(
           DioException(
             requestOptions: RequestOptions(path: '/facilities/facility-names'),
           ),
         );
 
         expect(
-          () => repository.getMedicalFacilities(),
+          () => repository.getMedicalFacilities(query),
           throwsA(
             isA<Exception>().having(
               (e) => e.toString(),
@@ -95,11 +97,11 @@ void main() {
 
       test('throws exception with Unknown Error on generic exception',
           () async {
-        when(() => mockDatasource.fetchMedicalFacilities())
+        when(() => mockDatasource.fetchMedicalFacilities(query))
             .thenThrow(Exception('Some random error'));
 
         expect(
-          () => repository.getMedicalFacilities(),
+          () => repository.getMedicalFacilities(query),
           throwsA(
             isA<Exception>().having(
               (e) => e.toString(),
@@ -112,11 +114,11 @@ void main() {
 
       test('throws exception with Unknown Error on non-Exception error',
           () async {
-        when(() => mockDatasource.fetchMedicalFacilities())
+        when(() => mockDatasource.fetchMedicalFacilities(query))
             .thenThrow('String error');
 
         expect(
-          () => repository.getMedicalFacilities(),
+          () => repository.getMedicalFacilities(query),
           throwsA(
             isA<Exception>().having(
               (e) => e.toString(),

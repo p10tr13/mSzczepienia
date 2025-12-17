@@ -19,13 +19,15 @@ void main() {
     MedicalFacilityModel(facilityId: 3, facilityName: 'Medical Center C'),
   ];
 
+  final query = 'szpital';
+
   setUp(() {
     mockRepository = MockMedicalFacilityRepository();
   });
 
   group('FacilitiesCubit', () {
     test('initial state is FacilitiesInitial', () {
-      when(() => mockRepository.getMedicalFacilities())
+      when(() => mockRepository.getMedicalFacilities(query))
           .thenAnswer((_) async => []);
 
       final cubit = FacilitiesCubit(mockRepository);
@@ -36,11 +38,11 @@ void main() {
     blocTest<FacilitiesCubit, FacilitiesState>(
       'emits [FacilitiesLoading, FacilitiesLoaded] when loadFacilities succeeds',
       setUp: () {
-        when(() => mockRepository.getMedicalFacilities())
+        when(() => mockRepository.getMedicalFacilities(query))
             .thenAnswer((_) async => testFacilities);
       },
       build: () => FacilitiesCubit(mockRepository),
-      act: (cubit) => cubit.loadFacilities(),
+      act: (cubit) => cubit.loadFacilities(query),
       expect: () => [
         isA<FacilitiesLoading>(),
         isA<FacilitiesLoaded>().having(
@@ -50,18 +52,18 @@ void main() {
         ),
       ],
       verify: (_) {
-        verify(() => mockRepository.getMedicalFacilities()).called(1);
+        verify(() => mockRepository.getMedicalFacilities(query)).called(1);
       },
     );
 
     blocTest<FacilitiesCubit, FacilitiesState>(
       'emits [FacilitiesLoading, FacilitiesLoaded] with empty list when no facilities',
       setUp: () {
-        when(() => mockRepository.getMedicalFacilities())
+        when(() => mockRepository.getMedicalFacilities(query))
             .thenAnswer((_) async => []);
       },
       build: () => FacilitiesCubit(mockRepository),
-      act: (cubit) => cubit.loadFacilities(),
+      act: (cubit) => cubit.loadFacilities(query),
       expect: () => [
         isA<FacilitiesLoading>(),
         isA<FacilitiesLoaded>().having(
@@ -75,11 +77,11 @@ void main() {
     blocTest<FacilitiesCubit, FacilitiesState>(
       'emits [FacilitiesLoading, FacilitiesError] when loadFacilities fails',
       setUp: () {
-        when(() => mockRepository.getMedicalFacilities())
+        when(() => mockRepository.getMedicalFacilities(query))
             .thenThrow(Exception('Network error'));
       },
       build: () => FacilitiesCubit(mockRepository),
-      act: (cubit) => cubit.loadFacilities(),
+      act: (cubit) => cubit.loadFacilities(query),
       expect: () => [
         isA<FacilitiesLoading>(),
         isA<FacilitiesError>().having(
@@ -93,11 +95,11 @@ void main() {
     blocTest<FacilitiesCubit, FacilitiesState>(
       'FacilitiesLoaded contains correct facility names',
       setUp: () {
-        when(() => mockRepository.getMedicalFacilities())
+        when(() => mockRepository.getMedicalFacilities(query))
             .thenAnswer((_) async => testFacilities);
       },
       build: () => FacilitiesCubit(mockRepository),
-      act: (cubit) => cubit.loadFacilities(),
+      act: (cubit) => cubit.loadFacilities(query),
       expect: () => [
         isA<FacilitiesLoading>(),
         isA<FacilitiesLoaded>().having(
@@ -112,7 +114,7 @@ void main() {
       'can reload facilities after error',
       setUp: () {
         var callCount = 0;
-        when(() => mockRepository.getMedicalFacilities()).thenAnswer((_) async {
+        when(() => mockRepository.getMedicalFacilities(query)).thenAnswer((_) async {
           callCount++;
           if (callCount == 1) {
             throw Exception('First call failed');
@@ -122,8 +124,8 @@ void main() {
       },
       build: () => FacilitiesCubit(mockRepository),
       act: (cubit) async {
-        await cubit.loadFacilities(); // First call - fails
-        await cubit.loadFacilities(); // Second call - succeeds
+        await cubit.loadFacilities(query); // First call - fails
+        await cubit.loadFacilities(query); // Second call - succeeds
       },
       expect: () => [
         isA<FacilitiesLoading>(),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mszczepienia/core/l10n/app_localizations.dart';
@@ -16,22 +18,31 @@ class MedicalFacilityField extends StatefulWidget {
 }
 
 class _MedicalFacilityFieldState extends State<MedicalFacilityField> {
-  late List<MedicalFacilityModel> facilities = [];
-  bool facilitiesLoaded = false;
+  List<MedicalFacilityModel> facilities = [];
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      if (query.isNotEmpty) {
+        context.read<FacilitiesCubit>().loadFacilities(query);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FacilitiesCubit, FacilitiesState>(
       builder: (context, facilitiesState) {
-        // Load facilities on first build if not loaded yet
-        if (facilitiesState is FacilitiesInitial) {
-          context.read<FacilitiesCubit>().loadFacilities();
-        }
-
         // Update facilities when loaded
         if (facilitiesState is FacilitiesLoaded) {
           facilities = facilitiesState.facilities;
-          facilitiesLoaded = true;
         }
 
         // Show error state if failed
@@ -39,28 +50,25 @@ class _MedicalFacilityFieldState extends State<MedicalFacilityField> {
           return _buildErrorField(facilitiesState.message);
         }
 
-        // Always show autocomplete field, even while loading
-        return _buildAutocompleteField(facilities);
+        // Always show autocomplete field
+        return _buildAutocompleteField(
+          facilities,
+          facilitiesState is FacilitiesLoading,
+        );
       },
     );
   }
 
-  Widget _buildAutocompleteField(List<MedicalFacilityModel> facilities) {
+  Widget _buildAutocompleteField(
+    List<MedicalFacilityModel> facilities,
+    bool isLoading,
+  ) {
     final l10n = AppLocalizations.of(context)!;
 
     return Autocomplete<String>(
       optionsBuilder: (TextEditingValue textEditingValue) {
-        if (textEditingValue.text.isEmpty) {
-          return facilities.map((f) => f.facilityName).toList();
-        }
-        return facilities
-            .where(
-              (facility) => facility.facilityName.toLowerCase().contains(
-                textEditingValue.text.toLowerCase(),
-              ),
-            )
-            .map((facility) => facility.facilityName)
-            .toList();
+        // Return current facilities - filtering is done server-side
+        return facilities.map((f) => f.facilityName).toList();
       },
       onSelected: (String selection) {
         widget.controller.text = selection;
@@ -80,6 +88,7 @@ class _MedicalFacilityFieldState extends State<MedicalFacilityField> {
               focusNode: focusNode,
               onChanged: (value) {
                 widget.controller.text = value;
+                _onSearchChanged(value);
               },
               style: TextStyle(color: AppColors.darkGrey),
               decoration: InputDecoration(

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mszczepienia/core/l10n/app_localizations.dart';
-import 'package:mszczepienia/data/internal/app_user.dart';
+import 'package:mszczepienia/data/models/citizen_details_model.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/logic/auth/auth_state.dart';
 import 'package:mszczepienia/ui/home/home_page.dart';
@@ -19,14 +19,15 @@ class MockAuthCubitUnauthenticated extends Mock implements AuthCubit {
 
 // Mock AuthCubit for authenticated state
 class MockAuthCubitAuthenticated extends Mock implements AuthCubit {
-  final AppUser _user = AppUser(
+  final CitizenDetailsModel _user = CitizenDetailsModel(
     name: 'John',
     surname: 'Doe',
     email: 'john.doe@example.com',
     dateOfBirth: DateTime(1990, 1, 15),
     creationDate: DateTime(2024, 1, 1),
     pesel: '90011512345',
-    defaultMedicalFacility: 'Test Hospital',
+    facilityName: 'Test Hospital',
+    submissionStatus: 'NotUploaded',
   );
 
   @override

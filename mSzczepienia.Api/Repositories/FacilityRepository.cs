@@ -34,15 +34,24 @@ public class FacilityRepository : IFacilityRepository
             .ToListAsync(ct);
     }
 
-    public async Task<List<FacilityListDto>> GetFacilityNamesAsync(CancellationToken ct)
+    public async Task<List<FacilityListDto>> GetFacilityNamesAutocompleteAsync(string? query, CancellationToken ct)
     {
-        return await _dbContext.medicalFacilities
+        var q = _dbContext.medicalFacilities.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            q = q.Where(x => x.facilityName.StartsWith(query));
+        }
+
+        return await q
             .OrderBy(f => f.facilityName)
             .Select(f => new FacilityListDto
             {
                 facilityId = f.facilityId,
                 facilityName = f.facilityName,
             })
+            .Distinct()
+            .Take(10)
             .ToListAsync(ct);
     }
 

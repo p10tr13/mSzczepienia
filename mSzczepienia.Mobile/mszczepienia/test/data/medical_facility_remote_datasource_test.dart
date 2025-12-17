@@ -11,6 +11,8 @@ void main() {
   late MockDio mockDio;
   late MedicalFacilityRemoteDatasource datasource;
 
+  final query = 'szp';
+
   setUp(() {
     mockDio = MockDio();
     datasource = MedicalFacilityRemoteDatasource(mockDio);
@@ -34,7 +36,7 @@ void main() {
           ),
         );
 
-        final result = await datasource.fetchMedicalFacilities();
+        final result = await datasource.fetchMedicalFacilities(query);
 
         expect(result, isA<List<MedicalFacilityModel>>());
         expect(result.length, 3);
@@ -55,7 +57,7 @@ void main() {
           ),
         );
 
-        final result = await datasource.fetchMedicalFacilities();
+        final result = await datasource.fetchMedicalFacilities(query);
 
         expect(result, isEmpty);
       });
@@ -75,7 +77,7 @@ void main() {
           ),
         );
 
-        final result = await datasource.fetchMedicalFacilities();
+        final result = await datasource.fetchMedicalFacilities(query);
 
         expect(result[0].facilityName, 'Szpital Św. Jana');
         expect(result[1].facilityName, 'Klinika "Zdrowie"');
@@ -90,7 +92,7 @@ void main() {
         );
 
         expect(
-          () => datasource.fetchMedicalFacilities(),
+          () => datasource.fetchMedicalFacilities(query),
           throwsA(isA<DioException>()),
         );
       });
@@ -110,7 +112,7 @@ void main() {
         );
 
         expect(
-          () => datasource.fetchMedicalFacilities(),
+          () => datasource.fetchMedicalFacilities(query),
           throwsA(isA<DioException>()),
         );
       });
@@ -130,7 +132,7 @@ void main() {
         );
 
         expect(
-          () => datasource.fetchMedicalFacilities(),
+          () => datasource.fetchMedicalFacilities(query),
           throwsA(isA<DioException>()),
         );
       });
@@ -144,7 +146,7 @@ void main() {
           ),
         );
 
-        await datasource.fetchMedicalFacilities();
+        await datasource.fetchMedicalFacilities(query);
 
         verify(() => mockDio.get('/facilities/facility-names')).called(1);
       });

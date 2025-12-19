@@ -417,4 +417,25 @@
   <data name="SearchByNipNameCity" xml:space="preserve">
     <value>Search facility by nip, name, street, postal code or city</value>
   </data>
+  <data name="ErrorVaccineNotFound" xml:space="preserve">
+    <value>No vaccine was found with such ID</value>
+  </data>
+  <data name="ErrorLoadingVaccine" xml:space="preserve">
+    <value>Error occured while loading vaccine data</value>
+  </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Something went wrong</value>
+  </data>
+  <data name="ProtectsAgainst" xml:space="preserve">
+    <value>Protects against</value>
+  </data>
+  <data name="NoDiseasesListed" xml:space="preserve">
+    <value>No diseases were listed</value>
+  </data>
+  <data name="BackToList" xml:space="preserve">
+    <value>Back to list</value>
+  </data>
+  <data name="EditDetails" xml:space="preserve">
+    <value>Edit details</value>
+  </data>
 </root>

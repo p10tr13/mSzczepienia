@@ -417,4 +417,25 @@
   <data name="SearchByNipNameCity" xml:space="preserve">
     <value>Wyszukaj placówkę po nip-ie, nazwie, ulicy, kodzie pocztowym lub mieście</value>
   </data>
+  <data name="ErrorVaccineNotFound" xml:space="preserve">
+    <value>Nie znaleziono szczepionki o takim ID</value>
+  </data>
+  <data name="ErrorLoadingVaccine" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania danych szczepionki</value>
+  </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Coś poszło nie tak</value>
+  </data>
+  <data name="ProtectsAgainst" xml:space="preserve">
+    <value>Chroni przed</value>
+  </data>
+  <data name="NoDiseasesListed" xml:space="preserve">
+    <value>Nie wymieniono chorób</value>
+  </data>
+  <data name="BackToList" xml:space="preserve">
+    <value>Powróć do listy</value>
+  </data>
+  <data name="EditDetails" xml:space="preserve">
+    <value>Edytuj szczegóły</value>
+  </data>
 </root>

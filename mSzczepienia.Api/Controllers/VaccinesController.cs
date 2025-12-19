@@ -51,4 +51,16 @@ public class VaccinesController : ControllerBase
         var result = await _vaccineService.GetVaccinesAsync(query, ct);
         return Ok(result);
     }
+
+    [HttpGet("{id}")]
+    [Authorize(Roles = "admin")]
+    public async Task<ActionResult<VaccineDto?>> GetVaccineByIdAsync([FromRoute] int id, CancellationToken ct)
+    {
+        var result = await _vaccineService.GetVaccineByIdAsync(id, ct);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Ok(result);
+    }
 }

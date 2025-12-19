@@ -98,4 +98,22 @@ public class VaccineRepository : IVaccineRepository
             PageSize = query.PageSize
         };
     }
+
+    public async Task<VaccineDto?> GetVaccineByIdAsync(int id, CancellationToken ct)
+    {
+        var vaccine = await _dbContext.vaccineDefinitions
+            .AsNoTracking()
+            .Include(v => v.vaccineDiseases).ThenInclude(vd => vd.disease)
+            .Where(v => v.vaccineId == id)
+            .Select(v => new VaccineDto
+            {
+                VaccineId = v.vaccineId,
+                VaccineName = v.vaccineName,
+                Manufacturer = v.manufacturer,
+                DiseasesEn = v.vaccineDiseases.Select(vd => vd.disease.diseaseNameEn).ToList(),
+                DiseasesPl = v.vaccineDiseases.Select(vd => vd.disease.diseaseNamePl).ToList()
+            })
+            .FirstOrDefaultAsync(ct);
+        return vaccine;
+    }
 }

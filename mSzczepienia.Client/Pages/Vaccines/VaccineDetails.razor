@@ -1,0 +1,174 @@
+﻿@page "/vaccines/{id:int}"
+@attribute [Authorize(Roles = "admin")]
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<SharedResources> Localizer
+@inject IVaccineClient VaccineClient
+@inject ISnackbar Snackbar
+@using mSzczepienia.Client.Shared.Components
+@using mSzczepienia.Shared.DTO
+@using mSzczepienia.Shared.DTO.Vaccines
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+
+    @if (isLoading)
+    {
+        <MudCard Elevation="3" Class="mt-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudSkeleton Width="40%" Height="40px;" Class="mb-2"/>
+                    <MudSkeleton Width="30%" Height="20px;" />
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudSkeleton Width="100%" Height="100px;" />
+            </MudCardContent>
+            <MudCardActions>
+                 <MudSkeleton Width="100px" Height="36px" Class="ml-auto"/>
+            </MudCardActions>
+        </MudCard>
+    }
+    else if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <MudPaper Class="pa-4 mt-4" Elevation="3" Style="height: 400px;">
+            <ErrorState Message="@errorMessage" OnRetry="OnRetryClick" />
+        </MudPaper>
+    }
+    else if (vaccine != null)
+    {
+        <MudCard Elevation="3" Class="mt-4 animate-fade-in">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudAvatar Color="Color.Primary" Variant="Variant.Filled">
+                        <MudIcon Icon="@Icons.Material.Filled.Vaccines" />
+                    </MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5">@vaccine.VaccineName</MudText>
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">ID: @vaccine.VaccineId</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudTooltip Text="@Localizer["EditDetails"]">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" OnClick="@(() => EditVaccine(vaccine.VaccineId))" />
+                    </MudTooltip>
+                </CardHeaderActions>
+            </MudCardHeader>
+            
+            <MudDivider />
+
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.overline">@Localizer["Manufacturer"]</MudText>
+                        <div class="d-flex align-center">
+                            <MudIcon Icon="@Icons.Material.Filled.Business" Size="Size.Small" Class="mr-2" Color="Color.Primary"/>
+                            <MudText Typo="Typo.h6">@vaccine.Manufacturer</MudText>
+                        </div>
+                    </MudItem>
+
+                    <MudItem xs="12" Class="mt-2">
+                        <MudText Typo="Typo.overline" Class="mb-1 d-block">@Localizer["ProtectsAgainst"]</MudText>
+                        <MudChipSet T="string" ReadOnly="true">
+                            @foreach (var disease in GetLocalizedDiseases(vaccine))
+                            {
+                                <MudChip Icon="@Icons.Material.Filled.Shield" Color="Color.Success" Variant="Variant.Text">
+                                    @disease
+                                </MudChip>
+                            }
+                        </MudChipSet>
+                        @if (!GetLocalizedDiseases(vaccine).Any())
+                        {
+                            <MudText Typo="Typo.caption">@Localizer["NoDiseasesListed"]</MudText>
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+
+            <MudCardActions Class="pa-4">
+                <MudButton OnClick="@(() => NavigationManager.NavigateTo("/vaccines"))" Color="Color.Primary" Variant="Variant.Filled" Class="mr-2">
+                    @Localizer["BackToList"]
+                </MudButton>
+
+                <MudSpacer />
+
+                <MudButton OnClick="@(() => EditVaccine(vaccine.VaccineId))" Variant="Variant.Outlined" Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Edit">
+                    @Localizer["EditDetails"]
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    }
+</MudContainer>
+
+<style>
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    private VaccineDto? vaccine;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadData();
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            vaccine = await VaccineClient.GetVaccineByIdAsync(id, new CancellationToken());
+        }
+        catch (HttpRequestException httpEx)
+        {
+            if (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                errorMessage = Localizer["ErrorVaccineNotFound"];
+            }
+            else
+            {
+                errorMessage = Localizer["ErrorLoadingVaccine"];
+                Snackbar.Add($"{errorMessage}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = Localizer["ErrorLoadingVaccine"];
+            Snackbar.Add($"{errorMessage}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task OnRetryClick()
+    {
+        await LoadData();
+    }
+
+    private IEnumerable<string> GetLocalizedDiseases(VaccineDto vaccine)
+    {
+        var culture = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+        return culture == "pl" ? vaccine.DiseasesPl : vaccine.DiseasesEn;
+    }
+
+    private void EditVaccine(int id)
+    {
+        NavigationManager.NavigateTo($"/vaccines/{id}/edit");
+    }
+}

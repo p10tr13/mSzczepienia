@@ -29,4 +29,9 @@ public class VaccineService : IVaccineService
     {
         return await _vaccineRepository.GetVaccinesAsync(query, ct);
     }
+
+    public async Task<VaccineDto?> GetVaccineByIdAsync(int id, CancellationToken ct)
+    {
+        return await _vaccineRepository.GetVaccineByIdAsync(id, ct);
+    }
 }

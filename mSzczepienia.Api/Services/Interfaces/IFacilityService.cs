@@ -9,4 +9,5 @@ public interface IFacilityService
     Task<List<string>> GetCitiesAutocompleteAsync(string? query, CancellationToken ct);
     Task<List<FacilityListDto>> GetFacilityNamesAutocompleteAsync(string? query, CancellationToken ct);
     Task<PagedResult<SearchFacilityDto>> SearchFacilitiesAsync(GetFacilitiesQuery query, CancellationToken ct);
+    Task<FacilityDto?> GetFacilityByIdAsync(int id, CancellationToken ct);
 }

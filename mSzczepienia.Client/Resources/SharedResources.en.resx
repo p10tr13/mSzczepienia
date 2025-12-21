@@ -438,4 +438,31 @@
   <data name="EditDetails" xml:space="preserve">
     <value>Edit details</value>
   </data>
+  <data name="FacilityDetails" xml:space="preserve">
+    <value>Facility Details</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Phone Number</value>
+  </data>
+  <data name="CreationDate" xml:space="preserve">
+    <value>Creation Date</value>
+  </data>
+  <data name="FacilityNotFound" xml:space="preserve">
+    <value>Facility was not found</value>
+  </data>
+  <data name="ErrorLoadingFacility" xml:space="preserve">
+    <value>Error occured while loading facility</value>
+  </data>
+  <data name="StatsNotFound" xml:space="preserve">
+    <value>Stats were not found</value>
+  </data>
+  <data name="ErrorLoadingStats" xml:space="preserve">
+    <value>Error occured while loading stats</value>
+  </data>
+  <data name="PersonnelNotFound" xml:space="preserve">
+    <value>Personnel was not found</value>
+  </data>
+  <data name="ErrorLoadingPersonnel" xml:space="preserve">
+    <value>Error occured while loading personnel</value>
+  </data>
 </root>

@@ -17,4 +17,9 @@ public class StatsService : IStatsService
     {
         return await _statsRepository.GetAdminStatsAsync(ct);
     }
+
+    public async Task<DashboardStatsDto> GetFacilityStatsAsync(int facilityId, CancellationToken ct)
+    {
+        return await _statsRepository.GetFacilityStatsAsync(facilityId, ct);
+    }
 }

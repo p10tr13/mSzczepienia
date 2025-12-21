@@ -11,6 +11,8 @@ public class FacilityClient : IFacilityClient
 {
     private readonly HttpClient _httpClient;
 
+    private string facilityControlerUrl = "api/facilities";
+
     public FacilityClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
@@ -18,7 +20,7 @@ public class FacilityClient : IFacilityClient
 
     public async Task<List<string>> GetCitiesAutocompleteAsync(string query, CancellationToken ct)
     {
-        var response = await _httpClient.GetAsync($"api/facilities/cities-autocomplete?query={query}", ct);
+        var response = await _httpClient.GetAsync($"{facilityControlerUrl}/cities-autocomplete?query={query}", ct);
         var facilityNames = await response.Content.ReadFromJsonAsync<List<string>>(cancellationToken: ct);
         return facilityNames ?? new List<string>();
     }
@@ -36,7 +38,7 @@ public class FacilityClient : IFacilityClient
             { "PageSize", PageSize.ToString() }
         };
 
-        var url = QueryHelpers.AddQueryString("api/facilities/search", queryParams);
+        var url = QueryHelpers.AddQueryString($"{facilityControlerUrl}/search", queryParams);
 
         var response = await _httpClient.GetAsync(url, ct);
 
@@ -53,7 +55,7 @@ public class FacilityClient : IFacilityClient
         }
     }
 
-    public async Task<PagedResult<SearchFacilityDto>> GetFacilitiesAsync(GetFacilitiesQuery query,CancellationToken ct)
+    public async Task<PagedResult<SearchFacilityDto>> GetFacilitiesAsync(GetFacilitiesQuery query, CancellationToken ct)
     {
         var queryParams = new Dictionary<string, string?>
         {
@@ -66,7 +68,7 @@ public class FacilityClient : IFacilityClient
             { "PageSize", query.PageSize.ToString() }
         };
 
-        var url = QueryHelpers.AddQueryString("api/facilities/search", queryParams);
+        var url = QueryHelpers.AddQueryString($"{facilityControlerUrl}/search", queryParams);
 
         var response = await _httpClient.GetAsync(url, ct);
 
@@ -74,6 +76,25 @@ public class FacilityClient : IFacilityClient
         {
             var result = await response.Content.ReadFromJsonAsync<PagedResult<SearchFacilityDto>>(cancellationToken: ct);
             return result ?? new PagedResult<SearchFacilityDto>();
+        }
+        else
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
+
+    public async Task<FacilityDto> GetFacilityByIdAsync(int id, CancellationToken ct)
+    {
+        var url = $"{facilityControlerUrl}/{id}";
+
+        var response = await _httpClient.GetAsync(url, ct);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<FacilityDto>(cancellationToken: ct);
+            return result ?? new FacilityDto();
         }
         else
         {

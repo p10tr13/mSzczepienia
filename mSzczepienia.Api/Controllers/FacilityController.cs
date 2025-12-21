@@ -50,4 +50,16 @@ public class FacilityController : ControllerBase
         var result = await _facilityService.SearchFacilitiesAsync(query, ct);
         return Ok(result);
     }
+
+    [HttpGet("{id}")]
+    [Authorize(Roles = "admin")]
+    public async Task<ActionResult<FacilityDto?>> GetFacilityByIdAsync([FromRoute] int id, CancellationToken ct)
+    {
+        var result = await _facilityService.GetFacilityByIdAsync(id, ct);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Ok(result);
+    }
 }

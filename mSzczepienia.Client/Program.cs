@@ -47,6 +47,7 @@ builder.Services.AddScoped<IFacilityClient, FacilityClient>();
 builder.Services.AddScoped<IStatsClient, StatsClient>();
 builder.Services.AddScoped<IVaccineClient, VaccineClient>();
 builder.Services.AddScoped<IUserManagementClient, UserManagementClient>();
+builder.Services.AddScoped<IPersonnelClient, PersonnelClient>();
 
 var host = builder.Build();
 

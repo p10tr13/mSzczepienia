@@ -9,4 +9,5 @@ public interface IFacilityClient
     Task<List<string>> GetCitiesAutocompleteAsync(string query, CancellationToken ct);
     Task<PagedResult<SearchFacilityDto>> GetFacilitiesAsync(string? City, string? Street, string? PostalCode, int? Id, int Page, int PageSize, CancellationToken ct);
     Task<PagedResult<SearchFacilityDto>> GetFacilitiesAsync(GetFacilitiesQuery query, CancellationToken ct);
+    Task<FacilityDto> GetFacilityByIdAsync(int id, CancellationToken ct);
 }

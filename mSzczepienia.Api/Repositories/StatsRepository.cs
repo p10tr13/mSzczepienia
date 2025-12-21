@@ -27,4 +27,21 @@ public class StatsRepository : IStatsRepository
             })
             .FirstOrDefaultAsync(ct) ?? new DashboardStatsDto();
     }
+
+    public async Task<DashboardStatsDto> GetFacilityStatsAsync(int facilityId, CancellationToken ct)
+    {
+        return await _dbContext.ocrSubmissions
+            .AsNoTracking()
+            .Where(s => s.citizen.medicalFacility.facilityId == facilityId)
+            .GroupBy(_ => 1)
+            .Select(g => new DashboardStatsDto
+            {
+                TotalBooklets = g.Count(),
+                AcceptedCount = g.Count(s => s.status == OcrSubmissionStatus.Accepted),
+                NotReviewedCount = g.Count(s => s.status == OcrSubmissionStatus.Pending),
+                RejectedCount = g.Count(s => s.status == OcrSubmissionStatus.Rejected)
+            })
+            .FirstOrDefaultAsync(ct) ?? new DashboardStatsDto {TotalBooklets = 0, AcceptedCount = 0, NotReviewedCount = 0, RejectedCount = 0 }
+        ;
+    }
 }

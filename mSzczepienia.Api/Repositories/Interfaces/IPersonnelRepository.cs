@@ -1,8 +1,12 @@
 ﻿using mSzczepienia.Shared.Models;
+using mSzczepienia.Shared.DTO.Queries;
+using mSzczepienia.Shared.DTO;
+using mSzczepienia.Shared.DTO.Personnel;
 
 namespace mSzczepienia.Api.Repositories.Interfaces;
 
 public interface IPersonnelRepository
 {
     Task CreatePersonnelWithAccountAsync(Account account, Personnel personnel, CancellationToken ct);
+    Task<PagedResult<PersonnelDto>> GetFacilityPersonnelAsync(GetPersonnelQuery query, CancellationToken ct);
 }

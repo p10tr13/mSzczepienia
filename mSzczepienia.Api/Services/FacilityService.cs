@@ -1,5 +1,4 @@
-﻿using mSzczepienia.Api.Repositories;
-using mSzczepienia.Api.Repositories.Interfaces;
+﻿using mSzczepienia.Api.Repositories.Interfaces;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO.Facilities;
 using mSzczepienia.Shared.DTO.Queries;
@@ -49,5 +48,10 @@ public class FacilityService : IFacilityService
             PageNumber = pagedFacilities.PageNumber,
             PageSize = pagedFacilities.PageSize
         };
+    }
+
+    public async Task<FacilityDto?> GetFacilityByIdAsync(int id, CancellationToken ct)
+    {
+        return await _facilityRepository.GetFacilityByIdAsync(id, ct);
     }
 }

@@ -1,0 +1,10 @@
+﻿using mSzczepienia.Shared.DTO.Personnel;
+using mSzczepienia.Shared.DTO.Queries;
+using mSzczepienia.Shared.DTO;
+
+namespace mSzczepienia.Client.Services.Interfaces;
+
+public interface IPersonnelClient
+{
+    Task<PagedResult<PersonnelDto>> GetPersonnelByFacilityAsync(int facilityId, int pageIndex, int pageSize, CancellationToken ct);
+}

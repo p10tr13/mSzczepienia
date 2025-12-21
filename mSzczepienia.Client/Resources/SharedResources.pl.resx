@@ -438,4 +438,31 @@
   <data name="EditDetails" xml:space="preserve">
     <value>Edytuj szczegóły</value>
   </data>
+  <data name="FacilityDetails" xml:space="preserve">
+    <value>Szczegółowe dane placówki</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Numer telefonu</value>
+  </data>
+  <data name="CreationDate" xml:space="preserve">
+    <value>Data utworzenia</value>
+  </data>
+  <data name="FacilityNotFound" xml:space="preserve">
+    <value>Placówka nie została odnaleziona</value>
+  </data>
+  <data name="ErrorLoadingFacility" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania placówki</value>
+  </data>
+  <data name="StatsNotFound" xml:space="preserve">
+    <value>Nie znaleziono statystyk</value>
+  </data>
+  <data name="ErrorLoadingStats" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania statystyk</value>
+  </data>
+  <data name="PersonnelNotFound" xml:space="preserve">
+    <value>Personel medyczny nie został odnaleziony</value>
+  </data>
+  <data name="ErrorLoadingPersonnel" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania personelu medycznego</value>
+  </data>
 </root>

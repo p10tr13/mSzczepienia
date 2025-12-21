@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Api.Repositories.Interfaces;
 using mSzczepienia.Shared.DTO;
-using mSzczepienia.Shared.DTO.Citizens;
 using mSzczepienia.Shared.DTO.Facilities;
 using mSzczepienia.Shared.DTO.Queries;
 using mSzczepienia.Shared.Models;
@@ -103,5 +102,24 @@ public class FacilityRepository : IFacilityRepository
             .ToListAsync(ct);
 
         return new PagedResult<MedicalFacility> { Items = items, TotalCount = totalItems, PageNumber = query.PageNumber, PageSize = query.PageSize };
+    }
+
+    public async Task<FacilityDto?> GetFacilityByIdAsync(int id, CancellationToken ct)
+    {
+        return await _dbContext.medicalFacilities
+            .AsNoTracking()
+            .Where(f => f.facilityId == id)
+            .Select(f => new FacilityDto
+            {
+                Id = f.facilityId,
+                Name = f.facilityName,
+                Street = f.street,
+                City = f.city,
+                PostalCode = f.postalCode,
+                Nip = f.nip,
+                PhoneNumber = f.phoneNumber,
+                CreationDate = f.creationDate,
+            })
+            .FirstOrDefaultAsync(ct);
     }
 }

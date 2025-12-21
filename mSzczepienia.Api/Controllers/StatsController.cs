@@ -23,5 +23,13 @@ namespace mSzczepienia.Api.Controllers
             var result = await _statsService.GetAdminStatsAsync(ct);
             return Ok(result);
         }
+
+        [HttpGet("facility/{id}")]
+        //[Authorize(Roles = "admin")]
+        public async Task<ActionResult<DashboardStatsDto>> GetFacilityStatsAsync([FromRoute]int id, CancellationToken ct)
+        {
+            var result = await _statsService.GetFacilityStatsAsync(id, ct);
+            return Ok(result);
+        }
     }
 }

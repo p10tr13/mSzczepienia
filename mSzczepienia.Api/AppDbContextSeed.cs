@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Bogus.DataSets;
 using Bogus.Extensions.Poland;
 using CsvHelper;
 using mSzczepienia.Api.Data;
@@ -49,16 +50,40 @@ namespace mSzczepienia.Api
                 var facilities = _dbContext.medicalFacilities.ToList();
 
                 // Personnel
-                var personnelAccounts = GenerateAccounts(20, Role.HealthWorker);
+                var personnelAccounts = GenerateAccounts(6000, Role.HealthWorker);
                 _dbContext.accounts.AddRange(personnelAccounts);
                 _dbContext.SaveChanges();
 
                 var personnel = GeneratePersonnels(personnelAccounts, facilities);
                 _dbContext.personnel.AddRange(personnel);
 
+                var testPersonnelAccount = new Account
+                {
+                    email = "piotr.istok@gmail.com",
+                    firebaseUid = "OwzOPEW7PNX2e1jsfM8KLdiMieU2",
+                    role = Role.HealthWorker,
+                    name = "Piotr",
+                    surname = "Iśtok",
+                    creationDate = DateTime.Now,
+                    dateOfBirth = new DateTime(2003, 11, 18)
+                };
+
+                _dbContext.accounts.Add(testPersonnelAccount);
+                _dbContext.SaveChanges();
+
+                var testPersonnel = new Personnel
+                {
+                    accountId = testPersonnelAccount.accountId,
+                    facilityId = facilities.First().facilityId,
+                    pwzNumber = "2654712",
+                    position = Position.Doctor,
+                };
+
+                _dbContext.personnel.Add(testPersonnel);
+                _dbContext.SaveChanges();
 
                 // Citizens
-                var citizenAccounts = GenerateAccounts(50, Role.Citizen).ToList();
+                var citizenAccounts = GenerateAccounts(50000, Role.Citizen).ToList();
                 var testCitizenAccount = new Account
                 {
                     email = "piotrjac23@gmail.com",
@@ -76,12 +101,23 @@ namespace mSzczepienia.Api
                 var citizens = GenerateCitizens(citizenAccounts, facilities);
                 _dbContext.citizens.AddRange(citizens);
 
-
                 // Admins
                 var adminAccounts = GenerateAccounts(5, Role.Admin);
                 _dbContext.accounts.AddRange(adminAccounts);
 
+                var testAdminAccount = new Account
+                {
+                    email = "1stok13piotr@gmail.com",
+                    firebaseUid = "FPXYH9A1WYOZu9VRkPt789lN99x2",
+                    role = Role.Admin,
+                    name = "Piotr",
+                    surname = "Iśtok",
+                    creationDate = DateTime.Now,
+                    dateOfBirth = new DateTime(2003, 11, 18)
+                };
 
+                _dbContext.accounts.Add(testAdminAccount);
+                _dbContext.SaveChanges();
 
                 _dbContext.SaveChanges();
             }

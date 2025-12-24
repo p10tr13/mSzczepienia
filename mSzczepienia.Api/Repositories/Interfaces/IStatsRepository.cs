@@ -6,4 +6,5 @@ public interface IStatsRepository
 {
     Task<DashboardStatsDto> GetAdminStatsAsync(CancellationToken ct);
     Task<DashboardStatsDto> GetFacilityStatsAsync(int facilityId, CancellationToken ct);
+    Task<DashboardStatsDto> GetWorkerStatsByFirebaseUidAsync(string firebaseUid, CancellationToken ct);
 }

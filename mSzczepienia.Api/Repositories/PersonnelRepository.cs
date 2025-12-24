@@ -67,4 +67,16 @@ public class PersonnelRepository : IPersonnelRepository
             PageSize = query.PageSize
         };
     }
+
+    public async Task<int?> GetFacilityIdForWorkerByFirebaseUidAsync(string firebaseUid, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(firebaseUid))
+        {
+            return null;
+        }
+
+        var personnel = await _dbContext.personnel.AsNoTracking().Include(p => p.account).FirstOrDefaultAsync(p => p.account.firebaseUid == firebaseUid, ct);
+
+        return personnel?.facilityId;
+    }
 }

@@ -33,15 +33,12 @@
             <MudNavLink Href="/worker-dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">@Localizer["Dashboard"]</MudNavLink>
 
             <MudNavGroup Title="@Localizer["Verifications"]" Icon="@Icons.Material.Filled.FactCheck" Expanded="true">
-                <MudNavLink Href="/booklets/queue" Icon="@Icons.Material.Filled.ListAlt">
-                    @Localizer["VerificationQueue"]
-                </MudNavLink>
-                <MudNavLink Href="/booklets/history" Icon="@Icons.Material.Filled.History">
-                    @Localizer["History"]
+                <MudNavLink Href="/submissions/queue" Icon="@Icons.Material.Filled.ListAlt">
+                    @Localizer["SubmissionsQueue"]
                 </MudNavLink>
             </MudNavGroup>
 
-            <MudNavGroup Title="@Localizer["PatientService"]" Icon="@Icons.Material.Filled.MedicalServices">
+            <MudNavGroup Title="@Localizer["PatientService"]" Icon="@Icons.Material.Filled.MedicalServices" Expanded="true">
                 <MudNavLink Href="/vaccinations/register" Icon="@Icons.Material.Filled.Vaccines">
                     @Localizer["PerformVaccination"]
                 </MudNavLink>

@@ -73,7 +73,7 @@
                 <MudStack Spacing="4">
                     @foreach (var vaccine in vaccines.Items)
                     {
-                        <MudPaper Elevation="4" Class="pa-4 hover-elevation transition-ease" Style="border-left: 5px solid var(--mud-palette-primary);">
+                        <MudPaper Elevation="4" Class="pa-4 transition-item" Style="border-left: 5px solid var(--mud-palette-primary);">
                             <MudGrid Class="align-center">
                                 <MudItem xs="12" sm="8">
                                     <MudText Typo="Typo.h6"><b>@vaccine.VaccineName</b></MudText>
@@ -112,14 +112,15 @@
 </MudContainer>
 
 <style>
-    .hover-elevation:hover {
-        box-shadow: 0px 4px 20px rgba(0,0,0,0.12);
-        transform: translateY(-2px);
+    .transition-item {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        will-change: transform, box-shadow;
     }
 
-    .transition-ease {
-        transition: all 0.3s ease;
-    }
+        .transition-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 8px 24px rgba(0,0,0,0.12) !important;
+        }
 </style>
 
 @code {

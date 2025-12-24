@@ -125,7 +125,7 @@
                 <MudStack Spacing="3">
                     @foreach (var emp in _personnelResult.Items)
                     {
-                        <MudPaper Elevation="1" Class="pa-4">
+                        <MudPaper Elevation="1" Class="pa-4 transition-item">
                             <MudGrid Class="align-center">
                                 <MudItem xs="12" sm="8">
                                     <MudText Typo="Typo.subtitle1"><b>@emp.Name @emp.Surname</b></MudText>
@@ -160,6 +160,18 @@
         </MudItem>
     </MudGrid>
 </MudContainer>
+
+<style>
+    .transition-item {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        will-change: transform, box-shadow;
+    }
+
+        .transition-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 8px 24px rgba(0,0,0,0.12) !important;
+        }
+</style>
 
 @code {
     [Parameter]
@@ -240,7 +252,7 @@
             _stats = await StatsClient.GetFacilityStatsAsync(id, new CancellationToken());
             if (_stats != null)
             {
-                donutData = new double[] { _stats.NotReviewedCount, _stats.AcceptedCount, _stats.RejectedCount };
+                donutData = new double[] { _stats.AcceptedCount, _stats.NotReviewedCount, _stats.RejectedCount };
             }
         }
         catch (HttpRequestException httpEx) when (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)

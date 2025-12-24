@@ -315,14 +315,14 @@
   <data name="PESEL" xml:space="preserve">
     <value>PESEL</value>
   </data>
-  <data name="DailyStats" xml:space="preserve">
-    <value>Statystyki dzienne</value>
+  <data name="MonthlyStats" xml:space="preserve">
+    <value>Statystyki miesięczne</value>
   </data>
   <data name="BookletsToVerify" xml:space="preserve">
     <value>Książeczki do weryfikacji</value>
   </data>
-  <data name="BookletsTitle" xml:space="preserve">
-    <value>Książeczki szczepień do weryfikacji</value>
+  <data name="PendingSubmissions" xml:space="preserve">
+    <value>Oczekujące zgłoszenia książeczek szczepień na weryfikację</value>
   </data>
   <data name="SubmissionDate" xml:space="preserve">
     <value>Data zgłoszenia</value>
@@ -464,5 +464,29 @@
   </data>
   <data name="ErrorLoadingPersonnel" xml:space="preserve">
     <value>Wystąpił błąd podczas ładowania personelu medycznego</value>
+  </data>
+  <data name="ErrorLoadingBooklets" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania książeczek szczepień</value>
+  </data>
+  <data name="BookletsNotFound" xml:space="preserve">
+    <value>Nie znaleziono książeczek szczepień do weryfikacji</value>
+  </data>
+  <data name="Submitted" xml:space="preserve">
+    <value>Przesłane</value>
+  </data>
+  <data name="ViewAllPending" xml:space="preserve">
+    <value>Zobacz wszystkie oczekujące</value>
+  </data>
+  <data name="AllVerified" xml:space="preserve">
+    <value>Wszystkie książeczki zostały sprawdzone.</value>
+  </data>
+  <data name="NoBookletsToVerify" xml:space="preserve">
+    <value>Brak oczekujących weryfikacji</value>
+  </data>
+  <data name="SubmissionsQueue" xml:space="preserve">
+    <value>Kolejka zgłoszeń</value>
+  </data>
+  <data name="EnterFirstName" xml:space="preserve">
+    <value>Wpisz imię</value>
   </data>
 </root>

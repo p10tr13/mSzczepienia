@@ -35,4 +35,21 @@ public class StatsClient : IStatsClient
             throw new HttpRequestException(message, null, response.StatusCode);
         }
     }
+
+    public async Task<DashboardStatsDto> GetWorkerStatsAsync(CancellationToken ct)
+    {
+        var response = await _httpClient.GetAsync("api/stats/worker-dashboard-stats", ct);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<DashboardStatsDto>(cancellationToken: ct);
+            return result ?? new DashboardStatsDto();
+        }
+        else
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
 }

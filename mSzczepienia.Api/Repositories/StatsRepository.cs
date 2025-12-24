@@ -44,4 +44,43 @@ public class StatsRepository : IStatsRepository
             .FirstOrDefaultAsync(ct) ?? new DashboardStatsDto {TotalBooklets = 0, AcceptedCount = 0, NotReviewedCount = 0, RejectedCount = 0 }
         ;
     }
+
+    public async Task<DashboardStatsDto> GetWorkerStatsByFirebaseUidAsync(string firebaseUid, CancellationToken ct)
+    {
+        var personnelQuery = _dbContext.personnel.AsNoTracking().AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(firebaseUid))
+        {
+            personnelQuery = personnelQuery.Where(p => p.account.firebaseUid == firebaseUid);
+        }
+        else
+        {
+            return new DashboardStatsDto();
+        }
+
+        var personnel = await personnelQuery.FirstOrDefaultAsync(ct);
+        if (personnel == null)
+        {
+            return new DashboardStatsDto();
+        }
+
+        var now = DateTime.UtcNow;
+        var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var nextMonthStart = monthStart.AddMonths(1);
+
+        return await _dbContext.ocrSubmissions
+            .AsNoTracking()
+            .Where(s => s.verifierId == personnel.personnelId
+                        && s.submissionDate >= monthStart
+                        && s.submissionDate < nextMonthStart)
+            .GroupBy(_ => 1)
+            .Select(g => new DashboardStatsDto
+            {
+                TotalBooklets = g.Count(),
+                AcceptedCount = g.Count(s => s.status == OcrSubmissionStatus.Accepted),
+                NotReviewedCount = g.Count(s => s.status == OcrSubmissionStatus.Pending),
+                RejectedCount = g.Count(s => s.status == OcrSubmissionStatus.Rejected)
+            })
+            .FirstOrDefaultAsync(ct) ?? new DashboardStatsDto();
+    }
 }

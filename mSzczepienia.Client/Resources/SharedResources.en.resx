@@ -315,14 +315,14 @@
   <data name="PESEL" xml:space="preserve">
     <value>PESEL</value>
   </data>
-  <data name="DailyStats" xml:space="preserve">
-    <value>Daily stats</value>
+  <data name="MonthlyStats" xml:space="preserve">
+    <value>Monthly stats</value>
   </data>
   <data name="BookletsToVerify" xml:space="preserve">
     <value>Booklets to verify</value>
   </data>
-  <data name="BookletsTitle" xml:space="preserve">
-    <value>Vaccination booklets to verify</value>
+  <data name="PendingSubmissions" xml:space="preserve">
+    <value>Pending vaccination booklet submissions</value>
   </data>
   <data name="SubmissionDate" xml:space="preserve">
     <value>Submission Date</value>
@@ -464,5 +464,29 @@
   </data>
   <data name="ErrorLoadingPersonnel" xml:space="preserve">
     <value>Error occured while loading personnel</value>
+  </data>
+  <data name="ErrorLoadingBooklets" xml:space="preserve">
+    <value>Error occured while loading booklets</value>
+  </data>
+  <data name="BookletsNotFound" xml:space="preserve">
+    <value>Vaccination booklets were not found</value>
+  </data>
+  <data name="Submitted" xml:space="preserve">
+    <value>Submitted</value>
+  </data>
+  <data name="ViewAllPending" xml:space="preserve">
+    <value>View all pending</value>
+  </data>
+  <data name="AllVerified" xml:space="preserve">
+    <value>All booklets are verified.</value>
+  </data>
+  <data name="NoBookletsToVerify" xml:space="preserve">
+    <value>No booklets to verify</value>
+  </data>
+  <data name="SubmissionsQueue" xml:space="preserve">
+    <value>Submissions Queue</value>
+  </data>
+  <data name="EnterFirstName" xml:space="preserve">
+    <value>Enter first name</value>
   </data>
 </root>

@@ -3,6 +3,8 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using mSzczepienia.Api.Middlewares;
+using mSzczepienia.Api.Services.Interfaces;
+using mSzczepienia.Api.Services;
 using System.Security.Claims;
 
 namespace mSzczepienia.Api;
@@ -17,6 +19,7 @@ public static class DependencyInjection
         services.AddFirebaseAdmin(configuration);
         services.RegisterRepositories();
         services.RegisterServices();
+        services.AddSingleton<IBlobService, BlobService>();
 
         return services;
     }

@@ -9,6 +9,11 @@ using mSzczepienia.Api.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.Configure<BlobStorageSettings>(
+    builder.Configuration.GetSection(BlobStorageSettings.SectionName));
+
+
 // Add services to the container.
 // Skip DbContext registration for testing - will be overridden in test factory
 if (!builder.Environment.IsEnvironment("Testing"))
@@ -18,8 +23,9 @@ if (!builder.Environment.IsEnvironment("Testing"))
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     });
 }
-builder.Services.AddScoped<AppDbContextSeed>();
 
+
+builder.Services.AddScoped<AppDbContextSeed>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -27,6 +33,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.RegisterServices(builder.Configuration);
 builder.Host.ConfigureLogger(builder.Environment.IsDevelopment());
 
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -39,8 +46,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Automatic migration for development
-// Production: 1. Start DB container 2. Manual migration 3. docker-compose up build
+// Migration and seeding
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

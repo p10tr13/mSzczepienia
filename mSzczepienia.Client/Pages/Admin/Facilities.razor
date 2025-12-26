@@ -172,6 +172,7 @@
         finally
         {
             isLoading = false;
+            StateHasChanged();
         }
 
         if (Page > facilities.TotalPages && facilities.TotalPages > 0)

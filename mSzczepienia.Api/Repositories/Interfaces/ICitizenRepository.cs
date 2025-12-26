@@ -1,5 +1,6 @@
+using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Citizens;
-using mSzczepienia.Shared.Models;
+using mSzczepienia.Shared.DTO.Queries;
 
 namespace mSzczepienia.Api.Repositories.Interfaces
 {
@@ -7,5 +8,6 @@ namespace mSzczepienia.Api.Repositories.Interfaces
     {
         Task<CitizenDetailsDto?> GetCitizenDetailsByUidAsync(string firebaseUid, CancellationToken ct);
         Task AddCitizenAsync(string firebaseUid, CitizenDetailsDto dto, CancellationToken ct);
+        Task<PagedResult<SimpleCitizenDto>> SearchCitizensAsync(GetCitizensQuery query, int? facilityId, CancellationToken ct);
     }
 }

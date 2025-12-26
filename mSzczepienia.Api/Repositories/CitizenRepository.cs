@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Api.Repositories.Interfaces;
+using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Citizens;
+using mSzczepienia.Shared.DTO.Queries;
 using mSzczepienia.Shared.Enums;
 using mSzczepienia.Shared.Models;
 
@@ -61,6 +63,53 @@ namespace mSzczepienia.Api.Repositories
 
             await _dbContext.citizens.AddAsync(citizen);
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<PagedResult<SimpleCitizenDto>> SearchCitizensAsync(GetCitizensQuery query, int? facilityId, CancellationToken ct)
+        {
+            var queryable = _dbContext.citizens.Include(c => c.account).AsNoTracking().AsQueryable();
+
+            if (query.SearchInWorkersFacilityOnly && facilityId.HasValue)
+            {
+                queryable = queryable.Where(c => c.facilityId == facilityId);
+            }
+
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                queryable = queryable.Where(c => c.account.name.ToLower().Contains(query.Name.ToLower().Trim()));
+            }
+
+            if (!string.IsNullOrEmpty(query.Surname))
+            {
+                queryable = queryable.Where(c => c.account.surname.ToLower().Contains(query.Surname.ToLower().Trim()));
+            }
+
+            if (!string.IsNullOrEmpty(query.Pesel))
+            {
+                queryable = queryable.Where(c => c.pesel.Contains(query.Pesel));
+            }
+
+            var totalCount = await queryable.CountAsync(ct);
+            var items = await queryable
+            .Skip((query.PageNumber - 1) * query.PageSize)
+            .Take(query.PageSize)
+            .Select(c => new SimpleCitizenDto
+            {
+                Id = c.citizenId,
+                Name = c.account.name,
+                Surname = c.account.surname,
+                Pesel = c.pesel,
+                DateOfBirth = DateTime.SpecifyKind(c.account.dateOfBirth, DateTimeKind.Unspecified),
+                SubmissionStatus = c.submissionStatus.ToString(),
+            })
+            .ToListAsync(ct);
+            return new PagedResult<SimpleCitizenDto>
+            {
+                TotalCount = totalCount,
+                Items = items,
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize
+            };
         }
     }
 }

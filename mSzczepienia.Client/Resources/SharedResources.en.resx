@@ -403,13 +403,13 @@
     <value>Details</value>
   </data>
   <data name="ErrorLoadingFacilities" xml:space="preserve">
-    <value>Error occured while loading facilities</value>
+    <value>Error occurred while loading facilities</value>
   </data>
   <data name="TryAgain" xml:space="preserve">
     <value>Try Again</value>
   </data>
   <data name="ErrorLoadingVaccines" xml:space="preserve">
-    <value>Error occured while loading vaccines</value>
+    <value>Error occurred while loading vaccines</value>
   </data>
   <data name="NoVaccinesFound" xml:space="preserve">
     <value>No vaccines found</value>
@@ -421,7 +421,7 @@
     <value>No vaccine was found with such ID</value>
   </data>
   <data name="ErrorLoadingVaccine" xml:space="preserve">
-    <value>Error occured while loading vaccine data</value>
+    <value>Error occurred while loading vaccine data</value>
   </data>
   <data name="SomethingWentWrong" xml:space="preserve">
     <value>Something went wrong</value>
@@ -451,22 +451,22 @@
     <value>Facility was not found</value>
   </data>
   <data name="ErrorLoadingFacility" xml:space="preserve">
-    <value>Error occured while loading facility</value>
+    <value>Error occurred while loading facility</value>
   </data>
   <data name="StatsNotFound" xml:space="preserve">
     <value>Stats were not found</value>
   </data>
   <data name="ErrorLoadingStats" xml:space="preserve">
-    <value>Error occured while loading stats</value>
+    <value>Error occurred while loading stats</value>
   </data>
   <data name="PersonnelNotFound" xml:space="preserve">
     <value>Personnel was not found</value>
   </data>
   <data name="ErrorLoadingPersonnel" xml:space="preserve">
-    <value>Error occured while loading personnel</value>
+    <value>Error occurred while loading personnel</value>
   </data>
   <data name="ErrorLoadingBooklets" xml:space="preserve">
-    <value>Error occured while loading booklets</value>
+    <value>Error occurred while loading booklets</value>
   </data>
   <data name="BookletsNotFound" xml:space="preserve">
     <value>Vaccination booklets were not found</value>
@@ -488,5 +488,23 @@
   </data>
   <data name="EnterFirstName" xml:space="preserve">
     <value>Enter first name</value>
+  </data>
+  <data name="ErrorLoadingCitizens" xml:space="preserve">
+    <value>Error occurred while loading citizens</value>
+  </data>
+  <data name="SearchAssignedToYourFacility" xml:space="preserve">
+    <value>Search only those citizens who are assigned to your facility</value>
+  </data>
+  <data name="EnterPESEL" xml:space="preserve">
+    <value>Enter PESEL</value>
+  </data>
+  <data name="Citizens" xml:space="preserve">
+    <value>Citizens</value>
+  </data>
+  <data name="SubmissionState" xml:space="preserve">
+    <value>Submission State</value>
+  </data>
+  <data name="NoCitizensToShow" xml:space="preserve">
+    <value>There are no people matching your search criteria.</value>
   </data>
 </root>

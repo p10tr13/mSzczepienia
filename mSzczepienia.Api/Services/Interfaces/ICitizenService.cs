@@ -1,4 +1,7 @@
+using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Citizens;
+using mSzczepienia.Shared.DTO.Queries;
+using System.Security.Claims;
 
 namespace mSzczepienia.Api.Services.Interfaces
 {
@@ -6,5 +9,6 @@ namespace mSzczepienia.Api.Services.Interfaces
     {
         Task<CitizenDetailsDto?> GetCitizenDetailsAsync(string firebaseUid, CancellationToken ct);
         Task CreateCitizenAsync(string firebaseUid, CitizenDetailsDto dto, CancellationToken ct);
+        Task<PagedResult<SimpleCitizenDto>> SearchCitizensAsync(ClaimsPrincipal user, GetCitizensQuery query, CancellationToken ct);
     }
 }

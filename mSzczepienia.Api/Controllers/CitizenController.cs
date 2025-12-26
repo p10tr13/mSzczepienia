@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO.Citizens;
+using mSzczepienia.Shared.DTO;
+using mSzczepienia.Shared.DTO.Queries;
 using System.Security.Claims;
 
 namespace mSzczepienia.Api.Controllers
@@ -77,6 +79,23 @@ namespace mSzczepienia.Api.Controllers
             }
 
             return CreatedAtAction(nameof(GetCitizenDetails), new { }, citizenDto);
+        }
+
+        [HttpGet("search")]
+        [Authorize(Roles = "worker")]
+        public async Task<ActionResult<PagedResult<SimpleCitizenDto>>> GetCitizensAsync([FromQuery] GetCitizensQuery query, CancellationToken ct)
+        {
+            if (query.PageNumber <= 0 || query.PageSize <= 0)
+            {
+                return BadRequest("PageNumber and PageSize must be greater than zero.");
+            }
+
+            if (query.PageSize > 100)
+            {
+                return BadRequest("PageSize must be less than or equal to 100.");
+            }
+
+            return await _citizenService.SearchCitizensAsync(User, query, ct);
         }
     }
 }

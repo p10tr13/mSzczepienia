@@ -489,4 +489,22 @@
   <data name="EnterFirstName" xml:space="preserve">
     <value>Wpisz imię</value>
   </data>
+  <data name="ErrorLoadingCitizens" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania obywateli</value>
+  </data>
+  <data name="SearchAssignedToYourFacility" xml:space="preserve">
+    <value>Wyszukaj obywateli tylko tych, którzy są przypisani do twojej placówki</value>
+  </data>
+  <data name="EnterPESEL" xml:space="preserve">
+    <value>Wpisz numer PESEL</value>
+  </data>
+  <data name="Citizens" xml:space="preserve">
+    <value>Obywatele</value>
+  </data>
+  <data name="SubmissionState" xml:space="preserve">
+    <value>Status zgłoszenia</value>
+  </data>
+  <data name="NoCitizensToShow" xml:space="preserve">
+    <value>Nie ma osób spełniających twoje kryteria wyszukiwania.</value>
+  </data>
 </root>

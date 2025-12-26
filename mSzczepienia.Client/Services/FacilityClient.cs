@@ -11,7 +11,7 @@ public class FacilityClient : IFacilityClient
 {
     private readonly HttpClient _httpClient;
 
-    private string facilityControlerUrl = "api/facilities";
+    private string facilityControllerUrl = "api/facilities";
 
     public FacilityClient(HttpClient httpClient)
     {
@@ -20,7 +20,7 @@ public class FacilityClient : IFacilityClient
 
     public async Task<List<string>> GetCitiesAutocompleteAsync(string query, CancellationToken ct)
     {
-        var response = await _httpClient.GetAsync($"{facilityControlerUrl}/cities-autocomplete?query={query}", ct);
+        var response = await _httpClient.GetAsync($"{facilityControllerUrl}/cities-autocomplete?query={query}", ct);
         var facilityNames = await response.Content.ReadFromJsonAsync<List<string>>(cancellationToken: ct);
         return facilityNames ?? new List<string>();
     }
@@ -38,7 +38,7 @@ public class FacilityClient : IFacilityClient
             { "PageSize", PageSize.ToString() }
         };
 
-        var url = QueryHelpers.AddQueryString($"{facilityControlerUrl}/search", queryParams);
+        var url = QueryHelpers.AddQueryString($"{facilityControllerUrl}/search", queryParams);
 
         var response = await _httpClient.GetAsync(url, ct);
 
@@ -68,7 +68,7 @@ public class FacilityClient : IFacilityClient
             { "PageSize", query.PageSize.ToString() }
         };
 
-        var url = QueryHelpers.AddQueryString($"{facilityControlerUrl}/search", queryParams);
+        var url = QueryHelpers.AddQueryString($"{facilityControllerUrl}/search", queryParams);
 
         var response = await _httpClient.GetAsync(url, ct);
 
@@ -87,7 +87,7 @@ public class FacilityClient : IFacilityClient
 
     public async Task<FacilityDto> GetFacilityByIdAsync(int id, CancellationToken ct)
     {
-        var url = $"{facilityControlerUrl}/{id}";
+        var url = $"{facilityControllerUrl}/{id}";
 
         var response = await _httpClient.GetAsync(url, ct);
 

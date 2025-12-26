@@ -2,10 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Api;
 using mSzczepienia.Api.Configurations;
 using mSzczepienia.Api.Middlewares;
-using mSzczepienia.Api.Repositories;
-using mSzczepienia.Api.Repositories.Interfaces;
-using mSzczepienia.Api.Services;
-using mSzczepienia.Api.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

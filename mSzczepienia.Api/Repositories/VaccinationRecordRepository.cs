@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace mSzczepienia.Api.Repositories
 {
-    public class VaccinationRecordRepository: IVaccinationRecordRepository
+    public class VaccinationRecordRepository : IVaccinationRecordRepository
     {
         private readonly AppDbContext _dbContext;
 
@@ -86,6 +86,43 @@ namespace mSzczepienia.Api.Repositories
                 remarks = x.remarks
             });
             return await resultQuery.ToListAsync(ct);
+        }
+
+        public async Task<PagedResult<VaccinationRecordOverviewDto>> GetVaccinationRecordOverviewByCitizenIdAsync(GetVaccinationRecordsByCitizenIdQuery query, CancellationToken ct)
+        {
+            var baseQuery = _dbContext.vaccinationRecords.AsNoTracking().Where(x => x.citizen.citizenId == query.CitizenId);
+
+            var groupedQuery = baseQuery.GroupBy(x => new { x.vaccineDefinition.vaccineId, x.vaccineDefinition.vaccineName, x.vaccineDefinition.manufacturer })
+                .Select(g => new VaccinationRecordOverviewDto
+                {
+                    id = g.Key.vaccineId,
+                    vaccineName = g.Key.vaccineName,
+                    manufacturer = g.Key.manufacturer,
+                    vaccinationDate = g.Max(x => x.vaccinationDate),
+                    dosesNumber = g.Count()
+                });
+
+            var sortField = query.SortingField?.ToLower() ?? "vaccinationdate";
+            var isAsc = query.SortingDirection?.ToLower() == "asc";
+
+            groupedQuery = sortField switch
+            {
+                "vaccinename" => isAsc ? groupedQuery.OrderBy(x => x.vaccineName) : groupedQuery.OrderByDescending(x => x.vaccineName),
+
+                _ => isAsc ? groupedQuery.OrderBy(x => x.vaccinationDate) : groupedQuery.OrderByDescending(x => x.vaccinationDate)
+            };
+
+            var totalCount = await groupedQuery.CountAsync(ct);
+
+            var items = await groupedQuery.Skip((query.PageNumber - 1) * query.PageSize).Take(query.PageSize).ToListAsync(ct);
+
+            return new PagedResult<VaccinationRecordOverviewDto>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize
+            };
         }
     }
 }

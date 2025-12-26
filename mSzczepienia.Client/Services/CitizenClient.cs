@@ -2,7 +2,6 @@
 using mSzczepienia.Client.Services.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Citizens;
-using mSzczepienia.Shared.DTO.Facilities;
 using mSzczepienia.Shared.DTO.Queries;
 using System.Net.Http.Json;
 
@@ -39,6 +38,27 @@ public class CitizenClient : ICitizenClient
         {
             var result = await response.Content.ReadFromJsonAsync<PagedResult<SimpleCitizenDto>>(cancellationToken: ct);
             return result ?? new PagedResult<SimpleCitizenDto>();
+        }
+        else
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
+
+    public async Task<CitizenDetailsDto?> GetCitizenByIdAsync(int id, CancellationToken ct)
+    {
+        var response = await _httpClient.GetAsync($"{citizenControllerUrl}/{id}", ct);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<CitizenDetailsDto>(cancellationToken: ct);
+            return result;
+        }
+        else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return null;
         }
         else
         {

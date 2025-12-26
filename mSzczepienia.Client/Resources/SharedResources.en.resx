@@ -507,4 +507,43 @@
   <data name="NoCitizensToShow" xml:space="preserve">
     <value>There are no people matching your search criteria.</value>
   </data>
+  <data name="CitizenDetails" xml:space="preserve">
+    <value>Citizen Details</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="AddVaccinationRecord" xml:space="preserve">
+    <value>Add Vaccination Record</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Upload</value>
+  </data>
+  <data name="UploadBookletPhoto" xml:space="preserve">
+    <value>Upload Booklet Photo</value>
+  </data>
+  <data name="VaccinationRecords" xml:space="preserve">
+    <value>Vaccination Records</value>
+  </data>
+  <data name="VaccinationDate" xml:space="preserve">
+    <value>Vaccination Date</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="CitizenNotFound" xml:space="preserve">
+    <value>Citizen Not Found</value>
+  </data>
+  <data name="ErrorLoadingCitizen" xml:space="preserve">
+    <value>Erroro ccurred loading citizen</value>
+  </data>
+  <data name="RecordsNotFound" xml:space="preserve">
+    <value>Vaccination records were not found</value>
+  </data>
+  <data name="ErrorLoadingRecords" xml:space="preserve">
+    <value>Error occurred loading records</value>
+  </data>
 </root>

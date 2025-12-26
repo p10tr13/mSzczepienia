@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO.Queries;
-using mSzczepienia.Shared.DTO.Vaccines;
 using mSzczepienia.Shared.DTO;
 using System.Security.Claims;
 using mSzczepienia.Shared.DTO.VaccinationRecords;
@@ -57,6 +56,30 @@ public class VaccinationRecordController : ControllerBase
         }
 
         var result = await _vaccinationRecordService.GetVaccinationRecordsDetailsAsync(firebaseUid, query, ct);
+        return Ok(result);
+    }
+
+    [Authorize(Roles = "worker")]
+    [HttpGet("by-citizen")]
+    public async Task<ActionResult<PagedResult<VaccinationRecordOverviewDto>>> GetVaccinationRecordsByCitizenAsync([FromQuery] GetVaccinationRecordsByCitizenIdQuery query, CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+
+        if (query.PageNumber <= 0 || query.PageSize <= 0)
+        {
+            return BadRequest("PageNumber and PageSize must be greater than zero.");
+        }
+
+        if (query.PageSize > 100)
+        {
+            return BadRequest("PageSize must be less than or equal to 100.");
+        }
+
+        var result = await _vaccinationRecordService.GetVaccinationRecordsByCitizenIdAsync(firebaseUid, query, ct);
         return Ok(result);
     }
 }

@@ -50,6 +50,7 @@ builder.Services.AddScoped<IUserManagementClient, UserManagementClient>();
 builder.Services.AddScoped<IPersonnelClient, PersonnelClient>();
 builder.Services.AddScoped<IOCRSubmissionClient, OCRSubmissionClient>();
 builder.Services.AddScoped<ICitizenClient, CitizenClient>();
+builder.Services.AddScoped<IVaccinationRecordClient, VaccinationRecordClient>();
 
 var host = builder.Build();
 

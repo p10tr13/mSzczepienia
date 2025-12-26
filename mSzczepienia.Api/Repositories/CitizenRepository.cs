@@ -8,7 +8,7 @@ using mSzczepienia.Shared.Models;
 
 namespace mSzczepienia.Api.Repositories
 {
-    public class CitizenRepository: ICitizenRepository
+    public class CitizenRepository : ICitizenRepository
     {
         private readonly AppDbContext _dbContext;
         public CitizenRepository(AppDbContext context)
@@ -20,6 +20,24 @@ namespace mSzczepienia.Api.Repositories
         {
             return await _dbContext.citizens
                 .Where(c => c.account.firebaseUid == firebaseUid)
+                .Select(c => new CitizenDetailsDto
+                {
+                    name = c.account.name,
+                    surname = c.account.surname,
+                    email = c.account.email,
+                    dateOfBirth = c.account.dateOfBirth,
+                    creationDate = c.account.creationDate,
+                    pesel = c.pesel,
+                    submissionStatus = c.submissionStatus.ToString(),
+                    facilityName = c.medicalFacility.facilityName,
+                })
+                .FirstOrDefaultAsync(ct);
+        }
+
+        public async Task<CitizenDetailsDto?> GetCitizenDetailsByIdAsync(int citizenId, CancellationToken ct)
+        {
+            return await _dbContext.citizens
+                .Where(c => c.citizenId == citizenId)
                 .Select(c => new CitizenDetailsDto
                 {
                     name = c.account.name,

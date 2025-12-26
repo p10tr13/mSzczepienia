@@ -28,6 +28,13 @@ namespace mSzczepienia.Api.Services
             return citizenDetails;
         }
 
+        public async Task<CitizenDetailsDto?> GetCitizenDetailsByIdAsync(string requesterFirebaseUid, int citizenId, CancellationToken ct)
+        {
+            _logger.LogInformation("Citizen details for id {CitizenId} requested by {RequesterUid}", citizenId, requesterFirebaseUid);
+            var citizenDetails = await _citizenRepository.GetCitizenDetailsByIdAsync(citizenId, ct);
+            return citizenDetails;
+        }
+
         public async Task CreateCitizenAsync(string firebaseUid, CitizenDetailsDto dto, CancellationToken ct)
         {
             await _citizenRepository.AddCitizenAsync(firebaseUid, dto, ct);

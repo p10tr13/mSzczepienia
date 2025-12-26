@@ -43,6 +43,27 @@ namespace mSzczepienia.Api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "worker")]
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetCitizenById([FromRoute] int id, CancellationToken ct)
+        {
+            var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(firebaseUid))
+            {
+                return Unauthorized("Invalid token: UID not found.");
+            }
+
+            var result = await _citizenService.GetCitizenDetailsByIdAsync(firebaseUid, id, ct);
+
+            if (result == null)
+            {
+                return NotFound("Citizen not found.");
+            }
+
+            return Ok(result);
+        }
+
         [Authorize]
         [HttpPost("new-citizen-details")]
         public async Task<IActionResult> CreateCitizen([FromBody] CitizenDetailsDto citizenDto, CancellationToken ct)

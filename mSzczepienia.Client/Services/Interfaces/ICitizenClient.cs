@@ -7,4 +7,5 @@ namespace mSzczepienia.Client.Services.Interfaces;
 public interface ICitizenClient
 {
     Task<PagedResult<SimpleCitizenDto>> GetCitizensAsync(GetCitizensQuery query, CancellationToken ct);
+    Task<CitizenDetailsDto?> GetCitizenByIdAsync(int id, CancellationToken ct);
 }

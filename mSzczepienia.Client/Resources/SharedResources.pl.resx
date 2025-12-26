@@ -507,4 +507,43 @@
   <data name="NoCitizensToShow" xml:space="preserve">
     <value>Nie ma osób spełniających twoje kryteria wyszukiwania.</value>
   </data>
+  <data name="CitizenDetails" xml:space="preserve">
+    <value>Szczegóły obywatela</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Akcje</value>
+  </data>
+  <data name="AddVaccinationRecord" xml:space="preserve">
+    <value>Dodaj wykonane szczepienie</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Dodaj</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Wgraj</value>
+  </data>
+  <data name="UploadBookletPhoto" xml:space="preserve">
+    <value>Wgraj zdjęcie książeczki szczepień</value>
+  </data>
+  <data name="VaccinationRecords" xml:space="preserve">
+    <value>Wykonane szczepienia</value>
+  </data>
+  <data name="VaccinationDate" xml:space="preserve">
+    <value>Data szczepienia</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edytuj</value>
+  </data>
+  <data name="CitizenNotFound" xml:space="preserve">
+    <value>Nie znaleziono danego obywatela</value>
+  </data>
+  <data name="ErrorLoadingCitizen" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania danych obywatela</value>
+  </data>
+  <data name="RecordsNotFound" xml:space="preserve">
+    <value>Nie znaleziono wykonanych szczepień</value>
+  </data>
+  <data name="ErrorLoadingRecords" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania wykonanych szczepień</value>
+  </data>
 </root>

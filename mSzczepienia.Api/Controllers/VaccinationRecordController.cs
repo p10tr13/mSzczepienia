@@ -59,8 +59,8 @@ public class VaccinationRecordController : ControllerBase
         return Ok(result);
     }
 
-    [Authorize(Roles = "worker")]
     [HttpGet("by-citizen")]
+    [Authorize(Roles = "worker")]
     public async Task<ActionResult<PagedResult<VaccinationRecordOverviewDto>>> GetVaccinationRecordsByCitizenAsync([FromQuery] GetVaccinationRecordsByCitizenIdQuery query, CancellationToken ct)
     {
         var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -81,5 +81,31 @@ public class VaccinationRecordController : ControllerBase
 
         var result = await _vaccinationRecordService.GetVaccinationRecordsByCitizenIdAsync(firebaseUid, query, ct);
         return Ok(result);
+    }
+
+    [HttpPost("new")]
+    [Authorize(Roles = "worker")]
+    public async Task<IActionResult> AddVaccinationRecord([FromBody] CreateVaccinationRecordDto dto, CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(firebaseUid))
+            return Unauthorized("Invalid token: UID not found.");
+
+        if (dto.citizenId <= 0 || dto.vaccineId <= 0)
+            return BadRequest("CitizenId and VaccineId are required.");
+
+        try
+        {
+            await _vaccinationRecordService.AddVaccinationRecordAsync(firebaseUid, dto, ct);
+            return Created(string.Empty, null);
+        }
+        catch (InvalidOperationException invEx)
+        {
+            return BadRequest(invEx.Message);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "An error occurred while adding vaccination record.");
+        }
     }
 }

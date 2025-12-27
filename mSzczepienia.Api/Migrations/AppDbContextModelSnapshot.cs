@@ -324,7 +324,7 @@ namespace mSzczepienia.Api.Migrations
                     b.Property<string>("remarks")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("sourceEntryId")
+                    b.Property<int?>("sourceEntryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("vaccinationDate")
@@ -338,7 +338,8 @@ namespace mSzczepienia.Api.Migrations
                     b.HasIndex("citizenId");
 
                     b.HasIndex("sourceEntryId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[sourceEntryId] IS NOT NULL");
 
                     b.HasIndex("vaccineId");
 
@@ -481,8 +482,7 @@ namespace mSzczepienia.Api.Migrations
                     b.HasOne("mSzczepienia.Shared.Models.VaccinationEntry", "sourceEntry")
                         .WithOne("vaccinationRecord")
                         .HasForeignKey("mSzczepienia.Shared.Models.VaccinationRecord", "sourceEntryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("mSzczepienia.Shared.Models.VaccineDefinition", "vaccineDefinition")
                         .WithMany("vaccinationRecords")

@@ -546,4 +546,34 @@
   <data name="ErrorLoadingRecords" xml:space="preserve">
     <value>Wystąpił błąd podczas ładowania wykonanych szczepień</value>
   </data>
+  <data name="Citizen" xml:space="preserve">
+    <value>Obywatel</value>
+  </data>
+  <data name="VaccinationData" xml:space="preserve">
+    <value>Dane szczepienia</value>
+  </data>
+  <data name="Vaccine" xml:space="preserve">
+    <value>Szczepionka</value>
+  </data>
+  <data name="DoseNumber" xml:space="preserve">
+    <value>Numer dawki</value>
+  </data>
+  <data name="NextVaccinationDate" xml:space="preserve">
+    <value>Data następnego szczepienia</value>
+  </data>
+  <data name="Batch" xml:space="preserve">
+    <value>Partia</value>
+  </data>
+  <data name="Remarks" xml:space="preserve">
+    <value>Uwagi</value>
+  </data>
+  <data name="SelectVaccine" xml:space="preserve">
+    <value>Wybierz szczepionkę</value>
+  </data>
+  <data name="RecordAdded" xml:space="preserve">
+    <value>Rekord został dodany</value>
+  </data>
+  <data name="ErrorAddingRecord" xml:space="preserve">
+    <value>Wystąpił błąd podczas dodawania rekordu</value>
+  </data>
 </root>

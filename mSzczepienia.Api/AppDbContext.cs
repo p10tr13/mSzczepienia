@@ -256,7 +256,7 @@ namespace mSzczepienia.Api
                     .IsRequired()
                     .HasMaxLength(50);
                 e.Property(vr => vr.sourceEntryId)
-                    .IsRequired();
+                    .IsRequired(false);
                 e.Property(vr => vr.creationDate)
                     .IsRequired();
 

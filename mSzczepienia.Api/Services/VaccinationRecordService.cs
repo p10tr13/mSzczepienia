@@ -32,4 +32,12 @@ public class VaccinationRecordService : IVaccinationRecordService
         _logger.LogInformation("Vaccination records for citizen {CitizenId} requested by {RequesterUid}", query.CitizenId, requesterFirebaseUid);
         return await _vaccinationRecordRepository.GetVaccinationRecordOverviewByCitizenIdAsync(query, ct);
     }
+
+    public async Task AddVaccinationRecordAsync(string requesterFirebaseUid, CreateVaccinationRecordDto dto, CancellationToken ct)
+    {
+        _logger.LogInformation("User {RequesterUid} adds vaccination record for citizen {CitizenId}: vaccine {VaccineId}, date {VaccinationDate}, dose {DoseNumber}, batch {Batch}",
+            requesterFirebaseUid, dto.citizenId, dto.vaccineId, dto.vaccinationDate, dto.doseNumber, dto.batch);
+
+        await _vaccinationRecordRepository.AddVaccinationRecordAsync(dto, ct);
+    }
 }

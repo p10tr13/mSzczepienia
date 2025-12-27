@@ -11,8 +11,8 @@
         public required string doseNumber { get; set; }
         public DateTime? nextVaccinationDate { get; set; }
         public required string batch { get; set; }
-        public int sourceEntryId { get; set; }
-        public VaccinationEntry sourceEntry { get; set; } = null!;
+        public int? sourceEntryId { get; set; }
+        public VaccinationEntry? sourceEntry { get; set; } = null!;
         public string? remarks { get; set; }
         public DateTime creationDate { get; set; }
     }

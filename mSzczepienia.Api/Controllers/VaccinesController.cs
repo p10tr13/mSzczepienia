@@ -35,7 +35,7 @@ public class VaccinesController : ControllerBase
     }
 
     [HttpGet("search")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,worker")]
     public async Task<ActionResult<PagedResult<VaccineDto>>> SearchVaccinesAsync([FromQuery] GetVaccinesQuery query, CancellationToken ct)
     {
         if (query.PageNumber <= 0 || query.PageSize <= 0)

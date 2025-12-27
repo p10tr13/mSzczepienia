@@ -9,6 +9,7 @@ namespace mSzczepienia.Client.Services;
 public class VaccineClient : IVaccineClient
 {
     private readonly HttpClient _httpClient;
+    private readonly string _controllerUrl = "api/vaccines";
 
     public VaccineClient(HttpClient httpClient)
     {
@@ -17,13 +18,13 @@ public class VaccineClient : IVaccineClient
 
     public async Task<List<string>> GetManufacturersAutocompleteAsync(string query, CancellationToken ct)
     {
-        var response = await _httpClient.GetAsync($"api/vaccines/manufacturers-autocomplete?query={query}", ct);
+        var response = await _httpClient.GetAsync($"{_controllerUrl}/manufacturers-autocomplete?query={query}", ct);
         return await response.Content.ReadFromJsonAsync<List<string>>(ct) ?? new List<string>();
     }
 
     public async Task<List<string>> GetNamesAutocompleteAsync(string query, CancellationToken ct)
     {
-        var response = await _httpClient.GetAsync($"api/vaccines/names-autocomplete?query={query}", ct);
+        var response = await _httpClient.GetAsync($"{_controllerUrl}/names-autocomplete?query={query}", ct);
         return await response.Content.ReadFromJsonAsync<List<string>>(ct) ?? new List<string>();
     }
 
@@ -39,7 +40,7 @@ public class VaccineClient : IVaccineClient
             ["PageSize"] = PageSize.ToString()
         };
 
-        var url = QueryHelpers.AddQueryString("api/vaccines/search", queryParams);
+        var url = QueryHelpers.AddQueryString($"{_controllerUrl}/search", queryParams);
 
         var response = await _httpClient.GetAsync(url, ct);
 
@@ -58,7 +59,7 @@ public class VaccineClient : IVaccineClient
 
     public async Task<VaccineDto?> GetVaccineByIdAsync(int id, CancellationToken ct)
     {
-        var response = await _httpClient.GetAsync($"api/vaccines/{id}", ct);
+        var response = await _httpClient.GetAsync($"{_controllerUrl}/{id}", ct);
         if (response.IsSuccessStatusCode)
         {
             return await response.Content.ReadFromJsonAsync<VaccineDto>(cancellationToken: ct);
@@ -69,5 +70,28 @@ public class VaccineClient : IVaccineClient
             var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;
             throw new HttpRequestException(message, null, response.StatusCode);
         }
+    }
+
+    public async Task<List<VaccineDto>> SearchVaccinesAsync(string term, int maxResults, CancellationToken ct)
+    {
+        var queryParams = new Dictionary<string, string?>
+        {
+            { "SearchPhrase", term },
+            { "PageSize", maxResults.ToString() },
+            { "PageNumber", 1.ToString() }
+        };
+
+        var url = QueryHelpers.AddQueryString($"{_controllerUrl}/search", queryParams);
+        var response = await _httpClient.GetAsync(url, ct);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<PagedResult<VaccineDto>>(cancellationToken: ct);
+            return result?.Items ?? new List<VaccineDto>();
+        }
+
+        var content = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+        var message = string.IsNullOrWhiteSpace(content) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : content;
+        throw new HttpRequestException(message, null, response.StatusCode);
     }
 }

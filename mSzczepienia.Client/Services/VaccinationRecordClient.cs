@@ -44,4 +44,19 @@ public class VaccinationRecordClient : IVaccinationRecordClient
             throw new HttpRequestException(message, null, response.StatusCode);
         }
     }
+
+    public async Task AddVaccinationRecordAsync(CreateVaccinationRecordDto dto, CancellationToken ct)
+    {
+        dto.vaccinationDate = DateTime.SpecifyKind(dto.vaccinationDate, DateTimeKind.Unspecified);
+        if (dto.nextVaccinationDate != null)
+            dto.nextVaccinationDate = DateTime.SpecifyKind((DateTime)dto.nextVaccinationDate, DateTimeKind.Unspecified);
+        var response = await _httpClient.PostAsJsonAsync($"{_controllerUrl}/new", dto, ct);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(content) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : content;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
 }

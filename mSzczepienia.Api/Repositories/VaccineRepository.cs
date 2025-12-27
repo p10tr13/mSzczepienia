@@ -55,24 +55,35 @@ public class VaccineRepository : IVaccineRepository
 
         queryable = queryable.Include(v => v.vaccineDiseases).ThenInclude(vd => vd.disease);
 
-        if (query.Id.HasValue)
+        if (string.IsNullOrWhiteSpace(query.SearchPhrase))
         {
-            queryable = queryable.Where(v => v.vaccineId == query.Id);
-        }
+            if (query.Id.HasValue)
+            {
+                queryable = queryable.Where(v => v.vaccineId == query.Id);
+            }
 
-        if (!string.IsNullOrWhiteSpace(query.Name))
-        {
-            queryable = queryable.Where(v => v.vaccineName.Contains(query.Name));
-        }
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                queryable = queryable.Where(v => v.vaccineName.Contains(query.Name));
+            }
 
-        if (!string.IsNullOrWhiteSpace(query.Manufacturer))
-        {
-            queryable = queryable.Where(v => v.manufacturer.Contains(query.Manufacturer));
-        }
+            if (!string.IsNullOrWhiteSpace(query.Manufacturer))
+            {
+                queryable = queryable.Where(v => v.manufacturer.Contains(query.Manufacturer));
+            }
 
-        if (!string.IsNullOrWhiteSpace(query.Disease))
+            if (!string.IsNullOrWhiteSpace(query.Disease))
+            {
+                queryable = queryable.Where(v => v.vaccineDiseases.Any(vd => vd.disease.diseaseNameEn.Contains(query.Disease) || vd.disease.diseaseNamePl.Contains(query.Disease)));
+            }
+        }
+        else
         {
-            queryable = queryable.Where(v => v.vaccineDiseases.Any(vd => vd.disease.diseaseNameEn.Contains(query.Disease) || vd.disease.diseaseNamePl.Contains(query.Disease)));
+            queryable = queryable.Where(v => v.vaccineName.ToLower().Contains(query.SearchPhrase.ToLower()) ||
+                v.manufacturer.ToLower().Contains(query.SearchPhrase.ToLower()) ||
+                v.vaccineDiseases.Any(vd => vd.disease.diseaseNamePl.ToLower().Contains(query.SearchPhrase.ToLower()) ||
+                vd.disease.diseaseNameEn.ToLower().Contains(query.SearchPhrase.ToLower()))
+            );
         }
 
         var totalCount = await queryable.CountAsync(ct);

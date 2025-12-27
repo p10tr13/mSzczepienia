@@ -1,0 +1,181 @@
+﻿@page "/citizens/{id:int}/vaccination-records/new"
+@attribute [Authorize(Roles = "worker")]
+@inject NavigationManager NavigationManager
+@inject ICitizenClient CitizenClient
+@inject IVaccineClient VaccineClient
+@inject IVaccinationRecordClient VaccinationRecordClient
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<SharedResources> Localizer
+@using mSzczepienia.Shared.DTO.Citizens
+@using mSzczepienia.Shared.DTO.VaccinationRecords
+@using mSzczepienia.Shared.DTO.Vaccines
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    <MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary">@Localizer["AddVaccinationRecord"]</MudText>
+
+    <EditForm Model="@model" OnValidSubmit="OnSubmit">
+        <DataAnnotationsValidator />
+
+        <MudCard Elevation="3" Class="pa-4">
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h6" Class="mb-2">@Localizer["Citizen"]</MudText>
+                        <MudDivider />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_citizen?.name" Label="@Localizer["First Name"]" ReadOnly="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_citizen?.surname" Label="@Localizer["Surname"]" ReadOnly="true" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_citizen?.pesel" Label="@Localizer["PESEL"]" ReadOnly="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@(_citizen?.dateOfBirth.ToShortDateString())" Label="@Localizer["DateOfBirth"]" ReadOnly="true" />
+                    </MudItem>
+
+                    <MudItem xs="12" Class="mt-4">
+                        <MudText Typo="Typo.h6" Class="mb-2">@Localizer["VaccinationData"]</MudText>
+                        <MudDivider />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudAutocomplete T="VaccineDto" Label="@Localizer["Vaccine"]" SearchFunc="SearchVaccine"
+                                         ToStringFunc="@(v => v == null ? null : $"{v.VaccineName} ({v.Manufacturer})")"
+                                         @bind-Value="selectedVaccine" CoerceText="true" Clearable="true"
+                                         Variant="Variant.Outlined" Required="true" AdornmentIcon="@Icons.Material.Filled.Search"
+                                         AdornmentColor="Color.Primary" DebounceInterval="1000" RequiredError="@Localizer["Required"]" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField Label="@Localizer["DoseNumber"]" Required="true" RequiredError="@Localizer["Required"]" @bind-Value="model.doseNumber" Variant="Variant.Outlined" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudDatePicker Label="@Localizer["VaccinationDate"]" @bind-Date="dateVaccination" Required="true" RequiredError="@Localizer["Required"]" Variant="Variant.Outlined"
+                                       MaxDate="@DateTime.Now"/>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudDatePicker Label="@Localizer["NextVaccinationDate"]" @bind-Date="dateNextVaccination" Variant="Variant.Outlined" MinDate="@DateTime.Now"/>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField Label="@Localizer["Batch"]" Required="true" RequiredError="@Localizer["Required"]" @bind-Value="model.batch" Variant="Variant.Outlined" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField Label="@Localizer["Remarks"]" @bind-Value="model.remarks" Variant="Variant.Outlined" Lines="3" />
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+
+            <MudCardActions Class="pa-4 justify-end">
+                <MudButton OnClick="@(() => NavigationManager.NavigateTo($"/citizens/{id}"))" Class="mr-2">@Localizer["Cancel"]</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@_processing">
+                    @if (_processing)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">@Localizer["Processing"]</MudText>
+                    }
+                    else
+                    {
+                        @Localizer["Add"]
+                    }
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+</MudContainer>
+
+@code {
+
+    [Parameter]
+    public int id { get; set; }
+
+    private CitizenDetailsDto? _citizen;
+    private VaccineDto? selectedVaccine;
+    private CreateVaccinationRecordDto model = new CreateVaccinationRecordDto {doseNumber = string.Empty, batch = string.Empty};
+    private DateTime? dateVaccination = DateTime.UtcNow;
+    private DateTime? dateNextVaccination;
+    private bool _processing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCitizen();
+        base.OnInitialized();
+    }
+
+    private async Task LoadCitizen()
+    {
+        try
+        {
+            _citizen = await CitizenClient.GetCitizenByIdAsync(id, CancellationToken.None);
+            if (_citizen == null)
+            {
+                Snackbar.Add(Localizer["CitizenNotFound"], Severity.Error);
+                NavigationManager.NavigateTo("/citizens");
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Localizer["ErrorLoadingCitizen"]}: {ex.Message}", Severity.Error);
+            NavigationManager.NavigateTo("/citizens");
+        }
+    }
+
+    private async Task<IEnumerable<VaccineDto>> SearchVaccine(string value, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length < 2)
+            return Enumerable.Empty<VaccineDto>();
+
+        try
+        {
+            var list = await VaccineClient.SearchVaccinesAsync(value, 10, ct);
+            return list;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Localizer["ErrorLoadingVaccines"]}: {ex.Message}", Severity.Error);
+            return Enumerable.Empty<VaccineDto>();
+        }
+    }
+
+    private async Task OnSubmit()
+    {
+        if (selectedVaccine == null)
+        {
+            Snackbar.Add(Localizer["SelectVaccine"], Severity.Warning);
+            return;
+        }
+
+        _processing = true;
+        model.citizenId = id;
+        model.vaccineId = selectedVaccine.VaccineId;
+        model.vaccinationDate = dateVaccination ?? DateTime.UtcNow;
+        model.nextVaccinationDate = dateNextVaccination;
+
+        try
+        {
+            await VaccinationRecordClient.AddVaccinationRecordAsync(model, CancellationToken.None);
+            Snackbar.Add(Localizer["RecordAdded"], Severity.Success);
+            NavigationManager.NavigateTo($"/citizens/{id}");
+        }
+        catch (HttpRequestException httpEx)
+        {
+            Snackbar.Add($"{Localizer["ErrorAddingRecord"]}: {httpEx.Message}", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Localizer["ErrorAddingRecord"]}: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+}

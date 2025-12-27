@@ -1,8 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using mSzczepienia.Api.Repositories.Interfaces;
+using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Queries;
 using mSzczepienia.Shared.DTO.VaccinationRecords;
-using mSzczepienia.Shared.DTO;
-using mSzczepienia.Api.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using mSzczepienia.Shared.Models;
 
 namespace mSzczepienia.Api.Repositories
 {
@@ -123,6 +124,37 @@ namespace mSzczepienia.Api.Repositories
                 PageNumber = query.PageNumber,
                 PageSize = query.PageSize
             };
+        }
+
+        public async Task AddVaccinationRecordAsync(CreateVaccinationRecordDto dto, CancellationToken ct)
+        {
+            // Validate citizen
+            var citizen = await _dbContext.citizens.FindAsync(new object[] { dto.citizenId }, ct);
+            if (citizen == null)
+                throw new InvalidOperationException("Citizen not found.");
+
+            // Validate vaccine definition
+            var vaccineDef = await _dbContext.vaccineDefinitions.Include(v => v.vaccineDiseases).ThenInclude(vd => vd.disease)
+                .FirstOrDefaultAsync(v => v.vaccineId == dto.vaccineId, ct);
+
+            if (vaccineDef == null)
+                throw new InvalidOperationException("Vaccine definition not found.");
+
+            var record = new VaccinationRecord
+            {
+                citizenId = dto.citizenId,
+                vaccineId = dto.vaccineId,
+                vaccinationDate = dto.vaccinationDate,
+                doseNumber = dto.doseNumber,
+                nextVaccinationDate = dto.nextVaccinationDate,
+                batch = dto.batch,
+                sourceEntryId = dto.sourceEntryId,
+                remarks = dto.remarks,
+                creationDate = DateTime.UtcNow
+            };
+
+            await _dbContext.vaccinationRecords.AddAsync(record, ct);
+            await _dbContext.SaveChangesAsync(ct);
         }
     }
 }

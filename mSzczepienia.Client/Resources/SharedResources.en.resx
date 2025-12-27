@@ -609,4 +609,19 @@
   <data name="ErrorLoadingRecord" xml:space="preserve">
     <value>Error occurred while loading vacciantion record</value>
   </data>
+  <data name="NoWorkerInfo" xml:space="preserve">
+    <value>No Worker Info</value>
+  </data>
+  <data name="HealthcareWorkerDetails" xml:space="preserve">
+    <value>Healthcare Worker Details</value>
+  </data>
+  <data name="ProfileNotFound" xml:space="preserve">
+    <value>Profile Not Found</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="ErrorLoadingProfile" xml:space="preserve">
+    <value>Error occurred while loading profile</value>
+  </data>
 </root>

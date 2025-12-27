@@ -17,7 +17,7 @@ public class VaccinationRecordClient : IVaccinationRecordClient
         _httpClient = httpClient;
     }
 
-    public async Task<PagedResult<VaccinationRecordOverviewDto>> GetVaccinationRecordsByCitizenIdAsync(GetVaccinationRecordsByCitizenIdQuery query, CancellationToken ct)
+    public async Task<PagedResult<VaccinationRecordSimpleListItemDto>> GetVaccinationRecordsByCitizenIdAsync(GetVaccinationRecordsByCitizenIdQuery query, CancellationToken ct)
     {
         var queryParams = new Dictionary<string, string?>
         {
@@ -34,8 +34,8 @@ public class VaccinationRecordClient : IVaccinationRecordClient
 
         if (response.IsSuccessStatusCode)
         {
-            var result = await response.Content.ReadFromJsonAsync<PagedResult<VaccinationRecordOverviewDto>>(cancellationToken: ct);
-            return result ?? new PagedResult<VaccinationRecordOverviewDto>();
+            var result = await response.Content.ReadFromJsonAsync<PagedResult<VaccinationRecordSimpleListItemDto>>(cancellationToken: ct);
+            return result ?? new PagedResult<VaccinationRecordSimpleListItemDto>();
         }
         else
         {
@@ -52,6 +52,54 @@ public class VaccinationRecordClient : IVaccinationRecordClient
             dto.nextVaccinationDate = DateTime.SpecifyKind((DateTime)dto.nextVaccinationDate, DateTimeKind.Unspecified);
         var response = await _httpClient.PostAsJsonAsync($"{_controllerUrl}/new", dto, ct);
 
+        if (!response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(content) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : content;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
+
+    public async Task<VaccinationRecordEditDto?> GetVaccinationRecordByIdAsync(int recordId, CancellationToken ct)
+    {
+        var response = await _httpClient.GetAsync($"{_controllerUrl}/{recordId}/edit", ct);
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<VaccinationRecordEditDto>(cancellationToken: ct);
+            return result;
+        }
+        else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+        else
+        {
+            var content = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(content) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : content;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
+
+    public async Task UpdateVaccinationRecordAsync(int recordId, UpdateVaccinationRecordDto dto, CancellationToken ct)
+    {
+        if (dto.vaccinationDate == null)
+            throw new ArgumentNullException("Vaccination date cannot be null");
+        dto.vaccinationDate = DateTime.SpecifyKind((DateTime)dto.vaccinationDate, DateTimeKind.Unspecified);
+        if (dto.nextVaccinationDate != null)
+            dto.nextVaccinationDate = DateTime.SpecifyKind((DateTime)dto.nextVaccinationDate, DateTimeKind.Unspecified);
+
+        var response = await _httpClient.PutAsJsonAsync($"{_controllerUrl}/{recordId}", dto, ct);
+        if (!response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(content) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : content;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
+
+    public async Task DeleteVaccinationRecordAsync(int recordId, CancellationToken ct)
+    {
+        var response = await _httpClient.DeleteAsync($"{_controllerUrl}/{recordId}", ct);
         if (!response.IsSuccessStatusCode)
         {
             var content = await response.Content.ReadAsStringAsync(cancellationToken: ct);

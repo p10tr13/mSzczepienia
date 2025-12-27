@@ -1,0 +1,223 @@
+@page "/vaccination-records/{id:int}/edit"
+@attribute [Authorize(Roles = "worker")]
+@inject NavigationManager NavigationManager
+@inject IVaccinationRecordClient VaccinationRecordClient
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<SharedResources> Localizer
+@inject IDialogService DialogService
+@using mSzczepienia.Shared.DTO.VaccinationRecords
+@using mSzczepienia.Shared.DTO
+@using mSzczepienia.Shared.DTO.Citizens
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    <MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary">@Localizer["EditVaccinationRecord"]</MudText>
+
+    @if (_isLoading)
+    {
+        <MudSkeleton Height="420px" />
+    }
+    else if (!string.IsNullOrEmpty(_error))
+    {
+        <ErrorState Message="@_error" OnRetry="LoadRecord" />
+    }
+    else if (_record != null)
+    {
+        <EditForm Model="_editModel" OnValidSubmit="OnSubmit">
+            <DataAnnotationsValidator />
+
+            <MudCard Elevation="3" Class="pa-4">
+                <MudCardContent>
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.h6" Class="mb-2">@Localizer["Citizen"]</MudText>
+                            <MudDivider />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Value="@_record.name" Label="@Localizer["First Name"]" ReadOnly="true" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Value="@_record.surname" Label="@Localizer["Surname"]" ReadOnly="true" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Value="@_record.pesel" Label="@Localizer["PESEL"]" ReadOnly="true" />
+                        </MudItem>
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Value="@(_record.dateOfBirth.ToShortDateString())" Label="@Localizer["DateOfBirth"]" ReadOnly="true" />
+                        </MudItem>
+
+                        <MudItem xs="12" Class="mt-4">
+                            <MudText Typo="Typo.h6" Class="mb-2">@Localizer["Vaccine"]</MudText>
+                            <MudDivider />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField Value="@(_record.vaccineName + " (" + _record.manufacturer + ")")" Label="@Localizer["Vaccine"]" ReadOnly="true" />
+                        </MudItem>
+
+                        <MudItem xs="12" Class="mt-4">
+                            <MudText Typo="Typo.h6" Class="mb-2">@Localizer["VaccinationData"]</MudText>
+                            <MudDivider />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField Label="@Localizer["DoseNumber"]" Required="true" RequiredError="@Localizer["Required"]" @bind-Value="_editModel.doseNumber" Variant="Variant.Outlined" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudDatePicker Label="@Localizer["VaccinationDate"]" @bind-Date="_editModel.vaccinationDate" Required="true" RequiredError="@Localizer["Required"]"
+                                           Variant="Variant.Outlined" MaxDate="@DateTime.Now" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudDatePicker Label="@Localizer["NextVaccinationDate"]" @bind-Date="_editModel.nextVaccinationDate" Variant="Variant.Outlined" MinDate="@DateTime.Now" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField Label="@Localizer["Batch"]" Required="true" RequiredError="@Localizer["Required"]" @bind-Value="_editModel.batch" Variant="Variant.Outlined" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField Label="@Localizer["Remarks"]" @bind-Value="_editModel.remarks" Variant="Variant.Outlined" Lines="3" />
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+
+                <MudCardActions Class="pa-4 justify-end">
+                    <MudButton OnClick="Cancel" Class="mr-2">@Localizer["Cancel"]</MudButton>
+                    <MudButton Color="Color.Error" OnClick="DeleteRecord" Class="me-auto">@Localizer["Delete"]</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@_processing">
+                        @if (_processing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">@Localizer["Processing"]</MudText>
+                        }
+                        else
+                        {
+                            @Localizer["Save"]
+                        }
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </EditForm>
+    }
+</MudContainer>
+
+    @code {
+    [Parameter]
+    public int id { get; set; }
+
+    private VaccinationRecordEditDto? _record;
+    private UpdateVaccinationRecordDto _editModel = new UpdateVaccinationRecordDto { doseNumber = string.Empty, batch = string.Empty};
+    private bool _isLoading = true;
+    private bool _processing = false;
+    private string? _error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRecord();
+    }
+
+    private async Task LoadRecord()
+    {
+        _isLoading = true;
+        _error = null;
+        StateHasChanged();
+
+        try
+        {
+            _record = await VaccinationRecordClient.GetVaccinationRecordByIdAsync(id, CancellationToken.None);
+            if (_record == null)
+            {
+                _error = Localizer["RecordNotFound"];
+            }
+            else
+            {
+                _editModel.vaccinationDate = _record.vaccinationDate;
+                _editModel.nextVaccinationDate = _record.nextVaccinationDate;
+                _editModel.doseNumber = _record.doseNumber;
+                _editModel.batch = _record.batch;
+                _editModel.remarks = _record.remarks;
+            }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _error = Localizer["ErrorLoadingRecord"];
+            Snackbar.Add($"{_error}: {httpEx.Message}", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            _error = Localizer["ErrorLoadingRecord"];
+            Snackbar.Add($"{_error}: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnSubmit()
+    {
+        _processing = true;
+        try
+        {
+            await VaccinationRecordClient.UpdateVaccinationRecordAsync(id, _editModel, CancellationToken.None);
+            Snackbar.Add(Localizer["RecordUpdated"], Severity.Success);
+            if (_record != null)
+                NavigationManager.NavigateTo($"/citizens/{_record.citizenId}");
+            else
+                NavigationManager.NavigateTo("/citizens");
+        }
+        catch (HttpRequestException httpEx)
+        {
+            Snackbar.Add($"{Localizer["ErrorUpdatingRecord"]}: {httpEx.Message}", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Localizer["ErrorUpdatingRecord"]}: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        if (_record != null)
+            NavigationManager.NavigateTo($"/citizens/{_record.citizenId}");
+        else
+            NavigationManager.NavigateTo("/citizens");
+    }
+
+    private async Task DeleteRecord()
+    {
+        if (!(await DialogService.ShowMessageBox("Confirm", Localizer["ConfirmDeleteRecord"], yesText: Localizer["Delete"], noText: Localizer["Cancel"]) ?? false))
+            return;
+
+        _processing = true;
+        try
+        {
+            await VaccinationRecordClient.DeleteVaccinationRecordAsync(id, CancellationToken.None);
+            Snackbar.Add(Localizer["RecordDeleted"], Severity.Success);
+            if (_record != null)
+                NavigationManager.NavigateTo($"/citizens/{_record.citizenId}");
+            else
+                NavigationManager.NavigateTo("/citizens");
+        }
+        catch (HttpRequestException httpEx)
+        {
+            Snackbar.Add($"{Localizer["ErrorDeletingRecord"]}: {httpEx.Message}, {httpEx.StatusCode}", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Localizer["ErrorDeletingRecord"]}: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+}

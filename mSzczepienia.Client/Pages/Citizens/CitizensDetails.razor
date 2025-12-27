@@ -118,12 +118,12 @@
                         <MudPaper Elevation="1" Class="pa-4 transition-item">
                             <MudGrid Class="align-center">
                                 <MudItem xs="12" sm="8">
-                                    <MudText Typo="Typo.subtitle1"><b>@rec.vaccineName</b></MudText>
-                                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@rec.manufacturer</MudText>
-                                    <MudText Typo="Typo.body2" Class="mt-1">@Localizer["VaccinationDate"]: @rec.vaccinationDate.ToShortDateString()</MudText>
+                                    <MudText Typo="Typo.subtitle1"><b>@rec.VaccineName</b></MudText>
+                                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@rec.Manufacturer</MudText>
+                                    <MudText Typo="Typo.body2" Class="mt-1">@Localizer["VaccinationDate"]: @rec.VaccinationDate.ToShortDateString()</MudText>
                                 </MudItem>
                                 <MudItem xs="12" sm="4" Class="d-flex justify-end">
-                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="@(() => EditRecord(rec.id))">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="@(() => EditRecord(rec.RecordId))">
                                         @Localizer["Edit"]
                                     </MudButton>
                                 </MudItem>
@@ -160,7 +160,7 @@
     public int id { get; set; }
 
     private CitizenDetailsDto? _citizen;
-    private PagedResult<VaccinationRecordOverviewDto>? _recordsResult;
+    private PagedResult<VaccinationRecordSimpleListItemDto>? _recordsResult;
 
     private bool _isLoadingCitizen = true;
     private bool _isLoadingRecords = true;
@@ -276,8 +276,8 @@
         //NavigationManager.NavigateTo($"/citizens/{id}/bookletphotos/upload");
     }
 
-    private void EditRecord(int vaccineId)
+    private void EditRecord(int recordId)
     {
-        NavigationManager.NavigateTo($"/vaccination-records/{vaccineId}/edit");
+        NavigationManager.NavigateTo($"/vaccination-records/{recordId}/edit");
     }
 }

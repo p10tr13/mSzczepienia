@@ -89,35 +89,32 @@ namespace mSzczepienia.Api.Repositories
             return await resultQuery.ToListAsync(ct);
         }
 
-        public async Task<PagedResult<VaccinationRecordOverviewDto>> GetVaccinationRecordOverviewByCitizenIdAsync(GetVaccinationRecordsByCitizenIdQuery query, CancellationToken ct)
+        public async Task<PagedResult<VaccinationRecordSimpleListItemDto>> GetVaccinationRecordsByCitizenIdAsync(GetVaccinationRecordsByCitizenIdQuery query, CancellationToken ct)
         {
-            var baseQuery = _dbContext.vaccinationRecords.AsNoTracking().Where(x => x.citizen.citizenId == query.CitizenId);
-
-            var groupedQuery = baseQuery.GroupBy(x => new { x.vaccineDefinition.vaccineId, x.vaccineDefinition.vaccineName, x.vaccineDefinition.manufacturer })
-                .Select(g => new VaccinationRecordOverviewDto
-                {
-                    id = g.Key.vaccineId,
-                    vaccineName = g.Key.vaccineName,
-                    manufacturer = g.Key.manufacturer,
-                    vaccinationDate = g.Max(x => x.vaccinationDate),
-                    dosesNumber = g.Count()
-                });
+            var baseQuery = _dbContext.vaccinationRecords.AsNoTracking().Include(x => x.vaccineDefinition).Where(x => x.citizen.citizenId == query.CitizenId);
 
             var sortField = query.SortingField?.ToLower() ?? "vaccinationdate";
             var isAsc = query.SortingDirection?.ToLower() == "asc";
 
-            groupedQuery = sortField switch
+            baseQuery = sortField switch
             {
-                "vaccinename" => isAsc ? groupedQuery.OrderBy(x => x.vaccineName) : groupedQuery.OrderByDescending(x => x.vaccineName),
+                "vaccinename" => isAsc ? baseQuery.OrderBy(x => x.vaccineDefinition.vaccineName) : baseQuery.OrderByDescending(x => x.vaccineDefinition.vaccineName),
 
-                _ => isAsc ? groupedQuery.OrderBy(x => x.vaccinationDate) : groupedQuery.OrderByDescending(x => x.vaccinationDate)
+                _ => isAsc ? baseQuery.OrderBy(x => x.vaccinationDate) : baseQuery.OrderByDescending(x => x.vaccinationDate)
             };
 
-            var totalCount = await groupedQuery.CountAsync(ct);
+            var totalCount = await baseQuery.CountAsync(ct);
 
-            var items = await groupedQuery.Skip((query.PageNumber - 1) * query.PageSize).Take(query.PageSize).ToListAsync(ct);
+            var items = await baseQuery.Skip((query.PageNumber - 1) * query.PageSize).Take(query.PageSize)
+                .Select(v => new VaccinationRecordSimpleListItemDto
+                {
+                    RecordId = v.recordId,
+                    VaccineName = v.vaccineDefinition.vaccineName,
+                    Manufacturer = v.vaccineDefinition.manufacturer,
+                    VaccinationDate = v.vaccinationDate,
+                }).ToListAsync(ct);
 
-            return new PagedResult<VaccinationRecordOverviewDto>
+            return new PagedResult<VaccinationRecordSimpleListItemDto>
             {
                 Items = items,
                 TotalCount = totalCount,
@@ -154,6 +151,65 @@ namespace mSzczepienia.Api.Repositories
             };
 
             await _dbContext.vaccinationRecords.AddAsync(record, ct);
+            await _dbContext.SaveChangesAsync(ct);
+        }
+
+        public async Task<VaccinationRecordEditDto?> GetVaccinationRecordByIdAsync(int recordId, CancellationToken ct)
+        {
+            var rec = await _dbContext.vaccinationRecords
+                .AsNoTracking()
+                .Include(x => x.citizen).Include(x => x.citizen.account)
+                .Include(x => x.vaccineDefinition)
+                .FirstOrDefaultAsync(x => x.recordId == recordId, ct);
+
+            if (rec == null)
+                return null;
+
+            return new VaccinationRecordEditDto
+            {
+                recordId = rec.recordId,
+                citizenId = rec.citizenId,
+                name = rec.citizen.account.name,
+                surname = rec.citizen.account.surname,
+                pesel = rec.citizen.pesel,
+                dateOfBirth = rec.citizen.account.dateOfBirth,
+                vaccineId = rec.vaccineId,
+                vaccineName = rec.vaccineDefinition.vaccineName,
+                manufacturer = rec.vaccineDefinition.manufacturer,
+                vaccinationDate = rec.vaccinationDate,
+                nextVaccinationDate = rec.nextVaccinationDate,
+                doseNumber = rec.doseNumber,
+                batch = rec.batch,
+                remarks = rec.remarks
+            };
+        }
+
+        public async Task UpdateVaccinationRecordAsync(int recordId, UpdateVaccinationRecordDto dto, CancellationToken ct)
+        {
+            var rec = await _dbContext.vaccinationRecords.FirstOrDefaultAsync(x => x.recordId == recordId, ct);
+            if (rec == null)
+                throw new InvalidOperationException("Vaccination record not found.");
+
+            if (dto.vaccinationDate == null)
+                throw new ArgumentNullException("Vaccination date cannot be null.");
+
+            rec.vaccinationDate = (DateTime)dto.vaccinationDate;
+            rec.nextVaccinationDate = dto.nextVaccinationDate;
+            rec.doseNumber = dto.doseNumber;
+            rec.batch = dto.batch;
+            rec.remarks = dto.remarks;
+
+            _dbContext.vaccinationRecords.Update(rec);
+            await _dbContext.SaveChangesAsync(ct);
+        }
+
+        public async Task DeleteVaccinationRecordAsync(int recordId, CancellationToken ct)
+        {
+            var rec = await _dbContext.vaccinationRecords.FirstOrDefaultAsync(x => x.recordId == recordId, ct);
+            if (rec == null)
+                throw new InvalidOperationException("Vaccination record not found.");
+
+            _dbContext.vaccinationRecords.Remove(rec);
             await _dbContext.SaveChangesAsync(ct);
         }
     }

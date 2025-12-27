@@ -544,7 +544,7 @@
     <value>Nie znaleziono wykonanych szczepień</value>
   </data>
   <data name="ErrorLoadingRecords" xml:space="preserve">
-    <value>Wystąpił błąd podczas ładowania wykonanych szczepień</value>
+    <value>Wystąpił błąd podczas ładowania wpisów wykonanych szczepień</value>
   </data>
   <data name="Citizen" xml:space="preserve">
     <value>Obywatel</value>
@@ -575,5 +575,38 @@
   </data>
   <data name="ErrorAddingRecord" xml:space="preserve">
     <value>Wystąpił błąd podczas dodawania rekordu</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Zapisz</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+  <data name="EditVaccinationRecord" xml:space="preserve">
+    <value>Edytuj wpis wykonanego szczepienia</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Potwierdź</value>
+  </data>
+  <data name="ConfirmDeleteRecord" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć to wykonane szczepienie?</value>
+  </data>
+  <data name="ErrorDeletingRecord" xml:space="preserve">
+    <value>Wystąpił błąd podczas usuwania wpisu szczepienia</value>
+  </data>
+  <data name="RecordDeleted" xml:space="preserve">
+    <value>Wpis szczepienia został usunięty</value>
+  </data>
+  <data name="RecordUpdated" xml:space="preserve">
+    <value>Wpis szczepienia został zaktualizowany</value>
+  </data>
+  <data name="ErrorUpdatingRecord" xml:space="preserve">
+    <value>Wystąpił błąd podczas aktualizowania wpisu wykonanego szczepienia</value>
+  </data>
+  <data name="RecordNotFound" xml:space="preserve">
+    <value>Nie znaleziono wpisu wykonanego szczepienia</value>
+  </data>
+  <data name="ErrorLoadingRecord" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania wpisu wykonanego szczepienia</value>
   </data>
 </root>

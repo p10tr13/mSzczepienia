@@ -538,13 +538,13 @@
     <value>Citizen Not Found</value>
   </data>
   <data name="ErrorLoadingCitizen" xml:space="preserve">
-    <value>Erroro ccurred loading citizen</value>
+    <value>Erroro ccurred while loading citizen</value>
   </data>
   <data name="RecordsNotFound" xml:space="preserve">
     <value>Vaccination records were not found</value>
   </data>
   <data name="ErrorLoadingRecords" xml:space="preserve">
-    <value>Error occurred loading records</value>
+    <value>Error occurred while loading vaccination records</value>
   </data>
   <data name="Citizen" xml:space="preserve">
     <value>Citizen</value>
@@ -575,5 +575,38 @@
   </data>
   <data name="ErrorAddingRecord" xml:space="preserve">
     <value>Error occured while adding record</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="EditVaccinationRecord" xml:space="preserve">
+    <value>Edit Vaccination Record</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="ConfirmDeleteRecord" xml:space="preserve">
+    <value>ConfirmDeleteRecord</value>
+  </data>
+  <data name="ErrorDeletingRecord" xml:space="preserve">
+    <value>Error occurred while deleting vaccination record</value>
+  </data>
+  <data name="RecordDeleted" xml:space="preserve">
+    <value>Record deleted</value>
+  </data>
+  <data name="RecordUpdated" xml:space="preserve">
+    <value>Record updated</value>
+  </data>
+  <data name="ErrorUpdatingRecord" xml:space="preserve">
+    <value>Error occurred while updating vaccination record</value>
+  </data>
+  <data name="RecordNotFound" xml:space="preserve">
+    <value>Record was not found</value>
+  </data>
+  <data name="ErrorLoadingRecord" xml:space="preserve">
+    <value>Error occurred while loading vacciantion record</value>
   </data>
 </root>

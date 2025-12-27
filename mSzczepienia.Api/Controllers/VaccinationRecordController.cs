@@ -61,7 +61,7 @@ public class VaccinationRecordController : ControllerBase
 
     [HttpGet("by-citizen")]
     [Authorize(Roles = "worker")]
-    public async Task<ActionResult<PagedResult<VaccinationRecordOverviewDto>>> GetVaccinationRecordsByCitizenAsync([FromQuery] GetVaccinationRecordsByCitizenIdQuery query, CancellationToken ct)
+    public async Task<ActionResult<PagedResult<VaccinationRecordSimpleListItemDto>>> GetVaccinationRecordsByCitizenAsync([FromQuery] GetVaccinationRecordsByCitizenIdQuery query, CancellationToken ct)
     {
         var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(firebaseUid))
@@ -106,6 +106,67 @@ public class VaccinationRecordController : ControllerBase
         catch (Exception)
         {
             return StatusCode(500, "An error occurred while adding vaccination record.");
+        }
+    }
+
+    [HttpGet("{id}/edit")]
+    [Authorize(Roles = "worker")]
+    public async Task<ActionResult<VaccinationRecordEditDto>> GetVaccinationRecordForEditAsync(int id, CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(firebaseUid))
+            return Unauthorized("Invalid token: UID not found.");
+
+        var result = await _vaccinationRecordService.GetVaccinationRecordByIdAsync(firebaseUid, id, ct);
+        if (result == null)
+            return NotFound();
+
+        return Ok(result);
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "worker")]
+    public async Task<IActionResult> UpdateVaccinationRecord(int id, [FromBody] UpdateVaccinationRecordDto dto, CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(firebaseUid))
+            return Unauthorized("Invalid token: UID not found.");
+
+        try
+        {
+            await _vaccinationRecordService.UpdateVaccinationRecordAsync(firebaseUid, id, dto, ct);
+            return NoContent();
+        }
+        catch (InvalidOperationException invEx)
+        {
+            return BadRequest(invEx.Message);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "An error occurred while updating vaccination record.");
+        }
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "worker")]
+    public async Task<IActionResult> DeleteVaccinationRecord(int id, CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(firebaseUid))
+            return Unauthorized("Invalid token: UID not found.");
+
+        try
+        {
+            await _vaccinationRecordService.DeleteVaccinationRecordAsync(firebaseUid, id, ct);
+            return NoContent();
+        }
+        catch (InvalidOperationException invEx)
+        {
+            return BadRequest(invEx.Message);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "An error occurred while deleting vaccination record.");
         }
     }
 }

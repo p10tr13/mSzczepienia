@@ -27,10 +27,28 @@ public class VaccinationRecordService : IVaccinationRecordService
         return _vaccinationRecordRepository.GetVaccinationRecordsDetailsAsync(firebaseUid, query, ct);
     }
 
-    public async Task<PagedResult<VaccinationRecordOverviewDto>> GetVaccinationRecordsByCitizenIdAsync(string requesterFirebaseUid, GetVaccinationRecordsByCitizenIdQuery query, CancellationToken ct)
+    public async Task<PagedResult<VaccinationRecordSimpleListItemDto>> GetVaccinationRecordsByCitizenIdAsync(string requesterFirebaseUid, GetVaccinationRecordsByCitizenIdQuery query, CancellationToken ct)
     {
         _logger.LogInformation("Vaccination records for citizen {CitizenId} requested by {RequesterUid}", query.CitizenId, requesterFirebaseUid);
-        return await _vaccinationRecordRepository.GetVaccinationRecordOverviewByCitizenIdAsync(query, ct);
+        return await _vaccinationRecordRepository.GetVaccinationRecordsByCitizenIdAsync(query, ct);
+    }
+
+    public async Task<VaccinationRecordEditDto?> GetVaccinationRecordByIdAsync(string requesterFirebaseUid, int recordId, CancellationToken ct)
+    {
+        _logger.LogInformation("User {RequesterUid} requests vaccination record {RecordId}", requesterFirebaseUid, recordId);
+        return await _vaccinationRecordRepository.GetVaccinationRecordByIdAsync(recordId, ct);
+    }
+
+    public async Task UpdateVaccinationRecordAsync(string requesterFirebaseUid, int recordId, UpdateVaccinationRecordDto dto, CancellationToken ct)
+    {
+        _logger.LogInformation("User {RequesterUid} updates vaccination record {RecordId}: date {VaccinationDate}, dose {Dose}, batch {Batch}", requesterFirebaseUid, recordId, dto.vaccinationDate, dto.doseNumber, dto.batch);
+        await _vaccinationRecordRepository.UpdateVaccinationRecordAsync(recordId, dto, ct);
+    }
+
+    public async Task DeleteVaccinationRecordAsync(string requesterFirebaseUid, int recordId, CancellationToken ct)
+    {
+        _logger.LogInformation("User {RequesterUid} deletes vaccination record {RecordId}", requesterFirebaseUid, recordId);
+        await _vaccinationRecordRepository.DeleteVaccinationRecordAsync(recordId, ct);
     }
 
     public async Task AddVaccinationRecordAsync(string requesterFirebaseUid, CreateVaccinationRecordDto dto, CancellationToken ct)

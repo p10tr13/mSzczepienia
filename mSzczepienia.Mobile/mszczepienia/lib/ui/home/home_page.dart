@@ -52,7 +52,9 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 35),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  context.push('/submission-status');
+                },
                 borderRadius: BorderRadius.circular(16),
                 child: HomeCustomContainer(
                   icon: Icons.camera_alt_rounded,

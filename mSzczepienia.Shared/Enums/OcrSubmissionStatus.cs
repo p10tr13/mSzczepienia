@@ -8,6 +8,7 @@ namespace mSzczepienia.Shared.Enums
 {
     public enum OcrSubmissionStatus
     {
+        Uploaded,
         Pending,
         Accepted,
         Rejected

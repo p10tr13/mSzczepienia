@@ -11,6 +11,7 @@ import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/logic/facility/facilities_cubit.dart';
 import 'package:mszczepienia/logic/language/language_cubit.dart';
 import 'package:mszczepienia/logic/language/language_state.dart';
+import 'package:mszczepienia/logic/ocr_submission/ocr_submission_cubit.dart';
 import 'package:mszczepienia/logic/theme/theme_cubit.dart';
 import 'package:mszczepienia/logic/theme/theme_state.dart';
 import 'package:mszczepienia/logic/vaccination_record/vaccination_records_cubit.dart';
@@ -51,6 +52,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<VaccinationRecordDetailsCubit>(
           create: (context) => sl<VaccinationRecordDetailsCubit>(),
+        ),
+        BlocProvider<OcrSubmissionCubit>(
+          create: (context) => sl<OcrSubmissionCubit>(),
         ),
       ],
       // Define auth state globally

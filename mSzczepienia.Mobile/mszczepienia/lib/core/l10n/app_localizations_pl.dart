@@ -234,4 +234,47 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get days => 'dni';
+
+  @override
+  String get uploadNewPhoto => 'Prześlij nowe zdjęcie';
+
+  @override
+  String get updateYourVaccinationHistory =>
+      'Zaktualizuj swoją historię szczepień za pomocą książeczki szczepień';
+
+  @override
+  String get submissionStatus => 'Status zgłoszenia';
+
+  @override
+  String get statusNotUploaded => 'Nie przesłano';
+
+  @override
+  String get statusPending => 'Oczekuje na weryfikację';
+
+  @override
+  String get statusApproved => 'Zatwierdzono';
+
+  @override
+  String get statusRejected => 'Odrzucono';
+
+  @override
+  String get selectPhotoSource => 'Wybierz źródło zdjęcia';
+
+  @override
+  String get takePhoto => 'Zrób zdjęcie';
+
+  @override
+  String get chooseFromGallery => 'Wybierz z galerii';
+
+  @override
+  String get cancel => 'Anuluj';
+
+  @override
+  String get analize => 'Analizuj';
+
+  @override
+  String get analyzingSubmission => 'Analizowanie twoich zdjęć...';
+
+  @override
+  String get errorOccurred => 'Wystąpił błąd';
 }

@@ -1,19 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Api.Repositories.Interfaces;
+using mSzczepienia.Api.Services;
+using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.OCRSubmissions;
 using mSzczepienia.Shared.DTO.Queries;
+using mSzczepienia.Shared.DTO.VaccinationEntries;
 using mSzczepienia.Shared.Enums;
+using mSzczepienia.Shared.Models;
 
 namespace mSzczepienia.Api.Repositories;
 
 public class OCRSubmissionRepository : IOCRSubmissionRepository
 {
     private readonly AppDbContext _dbContext;
+    private readonly IBlobService _blobService;
 
-    public OCRSubmissionRepository(AppDbContext dbContext)
+    public OCRSubmissionRepository(AppDbContext dbContext, IBlobService blobService)
     {
         _dbContext = dbContext;
+        _blobService = blobService;
     }
 
     public async Task<PagedResult<SearchOCRSubmissionDTO>> GetPendingForFacilityAsync(int facilityId, SearchOCRSubmissionQueryDto query, CancellationToken ct)
@@ -65,4 +71,52 @@ public class OCRSubmissionRepository : IOCRSubmissionRepository
             PageSize = query.PageSize
         };
     }
+
+    public async Task<List<VaccinationEntryDto>> ProcessOcrSubmissionAsync(string firebaseUid, List<IFormFile> files, CancellationToken ct)
+    {
+        // ADD NEW OCR SUBMISSION RECORD
+        var citizen = await _dbContext.citizens
+            .AsNoTracking()
+            .Include(c => c.account)
+            .FirstOrDefaultAsync(c => c.account.firebaseUid == firebaseUid, ct);
+
+        if (citizen == null)
+        {
+            throw new InvalidOperationException("Citizen not found for the provided Firebase UID.");
+        }
+
+        string uniqueGuid = Guid.NewGuid().ToString();
+        string directoryUrl = $"{firebaseUid}/{uniqueGuid}/";
+
+        var newSubmission = new OcrSubmission
+        {
+            citizenId = citizen.citizenId,
+            submissionDate = DateTime.UtcNow,
+            status = OcrSubmissionStatus.Uploaded,
+            photoUrl = directoryUrl,
+        };
+        _dbContext.ocrSubmissions.Add(newSubmission);
+        await _dbContext.SaveChangesAsync();
+
+
+        // UPLOAD FILES TO BLOB STORAGE
+        await _blobService.UploadMultipleFilesAsync(directoryUrl, files);
+
+
+        // OCR PROCESS
+        // PLACEHOLDER
+
+        // RETURN PROCESSED ENTRIES
+        List<VaccinationEntryDto> processedEntries = new List<VaccinationEntryDto>
+        {
+            new VaccinationEntryDto
+            {
+                vaccineName = "Vaccine A",
+                vaccinationDate = DateTime.UtcNow.AddDays(-60),
+                batchNumber = "B67890"
+            }
+        };
+        return processedEntries;
+    }
+
 }

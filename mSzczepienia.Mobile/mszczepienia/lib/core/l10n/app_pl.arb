@@ -94,5 +94,22 @@
     "vaccineCreationDate": "Data powstania szczepionki",
     "producer": "Producent",
     "nextVaccination": "Następne szczepienie za",
-    "days": "dni"
+    "days": "dni",
+
+    "uploadNewPhoto": "Prześlij nowe zdjęcie",
+    "updateYourVaccinationHistory": "Zaktualizuj swoją historię szczepień za pomocą książeczki szczepień",
+    "submissionStatus": "Status zgłoszenia",
+    "statusNotUploaded": "Nie przesłano",
+    "statusPending": "Oczekuje na weryfikację",
+    "statusApproved": "Zatwierdzono",
+    "statusRejected": "Odrzucono",
+
+    "selectPhotoSource": "Wybierz źródło zdjęcia",
+    "takePhoto": "Zrób zdjęcie",
+    "chooseFromGallery": "Wybierz z galerii",
+    "cancel": "Anuluj",
+    "analize": "Analizuj",
+
+    "analyzingSubmission": "Analizowanie twoich zdjęć...",
+    "errorOccurred": "Wystąpił błąd"
 }

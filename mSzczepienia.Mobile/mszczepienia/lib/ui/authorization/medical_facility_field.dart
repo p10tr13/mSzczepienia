@@ -114,7 +114,7 @@ class _MedicalFacilityFieldState extends State<MedicalFacilityField> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(
-                    color: AppColors.buttonBlue,
+                    color: AppColors.defaultBlue,
                     width: 2,
                   ),
                 ),

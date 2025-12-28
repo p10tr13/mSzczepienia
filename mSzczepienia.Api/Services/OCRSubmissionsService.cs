@@ -3,6 +3,7 @@ using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.OCRSubmissions;
 using mSzczepienia.Shared.DTO.Queries;
+using mSzczepienia.Shared.DTO.VaccinationEntries;
 using System.Security.Claims;
 
 namespace mSzczepienia.Api.Services;
@@ -39,5 +40,10 @@ public class OCRSubmissionsService : IOCRSubmissionsService
         }
 
         return await _ocrSubmissionRepository.GetPendingForFacilityAsync(facilityId.Value, query, ct);
+    }
+
+    public async Task<List<VaccinationEntryDto>> ProcessOcrSubmissionAsync(string firebaseUid, List<IFormFile> files, CancellationToken ct)
+    {
+        return await _ocrSubmissionRepository.ProcessOcrSubmissionAsync(firebaseUid, files, ct);
     }
 }

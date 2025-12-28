@@ -94,5 +94,22 @@
     "vaccineCreationDate": "Vaccine Creation Date",
     "producer": "Manufacturer",
     "nextVaccination": "Next Vaccination In",
-    "days": "days"
+    "days": "days",
+
+    "uploadNewPhoto": "Upload New Photo",
+    "updateYourVaccinationHistory": "Update your Vaccination History with your Vaccination Booklet",
+    "submissionStatus": "Submission Status",
+    "statusNotUploaded": "Not Uploaded",
+    "statusPending": "Pending Verification",
+    "statusApproved": "Approved",
+    "statusRejected": "Rejected",
+
+    "selectPhotoSource": "Select Photo Source",
+    "takePhoto": "Take Photo",
+    "chooseFromGallery": "Choose from Gallery",
+    "cancel": "Cancel",
+    "analize": "Analyze",
+
+    "analyzingSubmission": "Analyzing your photos...",
+    "errorOccurred": "An error occurred"
 }

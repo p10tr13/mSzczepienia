@@ -7,6 +7,9 @@ import 'package:mszczepienia/ui/authorization/pages/login_page.dart';
 import 'package:mszczepienia/ui/authorization/pages/sign_up_page.dart';
 import 'package:mszczepienia/ui/home/home_page.dart';
 import 'package:mszczepienia/ui/settings/settings_page.dart';
+import 'package:mszczepienia/ui/submission_process/analyze_page.dart';
+import 'package:mszczepienia/ui/submission_process/submission_status_page.dart';
+import 'package:mszczepienia/ui/submission_process/upload_photo_page.dart';
 import 'package:mszczepienia/ui/vaccination_details/vaccination_details_page.dart';
 import 'package:mszczepienia/ui/vaccination_history/vaccination_history_page.dart';
 
@@ -42,6 +45,21 @@ class AppRouter {
 
     routes: [
       GoRoute(path: '/', builder: (context, state) => const HomePage()),
+      GoRoute(
+        path: '/submission-status/analyze',
+        builder: (context, state) => const AnalyzePage(),
+      ),
+      GoRoute(
+        path: '/submission-status',
+        builder: (context, state) => const SubmissionStatusPage(),
+      ),
+      GoRoute(
+        path: '/upload-photo',
+        builder: (context, state) {
+          final imagePaths = state.uri.queryParameters['imagePaths'];
+          return UploadPhotoPage(imagePaths: imagePaths ?? '');
+        },
+      ),
       GoRoute(
         path: '/history/details',
         builder: (context, state) {

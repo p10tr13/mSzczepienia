@@ -535,6 +535,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'days'**
   String get days;
+
+  /// No description provided for @uploadNewPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload New Photo'**
+  String get uploadNewPhoto;
+
+  /// No description provided for @updateYourVaccinationHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your Vaccination History with your Vaccination Booklet'**
+  String get updateYourVaccinationHistory;
+
+  /// No description provided for @submissionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Submission Status'**
+  String get submissionStatus;
+
+  /// No description provided for @statusNotUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Uploaded'**
+  String get statusNotUploaded;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Verification'**
+  String get statusPending;
+
+  /// No description provided for @statusApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get statusApproved;
+
+  /// No description provided for @statusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get statusRejected;
+
+  /// No description provided for @selectPhotoSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Photo Source'**
+  String get selectPhotoSource;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get takePhoto;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @analize.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze'**
+  String get analize;
+
+  /// No description provided for @analyzingSubmission.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing your photos...'**
+  String get analyzingSubmission;
+
+  /// No description provided for @errorOccurred.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred'**
+  String get errorOccurred;
 }
 
 class _AppLocalizationsDelegate

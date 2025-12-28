@@ -5,15 +5,18 @@ import 'package:get_it/get_it.dart';
 import 'package:mszczepienia/core/network/dio_client.dart';
 import 'package:mszczepienia/data/datasources/citizen_remote_datasource.dart';
 import 'package:mszczepienia/data/datasources/medical_facility_remote_datasource.dart';
+import 'package:mszczepienia/data/datasources/ocr_submission_remote_datasource.dart';
 import 'package:mszczepienia/data/datasources/vaccination_record_remote_datasource.dart';
 import 'package:mszczepienia/data/repositories/citizen_repository.dart';
 import 'package:mszczepienia/data/repositories/medical_facility_repository.dart';
+import 'package:mszczepienia/data/repositories/ocr_submission_repository.dart';
 import 'package:mszczepienia/data/repositories/vaccination_record_repository.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/data/repositories/auth_repository.dart';
 import 'package:mszczepienia/logic/facility/facilities_cubit.dart';
 import 'package:mszczepienia/logic/language/language_cubit.dart';
 import 'package:mszczepienia/logic/language/language_repository.dart';
+import 'package:mszczepienia/logic/ocr_submission/ocr_submission_cubit.dart';
 import 'package:mszczepienia/logic/theme/theme_cubit.dart';
 import 'package:mszczepienia/logic/theme/theme_repository.dart';
 import 'package:mszczepienia/logic/vaccination_record/vaccination_records_cubit.dart';
@@ -29,6 +32,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => CitizenRemoteDataSource(sl()));
   sl.registerLazySingleton(() => MedicalFacilityRemoteDatasource(sl()));
   sl.registerLazySingleton(() => VaccinationRecordRemoteDatasource(sl()));
+  sl.registerLazySingleton(() => OcrSubmissionRemoteDatasource(sl()));
 
   // --- REPOSITORIES ---
   sl.registerLazySingleton(() => CitizenRepository(sl()));
@@ -47,6 +51,7 @@ Future<void> init() async {
   );
   sl.registerLazySingleton(() => MedicalFacilityRepository(sl()));
   sl.registerLazySingleton(() => VaccinationRecordRepository(sl()));
+  sl.registerLazySingleton(() => OcrSubmissionRepository(sl()));
 
   // --- CUBITS ---
   sl.registerFactory(() => LanguageCubit(sl()));
@@ -55,4 +60,5 @@ Future<void> init() async {
   sl.registerFactory(() => FacilitiesCubit(sl()));
   sl.registerFactory(() => VaccinationRecordsCubit(sl()));
   sl.registerFactory(() => VaccinationRecordDetailsCubit(sl()));
+  sl.registerFactory(() => OcrSubmissionCubit(sl()));
 }

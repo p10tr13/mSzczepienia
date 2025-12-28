@@ -23,5 +23,26 @@ namespace mSzczepienia.Api.Services
             var blobClient = _containerClient.GetBlobClient(blobName);
             await blobClient.UploadAsync(content, overwrite: true);
         }
+
+        public async Task UploadMultipleFilesAsync(string directoryUrl, List<IFormFile> files)
+        {
+            int i = 1;
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+                    string extension = Path.GetExtension(file.FileName);
+                    if (string.IsNullOrEmpty(extension)) extension = ".jpg";
+
+                    string blobName = $"{directoryUrl}{i}{extension}";
+
+                    using var stream = file.OpenReadStream();
+                    await UploadFileAsync(blobName, stream);
+
+                    i++;
+                }
+            }
+        }
+
     }
 }

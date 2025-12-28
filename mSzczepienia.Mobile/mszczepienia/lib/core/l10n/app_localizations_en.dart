@@ -232,4 +232,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get days => 'days';
+
+  @override
+  String get uploadNewPhoto => 'Upload New Photo';
+
+  @override
+  String get updateYourVaccinationHistory =>
+      'Update your Vaccination History with your Vaccination Booklet';
+
+  @override
+  String get submissionStatus => 'Submission Status';
+
+  @override
+  String get statusNotUploaded => 'Not Uploaded';
+
+  @override
+  String get statusPending => 'Pending Verification';
+
+  @override
+  String get statusApproved => 'Approved';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get selectPhotoSource => 'Select Photo Source';
+
+  @override
+  String get takePhoto => 'Take Photo';
+
+  @override
+  String get chooseFromGallery => 'Choose from Gallery';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get analize => 'Analyze';
+
+  @override
+  String get analyzingSubmission => 'Analyzing your photos...';
+
+  @override
+  String get errorOccurred => 'An error occurred';
 }

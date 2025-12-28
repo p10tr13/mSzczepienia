@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Api.Repositories.Interfaces;
-using mSzczepienia.Api.Services;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.OCRSubmissions;
@@ -50,7 +50,7 @@ public class OCRSubmissionRepository : IOCRSubmissionRepository
         var totalCount = await submissionsQuery.CountAsync(ct);
 
         var items = await submissionsQuery
-            .OrderByDescending(s => s.submissionDate)
+            .OrderBy(s => s.submissionDate)
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
             .Select(s => new SearchOCRSubmissionDTO
@@ -71,6 +71,59 @@ public class OCRSubmissionRepository : IOCRSubmissionRepository
             PageSize = query.PageSize
         };
     }
+
+    public async Task<PagedResult<SearchOCRSubmissionDTO>> GetPendingAsync(SearchOCRSubmissionQueryDto query, CancellationToken ct)
+        {
+            query = query ?? new SearchOCRSubmissionQueryDto();
+
+            if (query.SearchInWorkersFacilityOnly == true)
+                throw new ArgumentException("Cannot search OCR submissions for specific facility with this mettod.");
+
+            var submissionsQuery = _dbContext.ocrSubmissions.AsNoTracking().Include(s => s.citizen).ThenInclude(c => c.account)
+                .Where(s => s.status == OcrSubmissionStatus.Pending).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.FirstName))
+            {
+                var name = query.FirstName.Trim();
+                submissionsQuery = submissionsQuery.Where(s => s.citizen.account.name.Contains(name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Surname))
+            {
+                var surname = query.Surname.Trim();
+                submissionsQuery = submissionsQuery.Where(s => s.citizen.account.surname.Contains(surname));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Pesel))
+            {
+                var pesel = query.Pesel.Trim();
+                submissionsQuery = submissionsQuery.Where(s => s.citizen.pesel.Contains(pesel));
+            }
+
+            var totalCount = await submissionsQuery.CountAsync(ct);
+
+            var items = await submissionsQuery
+                .OrderBy(s => s.submissionDate)
+                .Skip((query.Page - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .Select(s => new SearchOCRSubmissionDTO
+                {
+                    ID = s.submissionId,
+                    Name = s.citizen.account.name,
+                    Surname = s.citizen.account.surname,
+                    SubmissionDate = s.submissionDate,
+                    Pesel = s.citizen.pesel
+                })
+                .ToListAsync(ct);
+
+            return new PagedResult<SearchOCRSubmissionDTO>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = query.Page,
+                PageSize = query.PageSize
+            };
+        }
 
     public async Task<List<VaccinationEntryDto>> ProcessOcrSubmissionAsync(string firebaseUid, List<IFormFile> files, CancellationToken ct)
     {

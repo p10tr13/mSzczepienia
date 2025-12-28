@@ -624,4 +624,13 @@
   <data name="ErrorLoadingProfile" xml:space="preserve">
     <value>Wystąpił błąd podczas ładowania profilu użytkownika</value>
   </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Resetuj</value>
+  </data>
+  <data name="NoSubmissionsFound" xml:space="preserve">
+    <value>Nie znaleziono żadnych zgłoszeń</value>
+  </data>
+  <data name="NoPendingSubmissions" xml:space="preserve">
+    <value>Nie znaleziono zgłoszeń książeczek szczepień spełniających twoje kryteria</value>
+  </data>
 </root>

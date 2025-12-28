@@ -1,0 +1,282 @@
+@page "/submissions/queue"
+@attribute [Authorize(Roles = "worker")]
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<SharedResources> Localizer
+@inject IOCRSubmissionClient OCRSubmissionClient
+@inject ISnackbar Snackbar
+@using mSzczepienia.Shared.DTO
+@using mSzczepienia.Shared.DTO.OCRSubmissions
+@using mSzczepienia.Shared.DTO.Queries
+@using mSzczepienia.Client.Shared.Components.Skeletons
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-8">
+    <MudGrid Spacing="4">
+        <MudItem xs="12" md="4">
+            <MudPaper Elevation="4" Class="pa-4" Width="100%">
+                <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.Center" Class="mb-4">
+                    @Localizer["Filters"]
+                </MudText>
+                <MudDivider Class="mb-4" />
+
+                <MudStack Spacing="3">
+                    <MudTextField @bind-Value="Name" Label="@Localizer["First Name"]" Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" Placeholder="@Localizer["EnterFirstName"]" InputType="InputType.Search" />
+                    <MudTextField @bind-Value="Surname" Label="@Localizer["Surname"]" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                  Placeholder="@Localizer["EnterSurname"]" InputType="InputType.Search" />
+                    <MudTextField @bind-Value="Pesel" Label="@Localizer["PESEL"]" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                  Placeholder="@Localizer["EnterPESEL"]" InputType="InputType.Number" />
+                    <MudCheckBox T="bool?" Value="@WorkersFacility" Label="@Localizer["SearchAssignedToYourFacility"]"
+                                 ValueChanged="@(val => OnWorkersFacilityChanged(val))" Color="Color.Primary" />
+
+                    <MudStack Row="true" Spacing="2" Class="mt-2" Justify="Justify.SpaceAround">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ApplyFilters">@Localizer["Apply"]</MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Default" OnClick="ResetFilters">@Localizer["Reset"]</MudButton>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="8">
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Center" Class="mb-6"> @Localizer["PendingSubmissions"] </MudText>
+
+            @if (_isLoading)
+            {
+                <ListSkeleton Count="PageSize" PaperHeight="136px" Line1Width="40%" Line2Width="35%" Line2Height="22px" Line3Width="40%" />
+            }
+            else if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <ErrorState Message="@_errorMessage" OnRetry="@(() => LoadSubmissions())" />
+            }
+            else if (submissions?.Items != null && submissions.TotalCount > 0)
+            {
+                <MudStack Spacing="3">
+                    @foreach (var item in submissions.Items)
+                    {
+                        <MudPaper Elevation="1" Class="pa-4 transition-item">
+                            <MudGrid Class="align-center">
+                                <MudItem xs="12" sm="1" Class="d-flex justify-center">
+                                    <MudAvatar Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Medium">
+                                        @GetInitials(item.Name, item.Surname)
+                                    </MudAvatar>
+                                </MudItem>
+
+                                <MudItem xs="12" sm="7">
+                                    <MudText Typo="Typo.subtitle1">
+                                        <b>@item.Name @item.Surname</b>
+                                    </MudText>
+                                    <MudStack Spacing="2" Class="mt-1 align-baseline flex-wrap">
+                                        <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.Badge" Variant="Variant.Text" Color="Color.Secondary">
+                                            @Localizer["PESEL"]: @item.Pesel
+                                        </MudChip>
+                                        <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.CalendarToday" Variant="Variant.Text" Color="@GetDateColor(item.SubmissionDate)">
+                                            @Localizer["Submitted"]: @item.SubmissionDate.ToShortDateString()
+                                        </MudChip>
+                                    </MudStack>
+                                </MudItem>
+
+                                <MudItem xs="12" sm="4" Class="d-flex justify-end">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="@(() => NavigateToSubmission(item.ID))">
+                                        @Localizer["Verify"]
+                                    </MudButton>
+                                </MudItem>
+                            </MudGrid>
+                        </MudPaper>
+                    }
+
+                    @if (submissions.TotalPages > 1)
+                    {
+                        <div class="d-flex justify-center mt-6">
+                            <MudPagination Color="Color.Primary" Selected="Page" Count="@submissions.TotalPages" SelectedChanged="OnPageChanged" />
+                        </div>
+                    }
+                </MudStack>
+            }
+            else
+            {
+                <MudPaper Class="pa-8 d-flex flex-column align-center justify-center mud-background-gray">
+                    <MudIcon Icon="@Icons.Material.TwoTone.PersonSearch" Size="Size.Large" Style="font-size: 4rem;" Color="Color.Default" Class="mb-4 opacity-50" />
+                    <MudText Typo="Typo.h6" Color="Color.Secondary">@Localizer["NoSubmissionsFound"]</MudText>
+                    <MudText Typo="Typo.body2">@Localizer["NoPendingSubmissions"]</MudText>
+                </MudPaper>
+            }
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+<style>
+    .transition-item {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        will-change: transform, box-shadow;
+    }
+
+        .transition-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 8px 24px rgba(0,0,0,0.12) !important;
+        }
+
+    .opacity-50 {
+        opacity: 0.5;
+    }
+</style>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "WorkersFacility")]
+    public bool? WorkersFacility { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "Pesel")]
+    public string? Pesel { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "Surname")]
+    public string? Surname { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "Name")]
+    public string? Name { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "Page")]
+    public int Page { get; set; } = 1;
+
+    public int PageSize { get; set; } = 10;
+
+    private PagedResult<SearchOCRSubmissionDTO>? submissions;
+    private bool _isLoading = true;
+    private string? _errorMessage = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (WorkersFacility == null)
+        {
+            WorkersFacility = true;
+        }
+
+        var t1 = LoadSubmissions();
+        var t2 = base.OnParametersSetAsync();
+        await Task.WhenAll(t1, t2);
+    }
+
+    private async Task LoadSubmissions()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+        StateHasChanged();
+
+        if (Page < 1)
+            Page = 1;
+
+        try
+        {
+            var query = new SearchOCRSubmissionQueryDto
+            {
+                Page = Page,
+                PageSize = PageSize,
+                FirstName = Name,
+                Surname = Surname,
+                Pesel = Pesel,
+                SearchInWorkersFacilityOnly = WorkersFacility.HasValue ? WorkersFacility.Value : true
+            };
+            submissions = await OCRSubmissionClient.GetOCRSubmissionsAsync(query, new CancellationToken());
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _errorMessage = Localizer["ErrorLoadingBooklets"];
+            Snackbar.Add($"{_errorMessage}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = Localizer["ErrorLoadingBooklets"];
+            Snackbar.Add($"{_errorMessage}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+
+        if (Page > submissions?.TotalPages && submissions.TotalPages > 0)
+        {
+            Page = submissions.TotalPages;
+            UpdateUrl();
+        }
+    }
+
+    private void ApplyFilters()
+    {
+        Page = 1;
+        UpdateUrl();
+    }
+
+    private void OnPageChanged(int page)
+    {
+        if (page == Page) return;
+        Page = page;
+        UpdateUrl();
+    }
+
+    private void UpdateUrl()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        query.Remove("Name");
+        query.Remove("Surname");
+        query.Remove("Pesel");
+        query.Remove("WorkersFacility");
+        query.Remove("Page");
+
+        query.Add("Page", Page.ToString());
+
+        if (!string.IsNullOrWhiteSpace(Name))
+            query["Name"] = Name;
+        if (!string.IsNullOrWhiteSpace(Surname))
+            query["Surname"] = Surname;
+        if (!string.IsNullOrWhiteSpace(Pesel))
+            query["Pesel"] = Pesel;
+        if (WorkersFacility.HasValue)
+        {
+            query["WorkersFacility"] = WorkersFacility.Value.ToString();
+        }
+
+        var newUri = $"{uri.GetLeftPart(UriPartial.Path)}?{query}";
+        NavigationManager.NavigateTo(newUri, forceLoad: false);
+    }
+
+    private void OnWorkersFacilityChanged(bool? value)
+    {
+        WorkersFacility = value;
+    }
+
+    private string GetInitials(string name, string surname)
+    {
+        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(surname)) return "?";
+        return $"{name[0]}{surname[0]}".ToUpper();
+    }
+
+    private Color GetDateColor(DateTime date)
+    {
+        double days = (DateTime.Now - date).TotalDays;
+        if (days > 5)
+            return Color.Error;
+        else if (days > 2)
+            return Color.Warning;
+        else
+            return Color.Default;
+    }
+
+    private void NavigateToSubmission(int id)
+    {
+        NavigationManager.NavigateTo($"/submissions/{id}");
+    }
+
+    private void ResetFilters()
+    {
+        Name = string.Empty;
+        Surname = string.Empty;
+        Pesel = string.Empty;
+        WorkersFacility = true;
+        ApplyFilters();
+    }
+}

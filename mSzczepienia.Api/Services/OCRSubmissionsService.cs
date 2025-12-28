@@ -33,6 +33,12 @@ public class OCRSubmissionsService : IOCRSubmissionsService
             return new PagedResult<SearchOCRSubmissionDTO>();
         }
 
+        // If worker requested all submissions (not limited to their facility), return global pending list
+        if (query != null && query.SearchInWorkersFacilityOnly == false)
+        {
+            return await _ocrSubmissionRepository.GetPendingAsync(query, ct);
+        }
+
         var facilityId = await _personnelRepository.GetFacilityIdForWorkerByFirebaseUidAsync(firebaseUid, ct);
         if (!facilityId.HasValue)
         {

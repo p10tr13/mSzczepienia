@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using mSzczepienia.Api.Services;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.OCRSubmissions;
 using mSzczepienia.Shared.DTO.Queries;
 using mSzczepienia.Shared.DTO.VaccinationEntries;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Security.Claims;
 
 namespace mSzczepienia.Api.Controllers;
@@ -28,6 +26,13 @@ public class OCRSubmissionController : ControllerBase
     [Authorize(Roles = "worker")]
     public async Task<ActionResult<PagedResult<SearchOCRSubmissionDTO>>> GetPendingForWorker([FromQuery] SearchOCRSubmissionQueryDto query, CancellationToken ct)
     {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+
         if (query.Page <= 0 || query.PageSize <= 0)
         {
             return BadRequest("Page and PageSize must be greater than zero.");
@@ -40,6 +45,12 @@ public class OCRSubmissionController : ControllerBase
 
         try
         {
+            // Log when worker requests submissions not limited to their facility
+            if (query.SearchInWorkersFacilityOnly == false)
+            {
+                _logger.LogInformation("Worker (uid: {Uid}) requested OCR submissions not limited to their facility with query params: name {Name}, surname {Surname}, pesel {Pesel}.",
+                    firebaseUid ?? "unknown", query.FirstName, query.Surname, query.Pesel);
+            }
             var result = await _service.GetPendingForWorkerAsync(User, query, ct);
             return Ok(result);
         }

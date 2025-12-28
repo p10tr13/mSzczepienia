@@ -624,4 +624,13 @@
   <data name="ErrorLoadingProfile" xml:space="preserve">
     <value>Error occurred while loading profile</value>
   </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="NoSubmissionsFound" xml:space="preserve">
+    <value>No submissions were found</value>
+  </data>
+  <data name="NoPendingSubmissions" xml:space="preserve">
+    <value>There are no pending vaccination booklet submissions that meet your criteria</value>
+  </data>
 </root>

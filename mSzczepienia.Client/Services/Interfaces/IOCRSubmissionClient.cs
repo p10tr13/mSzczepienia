@@ -8,4 +8,6 @@ public interface IOCRSubmissionClient
 {
     Task<PagedResult<SearchOCRSubmissionDTO>> GetDashboardOCRSubmissions(int PageSize, CancellationToken ct);
     Task<PagedResult<SearchOCRSubmissionDTO>> GetOCRSubmissionsAsync(SearchOCRSubmissionQueryDto query, CancellationToken ct);
+    Task<OCRSubmissionReviewDto?> GetSubmissionReviewAsync(int submissionId, CancellationToken ct);
+    Task RejectSubmissionAsync(int submissionId, CancellationToken ct);
 }

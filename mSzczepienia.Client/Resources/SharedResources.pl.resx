@@ -633,4 +633,61 @@
   <data name="NoPendingSubmissions" xml:space="preserve">
     <value>Nie znaleziono zgłoszeń książeczek szczepień spełniających twoje kryteria</value>
   </data>
+  <data name="PreviousPage" xml:space="preserve">
+    <value>Poprzednia strona</value>
+  </data>
+  <data name="NextPage" xml:space="preserve">
+    <value>Następna strona</value>
+  </data>
+  <data name="OCRMetadata" xml:space="preserve">
+    <value>Metadane OCR</value>
+  </data>
+  <data name="Submission" xml:space="preserve">
+    <value>Zgłoszenie</value>
+  </data>
+  <data name="SubmissionVerification" xml:space="preserve">
+    <value>Weryfikacja zgłoszenia</value>
+  </data>
+  <data name="OCRCertainty" xml:space="preserve">
+    <value>Pewność OCR</value>
+  </data>
+  <data name="Data" xml:space="preserve">
+    <value>Dane</value>
+  </data>
+  <data name="FirstLastName" xml:space="preserve">
+    <value>Imię i nazwisko</value>
+  </data>
+  <data name="Reject" xml:space="preserve">
+    <value>Odrzuć</value>
+  </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Akceptuj</value>
+  </data>
+  <data name="MedicalFacilityAddress" xml:space="preserve">
+    <value>Adres placówki medycznej</value>
+  </data>
+  <data name="SubmissionRejected" xml:space="preserve">
+    <value>Zgłoszenie zostało odrzucone</value>
+  </data>
+  <data name="RejectSubmissionTitle" xml:space="preserve">
+    <value>Odrzuć zgłoszenie</value>
+  </data>
+  <data name="OperationIrreversible" xml:space="preserve">
+    <value>Ta operacja jest nieodwracalna</value>
+  </data>
+  <data name="AreYouSureReject" xml:space="preserve">
+    <value>Czy na pewno chcesz odrzucić?</value>
+  </data>
+  <data name="ConfirmRejection" xml:space="preserve">
+    <value>Potwierdź odrzucenie</value>
+  </data>
+  <data name="ErrorLoadingSubmission" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania zgłoszenia</value>
+  </data>
+  <data name="NoSubmissionFound" xml:space="preserve">
+    <value>Nie znaleziono zgłoszenia</value>
+  </data>
+  <data name="ErrorRejectingSubmission" xml:space="preserve">
+    <value>Wystąpił błąd podczas odrzucania zgłoszenia</value>
+  </data>
 </root>

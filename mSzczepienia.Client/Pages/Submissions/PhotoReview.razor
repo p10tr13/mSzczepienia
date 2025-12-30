@@ -1,0 +1,216 @@
+﻿@page "/submissions/{id:int}"
+@attribute [Authorize(Roles = "worker")]
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<SharedResources> Localizer
+@inject IOCRSubmissionClient OCRSubmissionClient
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@using mSzczepienia.Shared.DTO
+@using mSzczepienia.Shared.DTO.OCRSubmissions
+@using mSzczepienia.Client.Shared.Components
+@using mSzczepienia.Client.Shared.Components.Skeletons
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-6 mb-8 pb-16">
+    <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-6 ml-2"><b>@Localizer["SubmissionVerification"] #@id</b></MudText>
+
+    <MudGrid Spacing="4">
+
+        <MudItem xs="12" md="4" lg="3">
+            @if (_isLoading)
+            {
+                <MudStack Spacing="4">
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="244px" />
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="284px" />
+                </MudStack>
+            }
+            else if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <ErrorState Message="@_errorMessage" OnRetry="@(() => LoadReview())" />
+            }
+            else if (_review != null)
+            {
+                <MudStack Spacing="4">
+                    <MudCard Elevation="3">
+                        <MudCardHeader>
+                            <CardHeaderAvatar>
+                                <MudAvatar Color="Color.Primary" Variant="Variant.Outlined">
+                                    <MudIcon Icon="@Icons.Material.Filled.Description" />
+                                </MudAvatar>
+                            </CardHeaderAvatar>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">@Localizer["Submission"]</MudText>
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">@Localizer["OCRMetadata"]</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudStack Spacing="2">
+                                <div>
+                                    <MudText Typo="Typo.caption" Color="Color.Secondary">@Localizer["SubmissionDate"]</MudText>
+                                    <div class="d-flex align-center gap-2">
+                                        <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Size="Size.Small" Color="Color.Default" />
+                                        <MudText>@_review.SubmissionDate.ToShortDateString()</MudText>
+                                    </div>
+                                </div>
+
+                                <MudDivider />
+
+                                <div>
+                                    <MudField Label="@Localizer["MedicalFacilityAddress"]" Variant="Variant.Text" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Home">
+                                        @_review.MedicalFacilityStreet <br />
+                                        @_review.MedicalFacilityPostalCode @_review.MedicalFacilityCity
+                                    </MudField>
+                                </div>
+                            </MudStack>
+                        </MudCardContent>
+                    </MudCard>
+
+                    <MudCard Elevation="3">
+                        <MudCardHeader>
+                            <CardHeaderAvatar>
+                                <MudAvatar Color="Color.Primary" Variant="Variant.Outlined">
+                                    <MudIcon Icon="@Icons.Material.Filled.Person" />
+                                </MudAvatar>
+                            </CardHeaderAvatar>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">@Localizer["Citizen"]</MudText>
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">@Localizer["Data"]</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudStack Spacing="3">
+                                <MudField Label="@Localizer["FirstLastName"]" Variant="Variant.Text" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Badge">
+                                    @_review.PatientFirstName @_review.PatientSurame
+                                </MudField>
+
+                                <MudField Label="@Localizer["PESEL"]" Variant="Variant.Text" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Fingerprint">
+                                    @_review.Pesel
+                                </MudField>
+
+                                <MudField Label="@Localizer["DateOfBirth"]" Variant="Variant.Text" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.CalendarMonth">
+                                    @_review.PatientDateOfBirth.ToShortDateString()
+                                </MudField>
+                            </MudStack>
+                        </MudCardContent>
+                    </MudCard>
+                </MudStack>
+            }
+        </MudItem>
+
+        <MudItem xs="12" md="8" lg="9">
+            @if (_isLoading)
+            {
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="600px"/>
+            }
+            else if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <ErrorState Message="@_errorMessage" OnRetry="@(() => LoadReview())" />
+            }
+            else
+            {
+                <ImageGallery Images="photos" />
+            }
+        </MudItem>
+
+    </MudGrid>
+
+    <MudPaper Elevation="6" Class="fixed d-flex justify-center gap-6 px-8 py-3 z-20 rounded-pill"
+              Style="bottom: 30px; left: 50%; transform: translateX(-50%); border: 1px solid var(--mud-palette-lines-default);">
+        <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Large" StartIcon="@Icons.Material.Filled.Close" OnClick="RejectSubmission">
+            @Localizer["Reject"]
+        </MudButton>
+
+        <MudDivider Vertical="true" FlexItem="true" Class="my-1" />
+
+        <MudButton Variant="Variant.Filled" Color="Color.Success" Size="Size.Large" StartIcon="@Icons.Material.Filled.Check" OnClick="AcceptSubmission">
+            @Localizer["Accept"]
+        </MudButton>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private OCRSubmissionReviewDto? _review;
+    public List<string> photos = new List<string>();
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadReview();
+        await base.OnParametersSetAsync();
+    }
+
+    private void AcceptSubmission()
+    {
+        NavigationManager.NavigateTo($"/submissions/{id}/extracted-data");
+    }
+
+    private async Task RejectSubmission()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        var dialog = await DialogService.ShowAsync<RejectConfirmationDialog>(Localizer["RejectSubmissionTitle"], options);
+
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            try
+            {
+                await OCRSubmissionClient.RejectSubmissionAsync(id, new CancellationToken());
+                Snackbar.Add(Localizer["SubmissionRejected"], Severity.Success);
+                NavigationManager.NavigateTo("/submissions/queue");
+            }
+            catch (KeyNotFoundException)
+            {
+                Snackbar.Add(Localizer["NoSubmissionFound"], Severity.Error);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Snackbar.Add($"{Localizer["ErrorRejectingSubmission"]}: ({httpEx.StatusCode}) {httpEx.Message}", Severity.Error);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"{Localizer["ErrorRejectingSubmission"]}: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+    private async Task LoadReview()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+        StateHasChanged();
+        try
+        {
+            var result = await OCRSubmissionClient.GetSubmissionReviewAsync(id, new CancellationToken());
+            if (result == null)
+            {
+                _errorMessage = Localizer["NoSubmissionFound"];
+                photos = new List<string>();
+            }
+            else
+            {
+                _review = result;
+                photos = _review.Photos ?? new List<string>();
+            }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _errorMessage = Localizer["ErrorLoadingSubmission"];
+            Snackbar.Add($"{_errorMessage}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = Localizer["ErrorLoadingSubmission"];
+            Snackbar.Add($"{_errorMessage}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+}

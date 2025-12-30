@@ -1,0 +1,28 @@
+﻿@inject IStringLocalizer<SharedResources> Localizer
+
+<MudDialog>
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error" />
+            <MudText Typo="Typo.h6">@Localizer["ConfirmRejection"]</MudText>
+        </MudStack>
+    </TitleContent>
+    <DialogContent>
+        <MudText>@Localizer["AreYouSureReject"]</MudText>
+        <MudText Typo="Typo.caption" Color="Color.Secondary">
+            @Localizer["OperationIrreversible"]
+        </MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@Localizer["Cancel"]</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Submit">@Localizer["Reject"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    IMudDialogInstance MudDialog { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+}

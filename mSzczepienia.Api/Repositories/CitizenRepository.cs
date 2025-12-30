@@ -144,5 +144,13 @@ namespace mSzczepienia.Api.Repositories
 
             return citizenStatusDto;
         }
+
+        public async Task<int?> GetFacilityIdByCitizenIdAsync(int citizenId, CancellationToken ct)
+        {
+            return await _dbContext.citizens
+                .Where(c => c.citizenId == citizenId)
+                .Select(c => (int?)c.facilityId)
+                .FirstOrDefaultAsync(ct);
+        }
     }
 }

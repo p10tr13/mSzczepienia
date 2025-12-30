@@ -61,6 +61,67 @@ public class OCRSubmissionController : ControllerBase
         }
     }
 
+    [HttpGet("review/{submissionId}")]
+    [Authorize(Roles = "worker")]
+    public async Task<ActionResult<OCRSubmissionReviewDto>> GetSubmissionReview([FromRoute] int submissionId, CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("user_id")?.Value ?? User.FindFirst("uid")?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+
+        _logger.LogInformation("OCR submission review requested. SubmissionId: {SubmissionId}, RequestedBy: {Uid}", submissionId, firebaseUid);
+
+        try
+        {
+            var result = await _service.GetSubmissionReviewAsync(submissionId, ct);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while retrieving OCR submission review {SubmissionId}", submissionId);
+            return StatusCode(500);
+        }
+    }
+
+    [HttpPost("reject/{submissionId}")]
+    [Authorize(Roles = "worker")]
+    public async Task<IActionResult> RejectSubmission([FromRoute] int submissionId, CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("user_id")?.Value ?? User.FindFirst("uid")?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+
+        _logger.LogInformation("OCR submission reject requested. SubmissionId: {SubmissionId}, RequestedBy: {Uid}", submissionId, firebaseUid);
+
+        try
+        {
+            var result = await _service.RejectSubmissionAsync(submissionId, ct);
+            if (!result)
+                return NotFound();
+
+            return NoContent();
+        }
+        catch (InvalidOperationException inv)
+        {
+            _logger.LogInformation(inv, "Invalid operation while rejecting submission {SubmissionId}", submissionId);
+            return BadRequest(inv.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while rejecting OCR submission {SubmissionId}", submissionId);
+            return StatusCode(500);
+        }
+    }
+
     [HttpPost("process")]
     [Authorize]
     public async Task<ActionResult<List<VaccinationEntryDto>>> ProcessOcrSubmissionAsync([FromForm] List<IFormFile> files, CancellationToken ct)

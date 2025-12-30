@@ -171,4 +171,35 @@ public class OCRSubmissionRepository : IOCRSubmissionRepository
         return processedEntries;
     }
 
+    public async Task<OcrSubmission?> GetByIdAsync(int submissionId, CancellationToken ct)
+    {
+        return await _dbContext.ocrSubmissions
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.submissionId == submissionId, ct);
+    }
+
+    public async Task<bool> RejectSubmissionAsync(int submissionId, CancellationToken ct)
+    {
+        var submission = await _dbContext.ocrSubmissions.Include(s => s.citizen)
+            .FirstOrDefaultAsync(s => s.submissionId == submissionId, ct);
+
+        if (submission == null)
+        {
+            return false;
+        }
+
+        if (submission.status != OcrSubmissionStatus.Pending)
+        {
+            throw new InvalidOperationException("Only pending submissions can be rejected.");
+        }
+
+        submission.status = OcrSubmissionStatus.Rejected;
+        submission.citizen.submissionStatus = SubmissionStatus.Rejected;
+        _dbContext.ocrSubmissions.Update(submission);
+        _dbContext.citizens.Update(submission.citizen);
+        await _dbContext.SaveChangesAsync(ct);
+
+        return true;
+    }
+
 }

@@ -9,6 +9,7 @@ using mSzczepienia.Client.Services;
 using mSzczepienia.Client.Services.Interfaces;
 using MudBlazor.Services;
 using System.Globalization;
+using BlazorPanzoom;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -28,6 +29,7 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.ShowTransitionDuration = 300;
     config.SnackbarConfiguration.VisibleStateDuration = 3000;
 });
+builder.Services.AddBlazorPanzoomServices();
 builder.Services.AddLocalization();
 
 builder.Services.AddBlazoredLocalStorage();

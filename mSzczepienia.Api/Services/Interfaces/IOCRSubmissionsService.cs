@@ -10,4 +10,6 @@ public interface IOCRSubmissionsService
 {
     Task<PagedResult<SearchOCRSubmissionDTO>> GetPendingForWorkerAsync(ClaimsPrincipal user, SearchOCRSubmissionQueryDto query, CancellationToken ct);
     Task<List<VaccinationEntryDto>> ProcessOcrSubmissionAsync(string firebaseUid, List<IFormFile> files, CancellationToken ct);
+    Task<OCRSubmissionReviewDto?> GetSubmissionReviewAsync(int submissionId, CancellationToken ct);
+    Task<bool> RejectSubmissionAsync(int submissionId, CancellationToken ct);
 }

@@ -8,6 +8,7 @@ namespace mSzczepienia.Api.Repositories.Interfaces
     {
         Task<CitizenDetailsDto?> GetCitizenDetailsByUidAsync(string firebaseUid, CancellationToken ct);
         Task<CitizenDetailsDto?> GetCitizenDetailsByIdAsync(int citizenId, CancellationToken ct);
+        Task<int?> GetFacilityIdByCitizenIdAsync(int citizenId, CancellationToken ct);
         Task AddCitizenAsync(string firebaseUid, CitizenDetailsDto dto, CancellationToken ct);
         Task<PagedResult<SimpleCitizenDto>> SearchCitizensAsync(GetCitizensQuery query, int? facilityId, CancellationToken ct);
         Task<CitizenSubmissionStatusDto> GetCitizenSubmissionStatusAsync(string firebaseUid, CancellationToken ct);

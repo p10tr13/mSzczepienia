@@ -204,16 +204,11 @@ namespace mSzczepienia.Api
                     .ValueGeneratedOnAdd(); // Auto-incremented ID
                 e.Property(ve => ve.ocrSubmissionId)
                     .IsRequired();
-                e.Property(ve => ve.batchOcr)
-                    .IsRequired()
-                    .HasMaxLength(40);
                 e.Property(ve => ve.vaccineNameOcr)
                     .IsRequired()
                     .HasMaxLength(300);
                 e.Property(ve => ve.dateOcr)
                     .IsRequired()
-                    .HasMaxLength(100);
-                e.Property(ve => ve.batch)
                     .HasMaxLength(100);
 
                 // Relations
@@ -292,6 +287,12 @@ namespace mSzczepienia.Api
                     .IsRequired()
                     .HasMaxLength(500);
                 e.Property(vd => vd.vaccineDescriptionPl)
+                    .IsRequired()
+                    .HasMaxLength(500);
+                e.Property(vd => vd.shortDescriptionEn)
+                    .IsRequired()
+                    .HasMaxLength(500);
+                e.Property(vd => vd.shortDescriptionPl)
                     .IsRequired()
                     .HasMaxLength(500);
                 e.Property(vd => vd.creationDate)

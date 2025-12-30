@@ -160,6 +160,8 @@ namespace mSzczepienia.Api
                         manufacturer = x.manufacturer,
                         vaccineDescriptionEn = x.vaccineDescriptionEn,
                         vaccineDescriptionPl = x.vaccineDescriptionPl,
+                        shortDescriptionEn = x.shortDescriptionEn,
+                        shortDescriptionPl = x.shortDescriptionPl,
                         creationDate = x.creationDate
                     });
 
@@ -345,7 +347,6 @@ namespace mSzczepienia.Api
 
                 foreach (var vaccine in randomVaccines) 
                 {
-                    var randomBatch = faker.Random.AlphaNumeric(10).ToUpper();
                     var randomDate = faker.Date.Past(1);
 
                     // Max 3 doses for each vaccine
@@ -357,11 +358,9 @@ namespace mSzczepienia.Api
                         var entry = new VaccinationEntry
                         {
                             ocrSubmissionId = ocrSubmission.submissionId,
-                            batchOcr = randomBatch,
                             vaccineNameOcr = vaccine.vaccineName,
                             dateOcr = randomDate.ToString("yyyy-MM-dd"),
                             vaccineId = vaccine.vaccineId,
-                            batch = randomBatch,
                             date = DateTime.Parse(randomDate.ToString("yyyy-MM-dd")),
                         };
                         vaccinationEntries.Add(entry);
@@ -390,12 +389,13 @@ namespace mSzczepienia.Api
                 {
                     var entry = sortedDoses[i];
                     var calculatedDoseNumber = (i + 1).ToString();
+                    var randomBatch = faker.Random.AlphaNumeric(10).ToUpper();
 
                     var record = new VaccinationRecord
                     {
                         citizenId = entry.ocrSubmission.citizenId,
                         vaccineId = (int)entry.vaccineId!,
-                        batch = entry.batch!,
+                        batch = randomBatch,
                         vaccinationDate = (DateTime)entry.date!,
                         doseNumber = calculatedDoseNumber,
                         sourceEntryId = entry.vaccinationEntryId,

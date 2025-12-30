@@ -5,6 +5,8 @@ class VaccinationRecordDetailsModel {
   final String manufacturer;
   final String vaccineDescriptionPl;
   final String vaccineDescriptionEn;
+  final String shortDescriptionPl;
+  final String shortDescriptionEn;
   final DateTime creationDate;
   final List<String> diseasesPl;
   final List<String> diseasesEn;
@@ -22,6 +24,8 @@ class VaccinationRecordDetailsModel {
     required this.manufacturer,
     required this.vaccineDescriptionPl,
     required this.vaccineDescriptionEn,
+    required this.shortDescriptionPl,
+    required this.shortDescriptionEn,
     required this.creationDate,
     required this.diseasesPl,
     required this.diseasesEn,
@@ -39,6 +43,8 @@ class VaccinationRecordDetailsModel {
       manufacturer: json['manufacturer'] as String,
       vaccineDescriptionPl: json['vaccineDescriptionPl'] as String,
       vaccineDescriptionEn: json['vaccineDescriptionEn'] as String,
+      shortDescriptionPl: json['shortDescriptionPl'] as String,
+      shortDescriptionEn: json['shortDescriptionEn'] as String,
       creationDate: DateTime.parse(json['creationDate']),
       diseasesPl: List<String>.from(json['diseasesPl'] as List<dynamic>),
       diseasesEn: List<String>.from(json['diseasesEn'] as List<dynamic>),
@@ -59,6 +65,8 @@ class VaccinationRecordDetailsModel {
       'manufacturer': manufacturer,
       'vaccineDescriptionPl': vaccineDescriptionPl,
       'vaccineDescriptionEn': vaccineDescriptionEn,
+      'shortDescriptionPl': shortDescriptionPl,
+      'shortDescriptionEn': shortDescriptionEn,
       'creationDate': creationDate.toIso8601String(),
       'diseasePl': diseasesPl,
       'diseaseEn': diseasesEn,

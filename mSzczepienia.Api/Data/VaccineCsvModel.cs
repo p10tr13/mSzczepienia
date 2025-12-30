@@ -12,6 +12,8 @@ namespace mSzczepienia.Api.Data
         public required string manufacturer { get; set; }
         public required string vaccineDescriptionEn { get; set; }
         public required string vaccineDescriptionPl { get; set; }
+        public required string shortDescriptionEn { get; set; }
+        public required string shortDescriptionPl { get; set; }
 
         [Format("dd/MM/yyyy")]
         public DateTime creationDate { get; set; } 

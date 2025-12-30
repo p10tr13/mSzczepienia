@@ -5,8 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mszczepienia/core/l10n/app_localizations.dart';
 import 'package:mszczepienia/core/theme/app_colors.dart';
 import 'package:mszczepienia/core/utils/image_picker_helper.dart';
-import 'package:mszczepienia/logic/auth/auth_cubit.dart';
-import 'package:mszczepienia/logic/auth/auth_state.dart';
+import 'package:mszczepienia/logic/citizen/citizen_cubit.dart';
+import 'package:mszczepienia/logic/citizen/citizen_state.dart';
 import 'package:mszczepienia/ui/layout/layout.dart';
 
 class SubmissionStatusPage extends StatefulWidget {
@@ -73,6 +73,12 @@ class _SubmissionStatusPageState extends State<SubmissionStatusPage> {
         statusColor = Colors.grey;
         statusIcon = Icons.hourglass_empty;
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CitizenCubit>().getCitizenStatus();
   }
 
   @override
@@ -163,14 +169,24 @@ class _SubmissionStatusPageState extends State<SubmissionStatusPage> {
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: borderColor, width: 1.1),
                 ),
-                child: BlocBuilder<AuthCubit, AuthState>(
+                child: BlocBuilder<CitizenCubit, CitizenState>(
                   builder: (context, state) {
-                    if (state is Authenticated) {
-                      getSubmissionStatus(state.user.submissionStatus, l10n);
+                    if (state is CitizenLoading) {
+                      return Center(
+                        child: SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: CircularProgressIndicator(
+                            color: AppColors.defaultBlue,
+                            strokeWidth: 2.5,
+                          ),
+                        ),
+                      );
+                    } else if (state is CitizenLoaded) {
+                      getSubmissionStatus(state.status.submissionStatus, l10n);
                     } else {
                       getSubmissionStatus('NotUploaded', l10n);
                     }
-
                     return Row(
                       children: [
                         Container(

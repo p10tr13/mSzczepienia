@@ -129,5 +129,20 @@ namespace mSzczepienia.Api.Repositories
                 PageSize = query.PageSize
             };
         }
+
+        public async Task<CitizenSubmissionStatusDto> GetCitizenSubmissionStatusAsync(string firebaseUid, CancellationToken ct)
+        {
+            var citizenStatus = await _dbContext.citizens
+                .Where(c => c.account.firebaseUid == firebaseUid)
+                .Select(c => c.submissionStatus)
+                .FirstOrDefaultAsync(ct);
+
+            var citizenStatusDto = new CitizenSubmissionStatusDto
+            {
+                submissionStatus = citizenStatus.ToString()
+            };
+
+            return citizenStatusDto;
+        }
     }
 }

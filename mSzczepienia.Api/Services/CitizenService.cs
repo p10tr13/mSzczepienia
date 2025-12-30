@@ -68,5 +68,11 @@ namespace mSzczepienia.Api.Services
             }
             return await _citizenRepository.SearchCitizensAsync(query, facilityId, ct);
         }
+
+        public async Task<CitizenSubmissionStatusDto> GetCitizenSubmissionStatusAsync(string firebaseUid, CancellationToken ct)
+        {
+            return await _citizenRepository.GetCitizenSubmissionStatusAsync(firebaseUid, ct);
+        }
+
     }
 }

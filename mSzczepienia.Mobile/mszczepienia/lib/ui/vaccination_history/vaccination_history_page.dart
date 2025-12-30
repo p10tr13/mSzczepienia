@@ -256,7 +256,8 @@ class _VaccinationHistoryState extends State<VaccinationHistoryPage> {
                   record.vaccinationDate,
                 ),
                 vaccineName: record.vaccineName,
-                manufacturer: record.manufacturer,
+                shortDesciriptionEn: record.shortDesciriptionEn,
+                shortDescriptionPl: record.shortDescriptionPl,
                 dosesNumber: record.dosesNumber,
               ),
             );

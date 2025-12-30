@@ -13,6 +13,8 @@ namespace mSzczepienia.Shared.DTO.VaccinationRecords
         public required string manufacturer { get; set; }
         public required string vaccineDescriptionPl { get; set; }
         public required string vaccineDescriptionEn { get; set; }
+        public required string shortDescriptionPl { get; set; }
+        public required string shortDescriptionEn { get; set; }
         public required DateTime creationDate { get; set; }
         public List<string> diseasesEn { get; set; } = new List<string>();
         public List<string> diseasesPl { get; set; } = new List<string>();

@@ -13,6 +13,7 @@ import 'package:mszczepienia/data/repositories/ocr_submission_repository.dart';
 import 'package:mszczepienia/data/repositories/vaccination_record_repository.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/data/repositories/auth_repository.dart';
+import 'package:mszczepienia/logic/citizen/citizen_cubit.dart';
 import 'package:mszczepienia/logic/facility/facilities_cubit.dart';
 import 'package:mszczepienia/logic/language/language_cubit.dart';
 import 'package:mszczepienia/logic/language/language_repository.dart';
@@ -61,4 +62,5 @@ Future<void> init() async {
   sl.registerFactory(() => VaccinationRecordsCubit(sl()));
   sl.registerFactory(() => VaccinationRecordDetailsCubit(sl()));
   sl.registerFactory(() => OcrSubmissionCubit(sl()));
+  sl.registerFactory(() => CitizenCubit(sl()));
 }

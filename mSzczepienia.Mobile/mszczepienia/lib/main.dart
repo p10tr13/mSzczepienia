@@ -8,6 +8,7 @@ import 'package:mszczepienia/core/l10n/app_localizations.dart';
 import 'package:mszczepienia/core/router/app_router.dart';
 import 'package:mszczepienia/core/theme/app_theme.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
+import 'package:mszczepienia/logic/citizen/citizen_cubit.dart';
 import 'package:mszczepienia/logic/facility/facilities_cubit.dart';
 import 'package:mszczepienia/logic/language/language_cubit.dart';
 import 'package:mszczepienia/logic/language/language_state.dart';
@@ -55,6 +56,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<OcrSubmissionCubit>(
           create: (context) => sl<OcrSubmissionCubit>(),
+        ),
+        BlocProvider<CitizenCubit>(
+          create: (context) => sl<CitizenCubit>(),
         ),
       ],
       // Define auth state globally

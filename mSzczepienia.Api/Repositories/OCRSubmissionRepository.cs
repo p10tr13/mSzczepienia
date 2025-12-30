@@ -165,8 +165,7 @@ public class OCRSubmissionRepository : IOCRSubmissionRepository
             new VaccinationEntryDto
             {
                 vaccineName = "Vaccine A",
-                vaccinationDate = DateTime.UtcNow.AddDays(-60),
-                batchNumber = "B67890"
+                vaccinationDate = DateTime.UtcNow.AddDays(-60)
             }
         };
         return processedEntries;

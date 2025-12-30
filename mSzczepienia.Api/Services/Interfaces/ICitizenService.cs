@@ -11,5 +11,6 @@ namespace mSzczepienia.Api.Services.Interfaces
         Task<CitizenDetailsDto?> GetCitizenDetailsByIdAsync(string requesterFirebaseUid, int citizenId, CancellationToken ct);
         Task CreateCitizenAsync(string firebaseUid, CitizenDetailsDto dto, CancellationToken ct);
         Task<PagedResult<SimpleCitizenDto>> SearchCitizensAsync(ClaimsPrincipal user, GetCitizensQuery query, CancellationToken ct);
+        Task<CitizenSubmissionStatusDto> GetCitizenSubmissionStatusAsync(string firebaseUid, CancellationToken ct);
     }
 }

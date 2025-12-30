@@ -18,17 +18,24 @@ namespace mSzczepienia.Api.Repositories
 
         public async Task<PagedResult<VaccinationRecordOverviewDto>> GetVaccinationRecordOverviewAsync(String firebaseUid, GetVaccinationRecordOverviewQuery query, CancellationToken ct)
         {
+            var citizenId = await _dbContext.citizens
+                .AsNoTracking()
+                .Where(c => c.account.firebaseUid == firebaseUid)
+                .Select(c => c.citizenId)
+                .FirstOrDefaultAsync(ct);
+
             var baseQuery = _dbContext.vaccinationRecords
                 .AsNoTracking()
-                .Where(x => x.citizen.account.firebaseUid == firebaseUid);
+                .Where(x => x.citizenId == citizenId);
 
             var groupedQuery = baseQuery
-                .GroupBy(x => new { x.vaccineDefinition.vaccineId, x.vaccineDefinition.vaccineName, x.vaccineDefinition.manufacturer })
+                .GroupBy(x => new { x.vaccineDefinition.vaccineId, x.vaccineDefinition.vaccineName, x.vaccineDefinition.shortDescriptionEn, x.vaccineDefinition.shortDescriptionPl })
                 .Select(g => new VaccinationRecordOverviewDto
                 {
                     id = g.Key.vaccineId,
                     vaccineName = g.Key.vaccineName,
-                    manufacturer = g.Key.manufacturer,
+                    shortDescriptionEn = g.Key.shortDescriptionEn,
+                    shortDescriptionPl = g.Key.shortDescriptionPl,
                     vaccinationDate = g.Max(x => x.vaccinationDate),
                     dosesNumber = g.Count()
                 });
@@ -77,6 +84,8 @@ namespace mSzczepienia.Api.Repositories
                 manufacturer = x.vaccineDefinition.manufacturer,
                 vaccineDescriptionPl = x.vaccineDefinition.vaccineDescriptionPl,
                 vaccineDescriptionEn = x.vaccineDefinition.vaccineDescriptionEn,
+                shortDescriptionPl = x.vaccineDefinition.shortDescriptionPl,
+                shortDescriptionEn = x.vaccineDefinition.shortDescriptionEn,
                 creationDate = x.vaccineDefinition.creationDate,
                 diseasesEn = x.vaccineDefinition.vaccineDiseases.Select(vd => vd.disease.diseaseNameEn).ToList(),
                 diseasesPl = x.vaccineDefinition.vaccineDiseases.Select(vd => vd.disease.diseaseNamePl).ToList(),

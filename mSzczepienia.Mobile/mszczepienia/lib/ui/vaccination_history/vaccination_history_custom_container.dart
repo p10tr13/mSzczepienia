@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mszczepienia/core/l10n/app_localizations.dart';
+import 'package:mszczepienia/logic/language/language_cubit.dart';
+import 'package:mszczepienia/logic/language/language_state.dart';
 
 class VaccinationHistoryCustomContainer extends StatelessWidget {
   const VaccinationHistoryCustomContainer({
     super.key,
     required this.date,
     required this.vaccineName,
-    required this.manufacturer,
+    required this.shortDesciriptionEn,
+    required this.shortDescriptionPl,
     required this.dosesNumber,
   });
 
   final String date;
   final String vaccineName;
-  final String manufacturer;
+  final String shortDesciriptionEn;
+  final String shortDescriptionPl;
   final int dosesNumber;
 
   @override
@@ -42,7 +47,11 @@ class VaccinationHistoryCustomContainer extends StatelessWidget {
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 5),
-                Text(manufacturer, style: TextStyle(fontSize: 14)),
+                BlocBuilder<LanguageCubit, LanguageState>(
+                  builder: (context, state) {
+                    return Text(state is LanguageEnglish ? shortDesciriptionEn : shortDescriptionPl, style: TextStyle(fontSize: 14));
+                  }
+                ),
               ],
             ),
           ),

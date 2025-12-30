@@ -118,5 +118,25 @@ namespace mSzczepienia.Api.Controllers
 
             return await _citizenService.SearchCitizensAsync(User, query, ct);
         }
+
+        [HttpGet("submission-status")]
+        [Authorize]
+        public async Task<ActionResult<CitizenSubmissionStatusDto>> GetCitizenSubmissionStatus(CancellationToken ct)
+        {
+            var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(firebaseUid))
+            {
+                return Unauthorized("Invalid token: UID not found.");
+            }
+
+            var result = await _citizenService.GetCitizenSubmissionStatusAsync(firebaseUid, ct);
+
+            if (result == null)
+            {
+                return NotFound("User profile not found.");
+            }
+
+            return Ok(result);
+        }
     }
 }

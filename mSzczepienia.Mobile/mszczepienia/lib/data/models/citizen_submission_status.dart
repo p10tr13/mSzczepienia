@@ -10,8 +10,6 @@ class CitizenSubmissionStatus {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'submissionStatus': submissionStatus,
-    };
+    return {'submissionStatus': submissionStatus};
   }
 }

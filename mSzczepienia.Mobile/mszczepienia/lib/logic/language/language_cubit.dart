@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mszczepienia/core/di/dependency_injection.dart';
+import 'package:mszczepienia/core/notifications/notification_service.dart';
 import 'package:mszczepienia/logic/language/language_repository.dart';
 import 'package:mszczepienia/logic/language/language_state.dart';
 
@@ -23,13 +25,17 @@ class LanguageCubit extends Cubit<LanguageState> {
     }
   }
 
-  void switchToPolish() {
+  void switchToPolish() async {
     emit(LanguagePolish());
+
+    await sl<NotificationService>().uploadFcmToken('pl');
     languageRepository.setCurrentLanguage('pl');
   }
 
-  void switchToEnglish() {
+  void switchToEnglish() async {
     emit(LanguageEnglish());
+
+    await sl<NotificationService>().uploadFcmToken('en');
     languageRepository.setCurrentLanguage('en');
   }
 }

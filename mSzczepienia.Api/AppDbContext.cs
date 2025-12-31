@@ -15,6 +15,7 @@ namespace mSzczepienia.Api
         public DbSet<VaccineDefinition> vaccineDefinitions { get; set; }
         public DbSet<VaccineDisease> vaccineDiseases { get; set; }
         public DbSet<Disease> diseases { get; set; }
+        public DbSet<CitizenDeviceToken> citizenDeviceTokens { get; set; }
 
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
@@ -340,6 +341,32 @@ namespace mSzczepienia.Api
                 e.Property(d => d.diseaseNamePl)
                     .IsRequired()
                     .HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<CitizenDeviceToken> (static e =>
+            {
+                // Primary key
+                e.HasKey(cdt => cdt.citizenDeviceTokenId);
+
+                // Column properties
+                e.Property(cdt => cdt.citizenDeviceTokenId)
+                    .IsRequired()
+                    .ValueGeneratedOnAdd(); // Auto-incremented ID
+                e.Property(cdt => cdt.citizenId)
+                    .IsRequired();
+                e.Property(cdt => cdt.deviceToken)
+                    .IsRequired()
+                    .HasMaxLength(512);
+                e.Property(cdt => cdt.language)
+                    .IsRequired()
+                    .HasMaxLength(10);
+                e.Property(cdt => cdt.lastUpdated)
+                    .IsRequired();
+                // Relations
+                e.HasOne(cdt => cdt.citizen)
+                    .WithMany(c => c.deviceTokens)
+                    .HasForeignKey(cdt => cdt.citizenId)
+                    .OnDelete(DeleteBehavior.Cascade); // When a Citizen is deleted, their DeviceTokens are also deleted
             });
         }
     }

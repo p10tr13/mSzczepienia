@@ -5,6 +5,7 @@ using mSzczepienia.Shared.DTO.Citizens;
 using mSzczepienia.Shared.DTO.Queries;
 using mSzczepienia.Shared.Enums;
 using mSzczepienia.Shared.Models;
+using System.Linq;
 
 namespace mSzczepienia.Api.Repositories
 {
@@ -14,6 +15,42 @@ namespace mSzczepienia.Api.Repositories
         public CitizenRepository(AppDbContext context)
         {
             _dbContext = context;
+        }
+
+        public async Task RegisterDeviceTokenAsync(string firebaseUid, string deviceToken, string language, CancellationToken ct)
+        {
+            var citizen = await _dbContext.citizens
+                .Include(c => c.account)
+                .Include(c => c.deviceTokens)
+                .Where(c => c.account.firebaseUid == firebaseUid)
+                .FirstOrDefaultAsync(ct);
+
+            if (citizen == null)
+            {
+                return;
+            }
+
+            var existingToken = citizen.deviceTokens
+                .FirstOrDefault(t => t.deviceToken == deviceToken);
+
+            if (existingToken != null)
+            {
+                existingToken.lastUpdated = DateTime.UtcNow;
+                existingToken.language = language;
+            }
+            else
+            {
+                var newToken = new CitizenDeviceToken
+                {
+                    deviceToken = deviceToken,
+                    citizenId = citizen.citizenId,
+                    language = language,
+                    lastUpdated = DateTime.UtcNow
+                };
+
+                citizen.deviceTokens.Add(newToken);
+            }
+            await _dbContext.SaveChangesAsync(ct);
         }
 
         public async Task<CitizenDetailsDto?> GetCitizenDetailsByUidAsync(string firebaseUid, CancellationToken ct)

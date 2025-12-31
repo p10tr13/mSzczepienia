@@ -15,5 +15,7 @@ namespace mSzczepienia.Shared.Models
         // Relations
         public ICollection<OcrSubmission> ocrSubmissions { get; set; } = new List<OcrSubmission>();
         public ICollection<VaccinationRecord> vaccinationRecords { get; set; } = new List<VaccinationRecord>();
+        public ICollection<CitizenDeviceToken> deviceTokens { get; set; } = new List<CitizenDeviceToken>();
+
     }
 }

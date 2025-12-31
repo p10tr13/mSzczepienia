@@ -5,6 +5,7 @@ abstract class CitizenState {}
 class CitizenInitial extends CitizenState {}
 
 class CitizenLoading extends CitizenState {}
+
 class CitizenLoaded extends CitizenState {
   final CitizenSubmissionStatus status;
   CitizenLoaded(this.status);

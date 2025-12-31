@@ -112,13 +112,22 @@ class _VaccinationDetailsPageState extends State<VaccinationDetailsPage> {
                                           ),
                                         ),
                                         const SizedBox(height: 5),
-                                        BlocBuilder<LanguageCubit, LanguageState>(
+                                        BlocBuilder<
+                                          LanguageCubit,
+                                          LanguageState
+                                        >(
                                           builder: (context, state) {
                                             return Text(
-                                              state is LanguageEnglish ? details.first.shortDescriptionEn : details.first.shortDescriptionPl,
+                                              state is LanguageEnglish
+                                                  ? details
+                                                        .first
+                                                        .shortDescriptionEn
+                                                  : details
+                                                        .first
+                                                        .shortDescriptionPl,
                                               style: TextStyle(fontSize: 14),
                                             );
-                                          }
+                                          },
                                         ),
                                       ],
                                     ),

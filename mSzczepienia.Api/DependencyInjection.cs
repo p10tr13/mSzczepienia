@@ -136,6 +136,8 @@ public static class DependencyInjection
         services.AddScoped<Services.Interfaces.IPersonnelService, Services.PersonnelService>();
         services.AddScoped<Services.Interfaces.IOCRSubmissionsService, Services.OCRSubmissionsService>();
         services.AddScoped<Services.Interfaces.IBlobService, Services.BlobService>();
+        services.AddScoped<Services.Interfaces.INotificationService, Services.NotificationService>();
+
 
         return services;
     }

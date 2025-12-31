@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mszczepienia/core/network/dio_client.dart';
+import 'package:mszczepienia/core/notifications/notification_service.dart';
 import 'package:mszczepienia/data/datasources/citizen_remote_datasource.dart';
 import 'package:mszczepienia/data/datasources/medical_facility_remote_datasource.dart';
 import 'package:mszczepienia/data/datasources/ocr_submission_remote_datasource.dart';
@@ -34,6 +35,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => MedicalFacilityRemoteDatasource(sl()));
   sl.registerLazySingleton(() => VaccinationRecordRemoteDatasource(sl()));
   sl.registerLazySingleton(() => OcrSubmissionRemoteDatasource(sl()));
+  sl.registerLazySingleton(() => NotificationService(sl()));
 
   // --- REPOSITORIES ---
   sl.registerLazySingleton(() => CitizenRepository(sl()));

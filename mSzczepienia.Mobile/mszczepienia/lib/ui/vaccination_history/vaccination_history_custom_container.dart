@@ -49,8 +49,13 @@ class VaccinationHistoryCustomContainer extends StatelessWidget {
                 const SizedBox(height: 5),
                 BlocBuilder<LanguageCubit, LanguageState>(
                   builder: (context, state) {
-                    return Text(state is LanguageEnglish ? shortDesciriptionEn : shortDescriptionPl, style: TextStyle(fontSize: 14));
-                  }
+                    return Text(
+                      state is LanguageEnglish
+                          ? shortDesciriptionEn
+                          : shortDescriptionPl,
+                      style: TextStyle(fontSize: 14),
+                    );
+                  },
                 ),
               ],
             ),

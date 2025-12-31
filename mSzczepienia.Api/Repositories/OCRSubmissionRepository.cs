@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Api.Repositories.Interfaces;
+using mSzczepienia.Api.Services;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.OCRSubmissions;
@@ -15,11 +16,13 @@ public class OCRSubmissionRepository : IOCRSubmissionRepository
 {
     private readonly AppDbContext _dbContext;
     private readonly IBlobService _blobService;
+    private readonly INotificationService _notificationService;
 
-    public OCRSubmissionRepository(AppDbContext dbContext, IBlobService blobService)
+    public OCRSubmissionRepository(AppDbContext dbContext, IBlobService blobService, INotificationService notificationService)
     {
         _dbContext = dbContext;
         _blobService = blobService;
+        _notificationService = notificationService;
     }
 
     public async Task<PagedResult<SearchOCRSubmissionDTO>> GetPendingForFacilityAsync(int facilityId, SearchOCRSubmissionQueryDto query, CancellationToken ct)
@@ -199,6 +202,33 @@ public class OCRSubmissionRepository : IOCRSubmissionRepository
         _dbContext.citizens.Update(submission.citizen);
         await _dbContext.SaveChangesAsync(ct);
 
+        // Send notification
+        var tokens = await _dbContext.citizenDeviceTokens
+                      .Where(t => t.citizen == submission.citizen)
+                      .Select(t => new { t.deviceToken, t.language })
+                      .ToListAsync();
+
+        foreach (var token in tokens)
+        {
+            string title;
+            string subtitle;
+            if (token.language == "pl")
+            {
+                title = "Odrzucono Twoje zgłoszenie";
+                subtitle = $"Odrzucowo Twoje zgłoszenie o numerze {submission.submissionId}";
+            }
+            else
+            {
+                title = "Your submission has been rejected";
+                subtitle = $"Your submission no. {submission.submissionId} has been rejected";
+            }
+            await _notificationService.SendNotificationAsync(
+                token.deviceToken,
+                title,
+                subtitle
+            );
+            Console.WriteLine($"WYSŁANO POWIADOMIENIE - {token.language}");
+        }
         return true;
     }
 

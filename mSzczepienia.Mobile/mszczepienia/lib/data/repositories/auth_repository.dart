@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:mszczepienia/core/di/dependency_injection.dart';
+import 'package:mszczepienia/core/notifications/notification_service.dart';
 import 'package:mszczepienia/data/models/citizen_details_model.dart';
 import 'package:mszczepienia/data/repositories/citizen_repository.dart';
+import 'package:mszczepienia/logic/language/language_repository.dart';
 
 class AuthRepository {
   final FirebaseAuth firebaseAuth;
@@ -18,12 +21,16 @@ class AuthRepository {
       final jsonString = await storage.read(key: _userKey);
 
       if (jsonString != null) {
+        final languageCode = await sl<LanguageRepository>()
+            .getCurrentLanguage();
+        await sl<NotificationService>().uploadFcmToken(languageCode);
         return CitizenDetailsModel.fromJsonString(jsonString);
       }
     } catch (e) {
       // If there is an error delete whatever left
       await storage.delete(key: _userKey);
     }
+
     return null;
   }
 
@@ -46,6 +53,8 @@ class AuthRepository {
 
       await storage.write(key: _userKey, value: citizenDetails.toJsonString());
 
+      final languageCode = await sl<LanguageRepository>().getCurrentLanguage();
+      await sl<NotificationService>().uploadFcmToken(languageCode);
       return citizenDetails;
     } catch (e) {
       await firebaseAuth.signOut();
@@ -89,6 +98,9 @@ class AuthRepository {
 
       // Save to secure storage
       await storage.write(key: _userKey, value: newCitizen.toJsonString());
+
+      final languageCode = await sl<LanguageRepository>().getCurrentLanguage();
+      await sl<NotificationService>().uploadFcmToken(languageCode);
       return newCitizen;
     } catch (e) {
       // If failed to register citizen, delete firebase user

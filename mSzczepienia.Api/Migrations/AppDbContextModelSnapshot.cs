@@ -99,6 +99,37 @@ namespace mSzczepienia.Api.Migrations
                     b.ToTable("citizens");
                 });
 
+            modelBuilder.Entity("mSzczepienia.Shared.Models.CitizenDeviceToken", b =>
+                {
+                    b.Property<int>("citizenDeviceTokenId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("citizenDeviceTokenId"));
+
+                    b.Property<int>("citizenId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("deviceToken")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<string>("language")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTime>("lastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("citizenDeviceTokenId");
+
+                    b.HasIndex("citizenId");
+
+                    b.ToTable("citizenDeviceTokens");
+                });
+
             modelBuilder.Entity("mSzczepienia.Shared.Models.Disease", b =>
                 {
                     b.Property<int>("diseaseId")
@@ -417,6 +448,17 @@ namespace mSzczepienia.Api.Migrations
                     b.Navigation("medicalFacility");
                 });
 
+            modelBuilder.Entity("mSzczepienia.Shared.Models.CitizenDeviceToken", b =>
+                {
+                    b.HasOne("mSzczepienia.Shared.Models.Citizen", "citizen")
+                        .WithMany("deviceTokens")
+                        .HasForeignKey("citizenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("citizen");
+                });
+
             modelBuilder.Entity("mSzczepienia.Shared.Models.OcrSubmission", b =>
                 {
                     b.HasOne("mSzczepienia.Shared.Models.Citizen", "citizen")
@@ -519,6 +561,8 @@ namespace mSzczepienia.Api.Migrations
 
             modelBuilder.Entity("mSzczepienia.Shared.Models.Citizen", b =>
                 {
+                    b.Navigation("deviceTokens");
+
                     b.Navigation("ocrSubmissions");
 
                     b.Navigation("vaccinationRecords");

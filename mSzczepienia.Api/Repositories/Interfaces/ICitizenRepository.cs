@@ -6,6 +6,7 @@ namespace mSzczepienia.Api.Repositories.Interfaces
 {
     public interface ICitizenRepository
     {
+        Task RegisterDeviceTokenAsync(string firebaseUid, string deviceToken, string language, CancellationToken ct);
         Task<CitizenDetailsDto?> GetCitizenDetailsByUidAsync(string firebaseUid, CancellationToken ct);
         Task<CitizenDetailsDto?> GetCitizenDetailsByIdAsync(int citizenId, CancellationToken ct);
         Task<int?> GetFacilityIdByCitizenIdAsync(int citizenId, CancellationToken ct);

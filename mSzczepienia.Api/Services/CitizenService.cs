@@ -13,12 +13,18 @@ namespace mSzczepienia.Api.Services
         private readonly ICitizenRepository _citizenRepository;
         private readonly IPersonnelRepository _personnelRepository;
         private readonly ILogger<CitizenService> _logger;
+        
 
         public CitizenService(ICitizenRepository citizenRepository, IPersonnelRepository personnelRepository, ILogger<CitizenService> logger)
         {
             _citizenRepository = citizenRepository;
             _personnelRepository = personnelRepository;
             _logger = logger;
+        }
+
+        public async Task RegisterDeviceTokenAsync(string firebaseUid, string deviceToken, string language, CancellationToken ct)
+        {
+            await _citizenRepository.RegisterDeviceTokenAsync(firebaseUid, deviceToken, language, ct);
         }
 
         public async Task<CitizenDetailsDto?> GetCitizenDetailsAsync(string firebaseUid, CancellationToken ct)

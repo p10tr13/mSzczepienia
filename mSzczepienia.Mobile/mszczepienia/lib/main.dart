@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mszczepienia/core/di/dependency_injection.dart';
 import 'package:mszczepienia/core/di/dependency_injection.dart' as di;
 import 'package:mszczepienia/core/l10n/app_localizations.dart';
+import 'package:mszczepienia/core/notifications/notification_service.dart';
 import 'package:mszczepienia/core/router/app_router.dart';
 import 'package:mszczepienia/core/theme/app_theme.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
@@ -22,6 +23,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await di.init();
+
+  final notificationService = sl<NotificationService>();
+  await notificationService.initListeners();
 
   runApp(MyApp());
 }
@@ -57,9 +61,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<OcrSubmissionCubit>(
           create: (context) => sl<OcrSubmissionCubit>(),
         ),
-        BlocProvider<CitizenCubit>(
-          create: (context) => sl<CitizenCubit>(),
-        ),
+        BlocProvider<CitizenCubit>(create: (context) => sl<CitizenCubit>()),
       ],
       // Define auth state globally
       child: Builder(

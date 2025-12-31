@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Api.Repositories.Interfaces;
+using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Queries;
 using mSzczepienia.Shared.DTO.VaccinationRecords;
@@ -10,10 +11,12 @@ namespace mSzczepienia.Api.Repositories
     public class VaccinationRecordRepository : IVaccinationRecordRepository
     {
         private readonly AppDbContext _dbContext;
+        private readonly INotificationService _notificationService;
 
-        public VaccinationRecordRepository(AppDbContext dbContext)
+        public VaccinationRecordRepository(AppDbContext dbContext, INotificationService notificationService)
         {
             _dbContext = dbContext;
+            _notificationService = notificationService;
         }
 
         public async Task<PagedResult<VaccinationRecordOverviewDto>> GetVaccinationRecordOverviewAsync(String firebaseUid, GetVaccinationRecordOverviewQuery query, CancellationToken ct)
@@ -161,6 +164,34 @@ namespace mSzczepienia.Api.Repositories
 
             await _dbContext.vaccinationRecords.AddAsync(record, ct);
             await _dbContext.SaveChangesAsync(ct);
+
+            // Send notification
+            var tokens = await _dbContext.citizenDeviceTokens
+                          .Where(t => t.citizen == citizen)
+                          .Select(t => new { t.deviceToken, t.language })
+                          .ToListAsync();
+
+            foreach (var token in tokens)
+            {
+                string title;
+                string subtitle;
+                if (token.language == "pl")
+                {
+                    title = "Dodano nowe szczepienie";
+                    subtitle = $"Dodano szczepienie - {record.vaccineDefinition.vaccineName}";
+                }
+                else
+                {
+                    title = "New vaccination added";
+                    subtitle = $"Added vaccination - {record.vaccineDefinition.vaccineName}";
+                }
+                await _notificationService.SendNotificationAsync(
+                    token.deviceToken,
+                    title,
+                    subtitle
+                );
+                Console.WriteLine($"WYS£ANO POWIADOMIENIE - {token.language}");
+            }
         }
 
         public async Task<VaccinationRecordEditDto?> GetVaccinationRecordByIdAsync(int recordId, CancellationToken ct)

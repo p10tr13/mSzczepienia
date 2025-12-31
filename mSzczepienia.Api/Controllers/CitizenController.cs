@@ -19,6 +19,25 @@ namespace mSzczepienia.Api.Controllers
             _citizenService = citizenService;
         }
 
+        [HttpPost("device-token")]
+        public async Task<IActionResult> RegisterDeviceToken([FromBody] GetDeviceTokenQuery deviceToken, CancellationToken ct)
+        {
+            var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(firebaseUid))
+            {
+                return Unauthorized("Invalid token: UID not found.");
+            }
+            try
+            {
+                await _citizenService.RegisterDeviceTokenAsync(firebaseUid, deviceToken.deviceToken, deviceToken.language, ct);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while registering the device token.");
+            }
+            return Ok("Device token registered successfully.");
+        }
+
         [Authorize]
         [HttpGet("citizen-details")]
         public async Task<IActionResult> GetCitizenDetails(CancellationToken ct)

@@ -7,6 +7,7 @@ namespace mSzczepienia.Api.Services.Interfaces
 {
     public interface ICitizenService
     {
+        Task RegisterDeviceTokenAsync(string firebaseUid, string deviceToken, string language, CancellationToken ct);
         Task<CitizenDetailsDto?> GetCitizenDetailsAsync(string firebaseUid, CancellationToken ct);
         Task<CitizenDetailsDto?> GetCitizenDetailsByIdAsync(string requesterFirebaseUid, int citizenId, CancellationToken ct);
         Task CreateCitizenAsync(string firebaseUid, CitizenDetailsDto dto, CancellationToken ct);

@@ -354,14 +354,17 @@ namespace mSzczepienia.Api
                     for (int i = 0; i < doses; i++)
                     {
                         randomDate = randomDate.AddDays(faker.Random.Int(20, 60));
+                        var randomBatch = faker.Random.AlphaNumeric(8).ToUpper();
 
                         var entry = new VaccinationEntry
                         {
                             ocrSubmissionId = ocrSubmission.submissionId,
                             vaccineNameOcr = vaccine.vaccineName,
                             dateOcr = randomDate.ToString("yyyy-MM-dd"),
+                            batchOcr = randomBatch,
                             vaccineId = vaccine.vaccineId,
                             date = DateTime.Parse(randomDate.ToString("yyyy-MM-dd")),
+                            batch = randomBatch
                         };
                         vaccinationEntries.Add(entry);
                     }

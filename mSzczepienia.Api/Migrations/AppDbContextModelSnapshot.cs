@@ -288,6 +288,13 @@ namespace mSzczepienia.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("vaccinationEntryId"));
 
+                    b.Property<string>("batch")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("batchOcr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("date")
                         .HasColumnType("datetime2");
 

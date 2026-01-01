@@ -8,8 +8,10 @@
         public OcrSubmission ocrSubmission { get; set; } = null!;
         public required string vaccineNameOcr { get; set; }
         public required string dateOcr { get; set; }
+        public required string batchOcr { get; set; }
         public int? vaccineId { get; set; }
         public VaccineDefinition? vaccineDefinition { get; set; } = null!;
         public DateTime? date { get; set; }
+        public string? batch { get; set; }
     }
 }

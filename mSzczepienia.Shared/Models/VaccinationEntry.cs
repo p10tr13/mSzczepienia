@@ -1,4 +1,6 @@
-﻿namespace mSzczepienia.Shared.Models
+﻿using mSzczepienia.Shared.Enums;
+
+namespace mSzczepienia.Shared.Models
 {
     public class VaccinationEntry
     {
@@ -13,5 +15,6 @@
         public VaccineDefinition? vaccineDefinition { get; set; } = null!;
         public DateTime? date { get; set; }
         public string? batch { get; set; }
+        public VaccinationEntryStatus status { get; set; }
     }
 }

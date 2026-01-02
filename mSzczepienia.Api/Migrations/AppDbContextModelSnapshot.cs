@@ -306,6 +306,11 @@ namespace mSzczepienia.Api.Migrations
                     b.Property<int>("ocrSubmissionId")
                         .HasColumnType("int");
 
+                    b.Property<string>("status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<int?>("vaccineId")
                         .HasColumnType("int");
 

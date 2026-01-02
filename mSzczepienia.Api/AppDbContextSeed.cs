@@ -28,7 +28,8 @@ namespace mSzczepienia.Api
                 using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     var facilitiesRecords = csv.GetRecords<FacilitiesCsvModel>().ToList();
-                    var entities = facilitiesRecords.Select(x => new MedicalFacility {
+                    var entities = facilitiesRecords.Select(x => new MedicalFacility
+                    {
                         facilityName = x.facilityName,
                         street = x.street,
                         postalCode = x.postalCode,
@@ -331,7 +332,7 @@ namespace mSzczepienia.Api
 
         // 5. GENERATING VACCINATION ENTRIES
         private IEnumerable<VaccinationEntry> GenerateVaccinationEntries(
-            IEnumerable<OcrSubmission> ocrSubmissions, 
+            IEnumerable<OcrSubmission> ocrSubmissions,
             IEnumerable<VaccineDefinition> vaccineDefinitions)
         {
             var ocrSubmissionList = ocrSubmissions.ToList();
@@ -345,7 +346,12 @@ namespace mSzczepienia.Api
                 // Generate 10 different vaccines
                 var randomVaccines = faker.PickRandom(vaccineDefinitionsList, 10).ToList();
 
-                foreach (var vaccine in randomVaccines) 
+                if (ocrSubmission.status == OcrSubmissionStatus.Rejected)
+                {
+                    continue;
+                }
+
+                foreach (var vaccine in randomVaccines)
                 {
                     var randomDate = faker.Date.Past(1);
 
@@ -353,6 +359,19 @@ namespace mSzczepienia.Api
                     int doses = faker.Random.Int(1, 3);
                     for (int i = 0; i < doses; i++)
                     {
+                        VaccinationEntryStatus vaccinationEntryStatus;
+                        if (ocrSubmission.status == OcrSubmissionStatus.Accepted)
+                        {
+                            vaccinationEntryStatus = faker.PickRandom<VaccinationEntryStatus>(new[] {
+                                VaccinationEntryStatus.Processed,
+                                VaccinationEntryStatus.CreatedByUser,
+                                VaccinationEntryStatus.Deleted
+                            });
+                        }
+                        else
+                        {
+                            vaccinationEntryStatus = VaccinationEntryStatus.WaitingForReview;
+                        }
                         randomDate = randomDate.AddDays(faker.Random.Int(20, 60));
                         var randomBatch = faker.Random.AlphaNumeric(8).ToUpper();
 
@@ -364,7 +383,8 @@ namespace mSzczepienia.Api
                             batchOcr = randomBatch,
                             vaccineId = vaccine.vaccineId,
                             date = DateTime.Parse(randomDate.ToString("yyyy-MM-dd")),
-                            batch = randomBatch
+                            batch = randomBatch,
+                            status = vaccinationEntryStatus
                         };
                         vaccinationEntries.Add(entry);
                     }
@@ -382,7 +402,8 @@ namespace mSzczepienia.Api
             var faker = new Faker("pl");
 
             var groupedEntries = vaccinationEntriesList
-                .Where(x => x.ocrSubmission != null && x.vaccineId != null && x.date != null)
+                .Where(x => x.ocrSubmission != null && x.vaccineId != null && x.date != null &&
+                       x.status != VaccinationEntryStatus.Deleted && x.status != VaccinationEntryStatus.WaitingForReview)
                 .GroupBy(x => new { x.ocrSubmission.citizenId, x.vaccineId });
 
             foreach (var group in groupedEntries)

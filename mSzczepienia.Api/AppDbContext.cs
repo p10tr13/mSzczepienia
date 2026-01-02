@@ -211,6 +211,10 @@ namespace mSzczepienia.Api
                 e.Property(ve => ve.dateOcr)
                     .IsRequired()
                     .HasMaxLength(100);
+                e.Property(ve => ve.status)
+                    .IsRequired()
+                    .HasConversion<string>() // Store enum as string
+                    .HasMaxLength(20);
 
                 // Relations
                 e.HasOne(ve => ve.ocrSubmission)

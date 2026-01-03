@@ -127,4 +127,22 @@ public class VaccineRepository : IVaccineRepository
             .FirstOrDefaultAsync(ct);
         return vaccine;
     }
+
+    public async Task<List<VaccineDto>> GetVaccinesByIdsAsync(List<int> vaccineIds, CancellationToken ct)
+    {
+        var vaccines = await _dbContext.vaccineDefinitions
+            .AsNoTracking()
+            .Include(v => v.vaccineDiseases).ThenInclude(vd => vd.disease)
+            .Where(v => vaccineIds.Contains(v.vaccineId))
+            .Select(v => new VaccineDto
+            {
+                VaccineId = v.vaccineId,
+                VaccineName = v.vaccineName,
+                Manufacturer = v.manufacturer,
+                DiseasesEn = v.vaccineDiseases.Select(vd => vd.disease.diseaseNameEn).ToList(),
+                DiseasesPl = v.vaccineDiseases.Select(vd => vd.disease.diseaseNamePl).ToList()
+            })
+            .ToListAsync(ct);
+        return vaccines;
+    }
 }

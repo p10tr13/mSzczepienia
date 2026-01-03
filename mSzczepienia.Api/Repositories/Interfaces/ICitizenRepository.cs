@@ -1,6 +1,7 @@
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Citizens;
 using mSzczepienia.Shared.DTO.Queries;
+using mSzczepienia.Shared.Models;
 
 namespace mSzczepienia.Api.Repositories.Interfaces
 {
@@ -13,5 +14,7 @@ namespace mSzczepienia.Api.Repositories.Interfaces
         Task AddCitizenAsync(string firebaseUid, CitizenDetailsDto dto, CancellationToken ct);
         Task<PagedResult<SimpleCitizenDto>> SearchCitizensAsync(GetCitizensQuery query, int? facilityId, CancellationToken ct);
         Task<CitizenSubmissionStatusDto> GetCitizenSubmissionStatusAsync(string firebaseUid, CancellationToken ct);
+        Task<Citizen?> GetByIdAsync(int citizenId, CancellationToken ct);
+        void Update(Citizen citizen);
     }
 }

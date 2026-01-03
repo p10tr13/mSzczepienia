@@ -114,7 +114,7 @@
     </MudGrid>
 
     <MudPaper Elevation="6" Class="fixed d-flex justify-center gap-6 px-8 py-3 z-20 rounded-pill"
-              Style="bottom: 30px; left: 50%; transform: translateX(-50%); border: 1px solid var(--mud-palette-lines-default);">
+              Style="bottom: 10px; left: 50%; transform: translateX(-50%); border: 1px solid var(--mud-palette-lines-default);">
         <MudButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Large" StartIcon="@Icons.Material.Filled.Close" OnClick="RejectSubmission">
             @Localizer["Reject"]
         </MudButton>
@@ -131,7 +131,7 @@
     [Parameter]
     public int id { get; set; }
 
-    private OCRSubmissionReviewDto? _review;
+    private OCRSubmissionPhotoReviewDto? _review;
     public List<string> photos = new List<string>();
     private bool _isLoading = true;
     private string? _errorMessage;
@@ -185,7 +185,7 @@
         StateHasChanged();
         try
         {
-            var result = await OCRSubmissionClient.GetSubmissionReviewAsync(id, new CancellationToken());
+            var result = await OCRSubmissionClient.GetSubmissionPhotoReviewAsync(id, new CancellationToken());
             if (result == null)
             {
                 _errorMessage = Localizer["NoSubmissionFound"];

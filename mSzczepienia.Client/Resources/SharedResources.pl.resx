@@ -690,4 +690,55 @@
   <data name="ErrorRejectingSubmission" xml:space="preserve">
     <value>Wystąpił błąd podczas odrzucania zgłoszenia</value>
   </data>
+  <data name="Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="BatchNumber" xml:space="preserve">
+    <value>Numer partii</value>
+  </data>
+  <data name="SaveAndExit" xml:space="preserve">
+    <value>Zapisz i Zakończ</value>
+  </data>
+  <data name="VerifyDataCompleteProcessMessage" xml:space="preserve">
+    <value>Czy na pewno chcesz zapisać zweryfikowane dane i zakończyć proces?</value>
+  </data>
+  <data name="VerifyDataCompleteProcessTitle" xml:space="preserve">
+    <value>Potwierdzenie zapisu</value>
+  </data>
+  <data name="AddMissingEntry" xml:space="preserve">
+    <value>Dodaj ręcznie brakujący wpis sczepienia</value>
+  </data>
+  <data name="VaccinationEntriesEmpty" xml:space="preserve">
+    <value>Brak odczytanych rekordów.</value>
+  </data>
+  <data name="DeleteVaccinationEntryTitle" xml:space="preserve">
+    <value>Usunięcie wpisu szczepień</value>
+  </data>
+  <data name="DeleteVaccinationEntryMessage" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć ten wpis szczepienia?</value>
+  </data>
+  <data name="RowsPerPage" xml:space="preserve">
+    <value>Wierszy na stronę:</value>
+  </data>
+  <data name="of" xml:space="preserve">
+    <value>z</value>
+  </data>
+  <data name="GoBack" xml:space="preserve">
+    <value>Wstecz</value>
+  </data>
+  <data name="ConfirmData" xml:space="preserve">
+    <value>Zatwierdź Dane</value>
+  </data>
+  <data name="EditionOfRecognizedEntries" xml:space="preserve">
+    <value>Edycja rozpoznanych wpisów</value>
+  </data>
+  <data name="FillOutMissingVaccinationEntryData" xml:space="preserve">
+    <value>Uzupełnij brakujące dane (szczepionka i data) przed zapisem.</value>
+  </data>
+  <data name="VaccinationEntriesSubmitted" xml:space="preserve">
+    <value>Pomyślnie utworzono wpisy w karcie szczepień.</value>
+  </data>
+  <data name="ErrorReviewingSubmission" xml:space="preserve">
+    <value>Wystąpił błąd podczas przetwarzania wysłanej recenzji rekordów szczepień</value>
+  </data>
 </root>

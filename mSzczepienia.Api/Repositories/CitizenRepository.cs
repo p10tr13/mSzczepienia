@@ -189,5 +189,17 @@ namespace mSzczepienia.Api.Repositories
                 .Select(c => (int?)c.facilityId)
                 .FirstOrDefaultAsync(ct);
         }
+
+        public async Task<Citizen?> GetByIdAsync(int citizenId, CancellationToken ct)
+        {
+            return await _dbContext.citizens
+                .Include(c => c.account)
+                .FirstOrDefaultAsync(c => c.citizenId == citizenId, ct);
+        }
+
+        public void Update(Citizen citizen)
+        {
+            _dbContext.citizens.Update(citizen);
+        }
     }
 }

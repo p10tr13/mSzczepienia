@@ -1,0 +1,141 @@
+﻿@inject ISnackbar Snackbar
+@inject IStringLocalizer<SharedResources> Localizer
+@inject IVaccineClient VaccineClient
+@inject IDialogService DialogService
+@using mSzczepienia.Shared.DTO.Vaccines
+@using mSzczepienia.Shared.DTO.VaccinationEntries
+@using mSzczepienia.Client.Shared.Components
+
+<MudTable @ref="_table" Items="@Entries" Hover="true" Breakpoint="Breakpoint.None" Elevation="0" Class="mb-4">
+    <HeaderContent>
+        <MudTh Style="width: 35%;">@Localizer["Vaccine"]</MudTh>
+        <MudTh Style="width: 25%;">@Localizer["Batch"]</MudTh>
+        <MudTh Style="width: 25%;">@Localizer["Date"]</MudTh>
+        <MudTh Style="width: 15%; text-align: right;">Akcje</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Vaccine" Class="pa-2 align-top">
+            <MudAutocomplete T="VaccineDto" @bind-Value="context.Vaccine" SearchFunc="@SearchVaccine"
+                             ToStringFunc="@(v => v == null ? null : $"{v.VaccineName} ({v.Manufacturer})")" Margin="Margin.Dense" Dense="true"
+                             ShowProgressIndicator="true" Clearable="true">
+                <ItemTemplate Context="vaccine">
+                    <MudText Typo="Typo.body2">@vaccine.VaccineName</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">@vaccine.Manufacturer</MudText>
+                </ItemTemplate>
+            </MudAutocomplete>
+
+            @if (!string.IsNullOrEmpty(context.VaccineNameOcr))
+            {
+                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="ml-1">
+                    OCR: <b>@context.VaccineNameOcr</b>
+                </MudText>
+            }
+        </MudTd>
+
+        <MudTd DataLabel="Batch" Class="pa-2 align-top">
+            <MudTextField @bind-Value="context.Batch" Margin="Margin.Dense" />
+
+            @if (!string.IsNullOrEmpty(context.BatchOcr))
+            {
+                <MudText Typo="Typo.caption" Color="Color.Secondary" Class="ml-1">
+                    OCR: <b>@context.BatchOcr</b>
+                </MudText>
+            }
+        </MudTd>
+
+        <MudTd DataLabel="Date" Class="pa-2 align-top">
+            <MudDatePicker @bind-Date="context.Date" Margin="Margin.Dense" DateFormat="dd.MM.yyyy" Editable="true"
+                           Mask="@(new DateMask("dd.MM.yyyy"))" MaxDate="@DateTime.Today"/>
+
+            @if (!string.IsNullOrEmpty(context.DateOcr))
+            {
+                ﻿<MudText Typo="Typo.caption" Color="Color.Secondary" Class="ml-1">
+                    OCR: <b>@context.DateOcr</b>
+                </MudText>
+            }
+        </MudTd>
+
+        <MudTd DataLabel="Actions" Class="pa-2 align-middle" Style="text-align: right;">
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => RemoveRow(context))" />
+        </MudTd>
+    </RowTemplate>
+    <FooterContent>
+        <MudTd ColSpan="4" Class="pa-4">
+            <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" FullWidth="true" OnClick="AddNewRow" Class="border-dashed">
+                @Localizer["AddMissingEntry"]
+            </MudButton>
+        </MudTd>
+    </FooterContent>
+    <NoRecordsContent>
+        <MudText>@Localizer["VaccinationEntriesEmpty"]</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager HideRowsPerPage="true" HorizontalAlignment="HorizontalAlignment.Center" PageSizeOptions="pageSizeOptionsArray" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter]
+    public List<DetailedVaccinationEntryDto> Entries { get; set; } = new();
+
+    private MudTable<DetailedVaccinationEntryDto> _table;
+
+    private int _rowsPerPage = 6;
+
+    private int[] pageSizeOptionsArray = new int[1] { 6 };
+
+    private async Task<IEnumerable<VaccineDto>> SearchVaccine(string value, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length < 2)
+            return Enumerable.Empty<VaccineDto>();
+
+        try
+        {
+            var list = await VaccineClient.SearchVaccinesAsync(value, 5, ct);
+            return list;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Localizer["ErrorLoadingVaccines"]}: {ex.Message}", Severity.Error);
+            return Enumerable.Empty<VaccineDto>();
+        }
+    }
+
+    private async Task AddNewRow()
+    {
+        Entries.Add(new DetailedVaccinationEntryDto
+        {
+            Id = 0,
+            VaccineNameOcr = "",
+            DateOcr = "",
+            BatchOcr = ""
+        });
+
+        await Task.Delay(1);
+
+        int totalItems = Entries.Count;
+        int lastPageIndex = (int)Math.Ceiling((double)totalItems / _rowsPerPage) - 1;
+
+        if (lastPageIndex < 0) lastPageIndex = 0;
+
+        _table.NavigateTo(lastPageIndex);
+    }
+
+    private async Task RemoveRow(DetailedVaccinationEntryDto item)
+    {
+        var parameters = new DialogParameters<ConfirmDeletionDialog>
+        {
+            { x => x.Title, Localizer["DeleteVaccinationEntryTitle"] },
+            { x => x.Message, Localizer["DeleteVaccinationEntryMessage"] },
+        };
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<ConfirmDeletionDialog>("Delete data", parameters, options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            Entries.Remove(item);
+            Snackbar.Add(Localizer["RecordDeleted"], Severity.Info);
+        }
+    }
+}

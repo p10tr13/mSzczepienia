@@ -61,9 +61,9 @@ public class OCRSubmissionController : ControllerBase
         }
     }
 
-    [HttpGet("review/{submissionId}")]
+    [HttpGet("review/{submissionId}/photo")]
     [Authorize(Roles = "worker")]
-    public async Task<ActionResult<OCRSubmissionReviewDto>> GetSubmissionReview([FromRoute] int submissionId, CancellationToken ct)
+    public async Task<ActionResult<OCRSubmissionPhotoReviewDto>> GetSubmissionReview([FromRoute] int submissionId, CancellationToken ct)
     {
         var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("user_id")?.Value ?? User.FindFirst("uid")?.Value;
 
@@ -76,7 +76,7 @@ public class OCRSubmissionController : ControllerBase
 
         try
         {
-            var result = await _service.GetSubmissionReviewAsync(submissionId, ct);
+            var result = await _service.GetSubmissionPhotoReviewAsync(submissionId, ct);
             if (result == null)
                 return NotFound();
 
@@ -85,6 +85,34 @@ public class OCRSubmissionController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while retrieving OCR submission review {SubmissionId}", submissionId);
+            return StatusCode(500);
+        }
+    }
+
+    [HttpGet("review/{submissionId}/entries")]
+    [Authorize(Roles = "worker")]
+    public async Task<ActionResult<OCRSubmissionEntriesReviewDto>> GetSubmissionEntriesReview([FromRoute] int submissionId, CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("user_id")?.Value ?? User.FindFirst("uid")?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+
+        _logger.LogInformation("OCR submission entries review requested. SubmissionId: {SubmissionId}, RequestedBy: {Uid}", submissionId, firebaseUid);
+
+        try
+        {
+            var result = await _service.GetSubmissionEntriesReviewAsync(submissionId, ct);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while retrieving OCR submission entries review {SubmissionId}", submissionId);
             return StatusCode(500);
         }
     }
@@ -142,4 +170,40 @@ public class OCRSubmissionController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("{id}/review")]
+    [Authorize(Roles = "worker")]
+    public async Task<IActionResult> ProcessReview(int id, [FromBody] List<DetailedVaccinationEntryDto> entries, CancellationToken ct)
+    {
+        var request = new ProcessSubmissionReviewDto
+        {
+            SubmissionId = id,
+            Entries = entries
+        };
+
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("user_id")?.Value ?? User.FindFirst("uid")?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+
+        _logger.LogInformation("OCR submission review sent. SubmissionId: {SubmissionId}, RequestedBy: {Uid}", id, firebaseUid);
+
+        try
+        {
+            await _service.ProcessSubmissionReviewAsync(firebaseUid, request, ct);
+        }
+        catch (InvalidOperationException inv)
+        {
+            _logger.LogInformation(inv, "Invalid operation while processing OCR submission review {SubmissionId}", id);
+            return BadRequest(inv.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while processing OCR submission review {SubmissionId}", id);
+            return StatusCode(500);
+        }
+
+        return Ok();
+    }
 }

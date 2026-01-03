@@ -252,5 +252,10 @@ namespace mSzczepienia.Api.Repositories
             _dbContext.vaccinationRecords.Remove(rec);
             await _dbContext.SaveChangesAsync(ct);
         }
+
+        public async Task AddAsync(VaccinationRecord record, CancellationToken ct)
+        {
+            await _dbContext.vaccinationRecords.AddAsync(record, ct);
+        }
     }
 }

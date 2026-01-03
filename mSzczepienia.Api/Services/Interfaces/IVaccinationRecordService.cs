@@ -1,6 +1,7 @@
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Queries;
 using mSzczepienia.Shared.DTO.VaccinationRecords;
+using mSzczepienia.Shared.Models;
 
 namespace mSzczepienia.Api.Services.Interfaces;
 
@@ -13,4 +14,5 @@ public interface IVaccinationRecordService
     Task<VaccinationRecordEditDto?> GetVaccinationRecordByIdAsync(string requesterFirebaseUid, int recordId, CancellationToken ct);
     Task UpdateVaccinationRecordAsync(string requesterFirebaseUid, int recordId, UpdateVaccinationRecordDto dto, CancellationToken ct);
     Task DeleteVaccinationRecordAsync(string requesterFirebaseUid, int recordId, CancellationToken ct);
+    Task CreateRecordsFromEntriesAsync(int citizenId, List<VaccinationEntry> validEntries, CancellationToken ct);
 }

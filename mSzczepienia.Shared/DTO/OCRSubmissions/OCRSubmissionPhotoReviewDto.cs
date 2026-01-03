@@ -1,7 +1,7 @@
 ﻿
 namespace mSzczepienia.Shared.DTO.OCRSubmissions;
 
-public class OCRSubmissionReviewDto
+public class OCRSubmissionPhotoReviewDto
 {
     public int SubmissionId { get; set; }
     public DateTime SubmissionDate { get; set; }

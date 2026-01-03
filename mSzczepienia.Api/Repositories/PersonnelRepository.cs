@@ -79,4 +79,16 @@ public class PersonnelRepository : IPersonnelRepository
 
         return personnel?.facilityId;
     }
+
+    public async Task<Personnel?> GetByFirebaseUidAsync(string firebaseUid, CancellationToken ct)
+    {
+        return await _dbContext.personnel
+            .Include(p => p.account)
+            .FirstOrDefaultAsync(p => p.account.firebaseUid == firebaseUid, ct);
+    }
+
+    public void Update(Personnel personnel)
+    {
+        _dbContext.personnel.Update(personnel);
+    }
 }

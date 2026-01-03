@@ -1,6 +1,7 @@
 using mSzczepienia.Shared.DTO.Queries;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.VaccinationRecords;
+using mSzczepienia.Shared.Models;
 
 namespace mSzczepienia.Api.Repositories.Interfaces
 {
@@ -13,5 +14,6 @@ namespace mSzczepienia.Api.Repositories.Interfaces
         Task<VaccinationRecordEditDto?> GetVaccinationRecordByIdAsync(int recordId, CancellationToken ct);
         Task UpdateVaccinationRecordAsync(int recordId, UpdateVaccinationRecordDto dto, CancellationToken ct);
         Task DeleteVaccinationRecordAsync(int recordId, CancellationToken ct);
+        Task AddAsync(VaccinationRecord record, CancellationToken ct);
     }
 }

@@ -2,8 +2,9 @@ using mSzczepienia.Api.Repositories.Interfaces;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Citizens;
-using mSzczepienia.Shared.DTO.OCRSubmissions;
 using mSzczepienia.Shared.DTO.Queries;
+using mSzczepienia.Shared.Enums;
+using mSzczepienia.Shared.Models;
 using System.Security.Claims;
 
 namespace mSzczepienia.Api.Services
@@ -11,14 +12,20 @@ namespace mSzczepienia.Api.Services
     public class CitizenService : ICitizenService
     {
         private readonly ICitizenRepository _citizenRepository;
+        private readonly IAccountRepository _accountRepository;
         private readonly IPersonnelRepository _personnelRepository;
+        private readonly IFacilityRepository _facilityRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CitizenService> _logger;
-        
 
-        public CitizenService(ICitizenRepository citizenRepository, IPersonnelRepository personnelRepository, ILogger<CitizenService> logger)
+        public CitizenService(ICitizenRepository citizenRepository, IAccountRepository accountRepository, IPersonnelRepository personnelRepository,
+            IFacilityRepository facilityRepository, IUnitOfWork unitOfWork, ILogger<CitizenService> logger)
         {
             _citizenRepository = citizenRepository;
+            _accountRepository = accountRepository;
             _personnelRepository = personnelRepository;
+            _facilityRepository = facilityRepository;
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
@@ -43,23 +50,50 @@ namespace mSzczepienia.Api.Services
 
         public async Task CreateCitizenAsync(string firebaseUid, CitizenDetailsDto dto, CancellationToken ct)
         {
-            await _citizenRepository.AddCitizenAsync(firebaseUid, dto, ct);
+            var existingFacility = await _facilityRepository.GetByNameAsync(dto.facilityName, ct);
+            if (existingFacility == null)
+            {
+                _logger.LogError("Facility not found while creating user account: {FacilityName}", dto.facilityName);
+                throw new InvalidOperationException($"Facility has not been found: {dto.facilityName}");
+            }
+
+            var account = new Account
+            {
+                firebaseUid = firebaseUid,
+                name = dto.name,
+                surname = dto.surname,
+                email = dto.email,
+                dateOfBirth = dto.dateOfBirth,
+                creationDate = DateTime.UtcNow
+            };
+            await _accountRepository.AddAsync(account, ct);
+
+            var citizen = new Citizen
+            {
+                pesel = dto.pesel,
+                submissionStatus = SubmissionStatus.NotUploaded,
+                account = account,
+                medicalFacility = existingFacility
+            };
+            await _citizenRepository.AddAsync(citizen, ct);
+
+            await _unitOfWork.SaveChangesAsync(ct);
         }
 
         public async Task<PagedResult<SimpleCitizenDto>> SearchCitizensAsync(ClaimsPrincipal user, GetCitizensQuery query, CancellationToken ct)
         {
             string? firebaseUid = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            
+
             if (string.IsNullOrEmpty(firebaseUid))
             {
                 firebaseUid = user.FindFirst("user_id")?.Value ?? user.FindFirst("uid")?.Value;
             }
-            
+
             if (string.IsNullOrEmpty(firebaseUid))
             {
                 return new PagedResult<SimpleCitizenDto>();
             }
-            
+
             _logger.Log(LogLevel.Information, $"User: {firebaseUid}, searches citizens by: {query.ToString()}");
             int? facilityId = null;
 
@@ -79,6 +113,5 @@ namespace mSzczepienia.Api.Services
         {
             return await _citizenRepository.GetCitizenSubmissionStatusAsync(firebaseUid, ct);
         }
-
     }
 }

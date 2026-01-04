@@ -12,6 +12,5 @@ public interface IOCRSubmissionRepository
     Task<PagedResult<SearchOCRSubmissionDTO>> GetPendingAsync(SearchOCRSubmissionQueryDto query, CancellationToken ct);
     Task<List<VaccinationEntryDto>> ProcessOcrSubmissionAsync(string firebaseUid, List<IFormFile> files, CancellationToken ct);
     Task<OcrSubmission?> GetByIdAsync(int submissionId, CancellationToken ct);
-    Task<bool> RejectSubmissionAsync(int submissionId, CancellationToken ct);
     void Update(OcrSubmission submission);
 }

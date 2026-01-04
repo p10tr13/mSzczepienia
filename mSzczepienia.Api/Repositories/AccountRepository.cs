@@ -12,9 +12,8 @@ public class AccountRepository : IAccountRepository
         _dbContext = dbContext;
     }
 
-    public async Task CreateAccountAsync(Account account, CancellationToken cancellationToken)
+    public async Task AddAsync(Account account, CancellationToken ct)
     {
-        _dbContext.accounts.Add(account);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.accounts.AddAsync(account, ct);
     }
 }

@@ -119,15 +119,37 @@ public class OCRSubmissionsService : IOCRSubmissionsService
         return dto;
     }
 
-    public async Task<bool> RejectSubmissionAsync(int submissionId, CancellationToken ct)
+    public async Task<bool> RejectSubmissionAsync(string firebaseUid, int submissionId, CancellationToken ct)
     {
         var submission = await _ocrSubmissionRepository.GetByIdAsync(submissionId, ct);
         if (submission == null)
             return false;
 
-        var result = await _ocrSubmissionRepository.RejectSubmissionAsync(submissionId, ct);
-        if (!result)
-            return false;
+        var citizen = await _citizenRepository.GetByIdAsync(submission.citizenId, ct);
+        if (citizen == null)
+            throw new InvalidOperationException("Citizen not found.");
+
+        var personnel = await _personnelRepository.GetByFirebaseUidAsync(firebaseUid, ct);
+        if (personnel == null)
+            throw new InvalidOperationException("Personnel not found.");
+
+        var entries = await _vaccinationEntryRepository.GetBySubmissionIdAsync(submissionId, ct);
+
+        if (submission.status != OcrSubmissionStatus.Pending)
+        {
+            throw new InvalidOperationException("Only pending submissions can be rejected.");
+        }
+
+        submission.status = OcrSubmissionStatus.Rejected;
+        submission.verifierId = personnel.personnelId;
+        submission.verificationDate = DateTime.UtcNow;
+        _ocrSubmissionRepository.Update(submission);
+
+        citizen.submissionStatus = SubmissionStatus.Rejected;
+        _citizenRepository.Update(citizen);
+
+        _vaccinationEntryRepository.DeleteRange(entries);
+        await _unitOfWork.SaveChangesAsync(ct);
 
         // After successful rejection, fetch device tokens and send notifications
         try

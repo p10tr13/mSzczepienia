@@ -11,11 +11,13 @@ public class UserManagementService : IUserManagementService
 {
     private readonly IAccountRepository _accountRepository;
     private readonly IPersonnelRepository _personnelRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public UserManagementService(IAccountRepository accountRepository, IPersonnelRepository personnelRepository)
+    public UserManagementService(IAccountRepository accountRepository, IPersonnelRepository personnelRepository, IUnitOfWork unitOfWork)
     {
         _accountRepository = accountRepository;
         _personnelRepository = personnelRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task CreateUserAsync(CreateUserDto createUserDto, CancellationToken ct)
@@ -65,6 +67,8 @@ public class UserManagementService : IUserManagementService
                 dateOfBirth = createUserDto.DateOfBirth ?? throw new ArgumentException("Date of birth is required"),
             };
 
+            await _accountRepository.AddAsync(newAccount, ct);
+
             if (createUserDto.Role == Role.HealthWorker)
             {
                 var newPersonnel = new Personnel
@@ -74,16 +78,10 @@ public class UserManagementService : IUserManagementService
                     position = createUserDto.Position ?? throw new ArgumentException("Position is required for HealthWorker"),
                     account = newAccount
                 };
-                await _personnelRepository.CreatePersonnelWithAccountAsync(newAccount, newPersonnel, ct);
+                await _personnelRepository.AddAsync(newPersonnel, ct);
             }
-            else if (createUserDto.Role == Role.Admin)
-            {
-                await _accountRepository.CreateAccountAsync(newAccount, ct);
-            }
-            else
-            {
-                throw new ArgumentException("Unsupported role");
-            }
+
+            await _unitOfWork.SaveChangesAsync(ct);
         }
         catch (FirebaseAuthException ex) when (ex.ErrorCode == FirebaseAdmin.ErrorCode.AlreadyExists)
         {

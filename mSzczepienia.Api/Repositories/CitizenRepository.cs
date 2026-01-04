@@ -3,9 +3,7 @@ using mSzczepienia.Api.Repositories.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Citizens;
 using mSzczepienia.Shared.DTO.Queries;
-using mSzczepienia.Shared.Enums;
 using mSzczepienia.Shared.Models;
-using System.Linq;
 
 namespace mSzczepienia.Api.Repositories
 {
@@ -89,37 +87,6 @@ namespace mSzczepienia.Api.Repositories
                 .FirstOrDefaultAsync(ct);
         }
 
-        public async Task AddCitizenAsync(string firebaseUid, CitizenDetailsDto dto, CancellationToken ct)
-        {
-            var existingFacility = await _dbContext.medicalFacilities
-                .Where(f => f.facilityName == dto.facilityName)
-                .FirstOrDefaultAsync(ct);
-
-            if (existingFacility == null)
-            {
-                throw new InvalidOperationException($"Facility has not been found: {dto.facilityName}");
-            }
-
-            var citizen = new Citizen
-            {
-                pesel = dto.pesel,
-                submissionStatus = SubmissionStatus.NotUploaded,
-                account = new Account
-                {
-                    firebaseUid = firebaseUid,
-                    name = dto.name,
-                    surname = dto.surname,
-                    email = dto.email,
-                    dateOfBirth = dto.dateOfBirth,
-                    creationDate = DateTime.UtcNow
-                },
-                medicalFacility = existingFacility
-            };
-
-            await _dbContext.citizens.AddAsync(citizen);
-            await _dbContext.SaveChangesAsync();
-        }
-
         public async Task<PagedResult<SimpleCitizenDto>> SearchCitizensAsync(GetCitizensQuery query, int? facilityId, CancellationToken ct)
         {
             var queryable = _dbContext.citizens.Include(c => c.account).AsNoTracking().AsQueryable();
@@ -195,6 +162,19 @@ namespace mSzczepienia.Api.Repositories
             return await _dbContext.citizens
                 .Include(c => c.account)
                 .FirstOrDefaultAsync(c => c.citizenId == citizenId, ct);
+        }
+
+        public async Task<Citizen?> GetByIdNoTrackingAsync(int citizenId, CancellationToken ct)
+        {
+            return await _dbContext.citizens
+                .AsNoTracking()
+                .Include(c => c.account)
+                .FirstOrDefaultAsync(c => c.citizenId == citizenId, ct);
+        }
+
+        public async Task AddAsync(Citizen citizen, CancellationToken ct)
+        {
+            await _dbContext.citizens.AddAsync(citizen, ct);
         }
 
         public void Update(Citizen citizen)

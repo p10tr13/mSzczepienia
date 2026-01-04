@@ -132,7 +132,7 @@ public class OCRSubmissionController : ControllerBase
 
         try
         {
-            var result = await _service.RejectSubmissionAsync(submissionId, ct);
+            var result = await _service.RejectSubmissionAsync(firebaseUid, submissionId, ct);
             if (!result)
                 return NotFound();
 

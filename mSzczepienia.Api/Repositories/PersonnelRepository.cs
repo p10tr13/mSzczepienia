@@ -16,25 +16,9 @@ public class PersonnelRepository : IPersonnelRepository
         _dbContext = dbContext;
     }
 
-    public async Task CreatePersonnelWithAccountAsync(Account account, Personnel personnel, CancellationToken ct)
+    public async Task AddAsync(Personnel personnel, CancellationToken ct)
     {
-        using var transaction = _dbContext.Database.BeginTransaction();
-
-        try
-        {
-            _dbContext.accounts.Add(account);
-            await _dbContext.SaveChangesAsync(ct);
-
-            personnel.accountId = account.accountId;
-            _dbContext.personnel.Add(personnel);
-            await _dbContext.SaveChangesAsync(ct);
-            await transaction.CommitAsync(ct);
-        }
-        catch
-        {
-            await transaction.RollbackAsync(ct);
-            throw;
-        }
+        await _dbContext.personnel.AddAsync(personnel, ct);
     }
 
     public async Task<PagedResult<PersonnelDto>> GetFacilityPersonnelAsync(GetPersonnelQuery query, CancellationToken ct)

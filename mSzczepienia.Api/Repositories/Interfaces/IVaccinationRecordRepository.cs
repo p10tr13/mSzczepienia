@@ -10,10 +10,10 @@ namespace mSzczepienia.Api.Repositories.Interfaces
         Task<PagedResult<VaccinationRecordOverviewDto>> GetVaccinationRecordOverviewAsync(String firebaseUid, GetVaccinationRecordOverviewQuery query, CancellationToken ct);
         Task<List<VaccinationRecordDetailsDto>> GetVaccinationRecordsDetailsAsync(string firebaseUid, GetVaccinationRecordDetailsQuery query, CancellationToken ct);
         Task<PagedResult<VaccinationRecordSimpleListItemDto>> GetVaccinationRecordsByCitizenIdAsync(GetVaccinationRecordsByCitizenIdQuery query, CancellationToken ct);
-        Task AddVaccinationRecordAsync(CreateVaccinationRecordDto dto, CancellationToken ct);
-        Task<VaccinationRecordEditDto?> GetVaccinationRecordByIdAsync(int recordId, CancellationToken ct);
-        Task UpdateVaccinationRecordAsync(int recordId, UpdateVaccinationRecordDto dto, CancellationToken ct);
-        Task DeleteVaccinationRecordAsync(int recordId, CancellationToken ct);
         Task AddAsync(VaccinationRecord record, CancellationToken ct);
+        Task<VaccinationRecord?> GetById(int id, CancellationToken ct);
+        Task<VaccinationRecord?> GetByIdNoTrackingAsync(int id, CancellationToken ct);
+        void Update(VaccinationRecord record);
+        void Delete(VaccinationRecord record);
     }
 }

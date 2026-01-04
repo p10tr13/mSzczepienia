@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using mSzczepienia.Api.Repositories.Interfaces;
-using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Queries;
 using mSzczepienia.Shared.DTO.VaccinationRecords;
@@ -11,12 +10,10 @@ namespace mSzczepienia.Api.Repositories
     public class VaccinationRecordRepository : IVaccinationRecordRepository
     {
         private readonly AppDbContext _dbContext;
-        private readonly INotificationService _notificationService;
 
-        public VaccinationRecordRepository(AppDbContext dbContext, INotificationService notificationService)
+        public VaccinationRecordRepository(AppDbContext dbContext)
         {
             _dbContext = dbContext;
-            _notificationService = notificationService;
         }
 
         public async Task<PagedResult<VaccinationRecordOverviewDto>> GetVaccinationRecordOverviewAsync(String firebaseUid, GetVaccinationRecordOverviewQuery query, CancellationToken ct)
@@ -135,127 +132,29 @@ namespace mSzczepienia.Api.Repositories
             };
         }
 
-        public async Task AddVaccinationRecordAsync(CreateVaccinationRecordDto dto, CancellationToken ct)
-        {
-            // Validate citizen
-            var citizen = await _dbContext.citizens.FindAsync(new object[] { dto.citizenId }, ct);
-            if (citizen == null)
-                throw new InvalidOperationException("Citizen not found.");
-
-            // Validate vaccine definition
-            var vaccineDef = await _dbContext.vaccineDefinitions.Include(v => v.vaccineDiseases).ThenInclude(vd => vd.disease)
-                .FirstOrDefaultAsync(v => v.vaccineId == dto.vaccineId, ct);
-
-            if (vaccineDef == null)
-                throw new InvalidOperationException("Vaccine definition not found.");
-
-            var record = new VaccinationRecord
-            {
-                citizenId = dto.citizenId,
-                vaccineId = dto.vaccineId,
-                vaccinationDate = dto.vaccinationDate,
-                doseNumber = dto.doseNumber,
-                nextVaccinationDate = dto.nextVaccinationDate,
-                batch = dto.batch,
-                sourceEntryId = dto.sourceEntryId,
-                remarks = dto.remarks,
-                creationDate = DateTime.UtcNow
-            };
-
-            await _dbContext.vaccinationRecords.AddAsync(record, ct);
-            await _dbContext.SaveChangesAsync(ct);
-
-            // Send notification
-            var tokens = await _dbContext.citizenDeviceTokens
-                          .Where(t => t.citizen == citizen)
-                          .Select(t => new { t.deviceToken, t.language })
-                          .ToListAsync();
-
-            foreach (var token in tokens)
-            {
-                string title;
-                string subtitle;
-                if (token.language == "pl")
-                {
-                    title = "Dodano nowe szczepienie";
-                    subtitle = $"Dodano szczepienie - {record.vaccineDefinition.vaccineName}";
-                }
-                else
-                {
-                    title = "New vaccination added";
-                    subtitle = $"Added vaccination - {record.vaccineDefinition.vaccineName}";
-                }
-                await _notificationService.SendNotificationAsync(
-                    token.deviceToken,
-                    title,
-                    subtitle
-                );
-                Console.WriteLine($"WYS£ANO POWIADOMIENIE - {token.language}");
-            }
-        }
-
-        public async Task<VaccinationRecordEditDto?> GetVaccinationRecordByIdAsync(int recordId, CancellationToken ct)
-        {
-            var rec = await _dbContext.vaccinationRecords
-                .AsNoTracking()
-                .Include(x => x.citizen).Include(x => x.citizen.account)
-                .Include(x => x.vaccineDefinition)
-                .FirstOrDefaultAsync(x => x.recordId == recordId, ct);
-
-            if (rec == null)
-                return null;
-
-            return new VaccinationRecordEditDto
-            {
-                recordId = rec.recordId,
-                citizenId = rec.citizenId,
-                name = rec.citizen.account.name,
-                surname = rec.citizen.account.surname,
-                pesel = rec.citizen.pesel,
-                dateOfBirth = rec.citizen.account.dateOfBirth,
-                vaccineId = rec.vaccineId,
-                vaccineName = rec.vaccineDefinition.vaccineName,
-                manufacturer = rec.vaccineDefinition.manufacturer,
-                vaccinationDate = rec.vaccinationDate,
-                nextVaccinationDate = rec.nextVaccinationDate,
-                doseNumber = rec.doseNumber,
-                batch = rec.batch,
-                remarks = rec.remarks
-            };
-        }
-
-        public async Task UpdateVaccinationRecordAsync(int recordId, UpdateVaccinationRecordDto dto, CancellationToken ct)
-        {
-            var rec = await _dbContext.vaccinationRecords.FirstOrDefaultAsync(x => x.recordId == recordId, ct);
-            if (rec == null)
-                throw new InvalidOperationException("Vaccination record not found.");
-
-            if (dto.vaccinationDate == null)
-                throw new ArgumentNullException("Vaccination date cannot be null.");
-
-            rec.vaccinationDate = (DateTime)dto.vaccinationDate;
-            rec.nextVaccinationDate = dto.nextVaccinationDate;
-            rec.doseNumber = dto.doseNumber;
-            rec.batch = dto.batch;
-            rec.remarks = dto.remarks;
-
-            _dbContext.vaccinationRecords.Update(rec);
-            await _dbContext.SaveChangesAsync(ct);
-        }
-
-        public async Task DeleteVaccinationRecordAsync(int recordId, CancellationToken ct)
-        {
-            var rec = await _dbContext.vaccinationRecords.FirstOrDefaultAsync(x => x.recordId == recordId, ct);
-            if (rec == null)
-                throw new InvalidOperationException("Vaccination record not found.");
-
-            _dbContext.vaccinationRecords.Remove(rec);
-            await _dbContext.SaveChangesAsync(ct);
-        }
-
         public async Task AddAsync(VaccinationRecord record, CancellationToken ct)
         {
             await _dbContext.vaccinationRecords.AddAsync(record, ct);
+        }
+
+        public async Task<VaccinationRecord?> GetById(int id, CancellationToken ct)
+        {
+            return await _dbContext.vaccinationRecords.FirstOrDefaultAsync(x => x.recordId == id, ct);
+        }
+
+        public async Task<VaccinationRecord?> GetByIdNoTrackingAsync(int id, CancellationToken ct)
+        {
+            return await _dbContext.vaccinationRecords.AsNoTracking().FirstOrDefaultAsync(x => x.recordId == id, ct);
+        }
+
+        public void Update(VaccinationRecord record)
+        {
+            _dbContext.vaccinationRecords.Update(record);
+        }
+
+        public void Delete(VaccinationRecord record)
+        {
+            _dbContext.vaccinationRecords.Remove(record);
         }
     }
 }

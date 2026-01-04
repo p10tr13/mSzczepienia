@@ -4,5 +4,5 @@ namespace mSzczepienia.Api.Repositories.Interfaces;
 
 public interface IAccountRepository
 {
-    Task CreateAccountAsync(Account account, CancellationToken cancellationToken);
+    Task AddAsync(Account account, CancellationToken ct);
 }

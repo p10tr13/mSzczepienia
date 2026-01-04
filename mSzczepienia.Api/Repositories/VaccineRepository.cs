@@ -3,6 +3,7 @@ using mSzczepienia.Api.Repositories.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Vaccines;
 using mSzczepienia.Shared.DTO.Queries;
+using mSzczepienia.Shared.Models;
 
 namespace mSzczepienia.Api.Repositories;
 
@@ -144,5 +145,22 @@ public class VaccineRepository : IVaccineRepository
             })
             .ToListAsync(ct);
         return vaccines;
+    }
+
+    public async Task<VaccineDefinition?> GetVaccineDefinitionByIdAsync(int id, CancellationToken ct)
+    {
+        return await _dbContext.vaccineDefinitions
+            .Include(v => v.vaccineDiseases)
+            .ThenInclude(vd => vd.disease)
+            .FirstOrDefaultAsync(v => v.vaccineId == id, ct);
+    }
+
+    public async Task<VaccineDefinition?> GetVaccineDefinitionByIdNoTrackingAsync(int id, CancellationToken ct)
+    {
+        return await _dbContext.vaccineDefinitions
+            .AsNoTracking()
+            .Include(v => v.vaccineDiseases)
+            .ThenInclude(vd => vd.disease)
+            .FirstOrDefaultAsync(v => v.vaccineId == id, ct);
     }
 }

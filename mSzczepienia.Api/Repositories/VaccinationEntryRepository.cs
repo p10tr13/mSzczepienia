@@ -29,4 +29,9 @@ public class VaccinationEntryRepository : IVaccinationEntryRepository
     {
         _dbContext.vaccinationEntries.Update(entry);
     }
+
+    public void DeleteRange(IEnumerable<VaccinationEntry> entries)
+    {
+        _dbContext.vaccinationEntries.RemoveRange(entries);
+    }
 }

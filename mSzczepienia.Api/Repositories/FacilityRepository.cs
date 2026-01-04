@@ -16,6 +16,11 @@ public class FacilityRepository : IFacilityRepository
         _dbContext = dbContext;
     }
 
+    public async Task<MedicalFacility?> GetByNameAsync(string name, CancellationToken ct)
+    {
+        return await _dbContext.medicalFacilities.FirstOrDefaultAsync(f => f.facilityName == name, ct);
+    }
+
     public async Task<List<string>> GetCitiesAutocompleteAsync(string? query, CancellationToken ct)
     {
         var q = _dbContext.medicalFacilities.AsNoTracking();

@@ -7,6 +7,7 @@ namespace mSzczepienia.Api.Repositories.Interfaces;
 
 public interface IFacilityRepository
 {
+    Task<MedicalFacility?> GetByNameAsync(string name, CancellationToken ct);
     Task<List<string>> GetCitiesAutocompleteAsync(string? query, CancellationToken ct);
     Task<List<FacilityListDto>> GetFacilityNamesAutocompleteAsync(string? query, CancellationToken ct);
     Task<PagedResult<MedicalFacility>> SearchFacilitiesAsync(GetFacilitiesQuery query, CancellationToken ct);

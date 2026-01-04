@@ -1,0 +1,263 @@
+﻿@page "/vaccines/add"
+@attribute [Authorize(Roles = "admin")]
+@inject NavigationManager NavigationManager
+@inject IDiseaseClient DiseaseClient
+@inject IVaccineClient VaccineClient
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<SharedResources> Localizer
+@using mSzczepienia.Shared.DTO.Diseases
+@using mSzczepienia.Shared.DTO.Vaccines
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-8">
+    <MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary">@Localizer["CreateNewVaccine"]</MudText>
+
+    <EditForm Model="@model" OnValidSubmit="OnSubmit">
+        <DataAnnotationsValidator />
+
+        <MudCard Elevation="3" Class="pa-4">
+            <MudCardContent>
+                <MudGrid>
+
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h6" Class="mb-2">@Localizer["BasicInfo"]</MudText>
+                        <MudDivider />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Localizer["VaccineName"]" @bind-Value="model.VaccineName" For="@(() => model.VaccineName)" Variant="Variant.Outlined" Required="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Localizer["Manufacturer"]" @bind-Value="model.Manufacturer" For="@(() => model.Manufacturer)" Variant="Variant.Outlined" Required="true" />
+                    </MudItem>
+
+                    <MudItem xs="12" Class="mt-4">
+                        <MudText Typo="Typo.h6" Class="mb-2">@Localizer["Descriptions"]</MudText>
+                        <MudDivider />
+                    </MudItem>
+
+                    <MudItem xs="12" md="6">
+                        <MudPaper Class="pa-3" Elevation="0" Outlined="true">
+                            <MudText Color="Color.Primary" Class="mb-2">@Localizer["PolishLanguage"]</MudText>
+                            <MudTextField Label="@Localizer["ShortDescriptionPl"]" @bind-Value="model.ShortDescriptionPl" Lines="2" Variant="Variant.Outlined" Class="mb-3" Required="true" />
+                            <MudTextField Label="@Localizer["FullDescriptionPl"]" @bind-Value="model.VaccineDescriptionPl" Lines="4" Variant="Variant.Outlined" Required="true" />
+                        </MudPaper>
+                    </MudItem>
+
+                    <MudItem xs="12" md="6">
+                        <MudPaper Class="pa-3" Elevation="0" Outlined="true">
+                            <MudText Color="Color.Secondary" Class="mb-2">@Localizer["EnglishLanguage"]</MudText>
+                            <MudTextField Label="@Localizer["ShortDescriptionEn"]" @bind-Value="model.ShortDescriptionEn" Lines="2" Variant="Variant.Outlined" Class="mb-3" Required="true"/>
+                            <MudTextField Label="@Localizer["FullDescriptionEn"]" @bind-Value="model.VaccineDescriptionEn" Lines="4" Variant="Variant.Outlined" Required="true" />
+                        </MudPaper>
+                    </MudItem>
+
+                    <MudItem xs="12" Class="mt-6">
+                        <MudText Typo="Typo.h6" Class="mb-2">@Localizer["TargetDiseases"]</MudText>
+                        <MudDivider />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTable Items="@model.Diseases" Hover="true" Breakpoint="Breakpoint.None" Elevation="0">
+                            <HeaderContent>
+                                <MudTh Style="width: 100px;">@Localizer["IsNew?"]</MudTh>
+                                <MudTh>@Localizer["DiseaseNamePl"]</MudTh>
+                                <MudTh>@Localizer["DiseaseNameEn"]</MudTh>
+                                <MudTh Style="width: 50px;"></MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="diseaseRow">
+                                <MudTd>
+                                    <MudTooltip Text="@(diseaseRow.DiseaseId == 0 ? Localizer["AddNewDisease"] : Localizer["PickFromDb"])">
+                                        <MudSwitch T="bool" Color="Color.Success" Value="@(diseaseRow.DiseaseId == 0)"
+                                                   ValueChanged="@((bool isNew) => ToggleNewDiseaseMode(diseaseRow, isNew))"
+                                                   Label="@(diseaseRow.DiseaseId == 0 ? Localizer["New"] : Localizer["Db"])" Size="Size.Small" />
+                                    </MudTooltip>
+                                </MudTd>
+
+                                <MudTd>
+                                    @if (diseaseRow.DiseaseId == 0)
+                                    {
+                                        <MudTextField @bind-Value="diseaseRow.DiseaseNamePl" Placeholder="@Localizer["EnterNewDiseaseNamePl"]" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                                      Required="true" />
+                                    }
+                                    else
+                                    {
+                                        <MudAutocomplete T="DiseaseDto" Label="@Localizer["SearchDisease"]" Value="GetDiseaseDtoFromRow(diseaseRow)"
+                                                         ValueChanged="@(val => OnDiseaseSelected(diseaseRow, val))" SearchFunc="@SearchDiseases" ToStringFunc="@(x => x.DiseaseNamePl)"
+                                                         Variant="Variant.Outlined" Margin="Margin.Dense" AdornmentIcon="@Icons.Material.Filled.Search" ResetValueOnEmptyText="true"
+                                                         CoerceText="false" Clearable="true" DebounceInterval="1000" MinCharacters="2">
+                                            <ItemTemplate Context="e">
+                                                <MudText>
+                                                    <b>@GetLocalizedName(e)</b>
+                                                </MudText>
+                                            </ItemTemplate>
+                                        </MudAutocomplete>
+                                    }
+                                </MudTd>
+
+                                <MudTd>
+                                    <MudTextField @bind-Value="diseaseRow.DiseaseNameEn" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="@(diseaseRow.DiseaseId != 0)"
+                                                  Placeholder="@(diseaseRow.DiseaseId != 0 ? string.Empty : Localizer["EnterNewDiseaseNameEn"])" Required="true"/>
+                                </MudTd>
+
+                                <MudTd>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => model.Diseases.Remove(diseaseRow))" />
+                                </MudTd>
+                            </RowTemplate>
+                            <FooterContent>
+                                <MudTd ColSpan="4">
+                                    <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Outlined" Color="Color.Primary" FullWidth="true" OnClick="AddNewDiseaseRow"
+                                               Class="border-dashed">
+                                        @Localizer["AddAnotherDisease"]
+                                    </MudButton>
+                                </MudTd>
+                            </FooterContent>
+                        </MudTable>
+                    </MudItem>
+
+                </MudGrid>
+            </MudCardContent>
+
+            <MudCardActions Class="pa-4 justify-end">
+                <MudButton OnClick="@(() => NavigationManager.NavigateTo("/vaccines"))" Class="mr-2">@Localizer["Cancel"]</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@_processing">
+                    @if (_processing)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">@Localizer["Saving"]</MudText>
+                    }
+                    else
+                    {
+                        @Localizer["CreateVaccine"]
+                    }
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+</MudContainer>
+
+@code {
+    private CreateVaccineDto model = new() 
+    {
+        VaccineName = string.Empty,
+        Manufacturer = string.Empty,
+        ShortDescriptionPl = string.Empty,
+        ShortDescriptionEn = string.Empty,
+        VaccineDescriptionPl = string.Empty,
+        VaccineDescriptionEn = string.Empty,
+        Diseases = new List<DiseaseDto>()
+    };
+    private bool _processing = false;
+
+    protected override void OnInitialized()
+    {
+        AddNewDiseaseRow();
+    }
+
+    private void AddNewDiseaseRow()
+    {
+        model.Diseases.Add(new DiseaseDto { DiseaseId = -1, DiseaseNameEn = string.Empty, DiseaseNamePl = string.Empty });
+    }
+
+    private async Task<IEnumerable<DiseaseDto>> SearchDiseases(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length < 2) return new List<DiseaseDto>();
+
+        try
+        {
+            return await DiseaseClient.GetDiseasesAutocompleteAsync(value, 10, token);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+            return new List<DiseaseDto>();
+        }
+    }
+
+    private void OnDiseaseSelected(DiseaseDto row, DiseaseDto selected)
+    {
+        if (selected != null)
+        {
+            row.DiseaseId = selected.DiseaseId;
+            row.DiseaseNamePl = selected.DiseaseNamePl;
+            row.DiseaseNameEn = selected.DiseaseNameEn;
+        }
+        else
+        {
+            row.DiseaseId = -1;
+            row.DiseaseNamePl = "";
+            row.DiseaseNameEn = "";
+        }
+    }
+
+    private DiseaseDto GetDiseaseDtoFromRow(DiseaseDto row)
+    {
+        if (row.DiseaseId <= 0) return null;
+        return new DiseaseDto { DiseaseId = row.DiseaseId, DiseaseNamePl = row.DiseaseNamePl, DiseaseNameEn = row.DiseaseNameEn };
+    }
+
+    private void ToggleNewDiseaseMode(DiseaseDto row, bool isNew)
+    {
+        if (isNew)
+        {
+            row.DiseaseId = 0;
+            row.DiseaseNamePl = "";
+            row.DiseaseNameEn = "";
+        }
+        else
+        {
+            row.DiseaseId = -1;
+            row.DiseaseNamePl = "";
+            row.DiseaseNameEn = "";
+        }
+    }
+
+    private async Task OnSubmit()
+    {
+        if (model.Diseases.Count == 0 || model.Diseases.All(d => string.IsNullOrWhiteSpace(d.DiseaseNamePl)))
+        {
+            Snackbar.Add(Localizer["ErrorNoDiseases"], Severity.Warning);
+            return;
+        }
+
+        var validDiseases = model.Diseases.Where(x => !string.IsNullOrWhiteSpace(x.DiseaseNamePl) && !string.IsNullOrWhiteSpace(x.DiseaseNameEn))
+                                          .Select(x => x).Where(x => x.DiseaseId != -1).ToList();
+        
+        if (validDiseases.Count == 0)
+        {
+            Snackbar.Add(Localizer["ErrorNoDiseases"], Severity.Warning);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(model.VaccineName) || string.IsNullOrWhiteSpace(model.Manufacturer) || string.IsNullOrWhiteSpace(model.VaccineDescriptionEn) ||
+            string.IsNullOrWhiteSpace(model.VaccineDescriptionPl) || string.IsNullOrWhiteSpace(model.ShortDescriptionEn) || string.IsNullOrWhiteSpace(model.ShortDescriptionPl))
+        {
+            Snackbar.Add(Localizer["ErrorRequiredFields"], Severity.Warning);
+            return;
+        }
+
+        model.Diseases = validDiseases;
+
+        _processing = true;
+        try
+        {
+            await VaccineClient.CreateVaccineAsync(model, new CancellationToken());
+
+            Snackbar.Add(Localizer["VaccineCreatedSuccess"], Severity.Success);
+            NavigationManager.NavigateTo("/vaccines");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+
+    private string GetLocalizedName(DiseaseDto disease)
+    {
+        var culture = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+        return culture == "pl" ? disease.DiseaseNamePl : disease.DiseaseNameEn;
+    }
+}

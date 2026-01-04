@@ -163,4 +163,9 @@ public class VaccineRepository : IVaccineRepository
             .ThenInclude(vd => vd.disease)
             .FirstOrDefaultAsync(v => v.vaccineId == id, ct);
     }
+
+    public async Task AddAsync(VaccineDefinition vaccine, CancellationToken ct)
+    {
+        _dbContext.vaccineDefinitions.Add(vaccine);
+    }
 }

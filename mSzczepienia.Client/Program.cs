@@ -54,6 +54,7 @@ builder.Services.AddScoped<IOCRSubmissionClient, OCRSubmissionClient>();
 builder.Services.AddScoped<ICitizenClient, CitizenClient>();
 builder.Services.AddScoped<IVaccinationRecordClient, VaccinationRecordClient>();
 builder.Services.AddScoped<IAccountClient, AccountClient>();
+builder.Services.AddScoped<IDiseaseClient, DiseaseClient>();
 
 var host = builder.Build();
 

@@ -94,4 +94,15 @@ public class VaccineClient : IVaccineClient
         var message = string.IsNullOrWhiteSpace(content) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : content;
         throw new HttpRequestException(message, null, response.StatusCode);
     }
+
+    public async Task CreateVaccineAsync(CreateVaccineDto dto, CancellationToken ct)
+    {
+        var response = await _httpClient.PostAsJsonAsync($"{_controllerUrl}/create", dto, ct);
+        if (!response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(content) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : content;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
 }

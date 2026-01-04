@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using mSzczepienia.Api.Services.Interfaces;
-using mSzczepienia.Shared.DTO.Queries;
 using mSzczepienia.Shared.DTO;
+using mSzczepienia.Shared.DTO.Queries;
 using mSzczepienia.Shared.DTO.Vaccines;
+using System.Security.Claims;
 
 namespace mSzczepienia.Api.Controllers;
 
@@ -12,10 +13,12 @@ namespace mSzczepienia.Api.Controllers;
 public class VaccinesController : ControllerBase
 {
     private readonly IVaccineService _vaccineService;
+    private readonly ILogger<VaccinesController> _logger;
 
-    public VaccinesController(IVaccineService vaccineService)
+    public VaccinesController(IVaccineService vaccineService, ILogger<VaccinesController> logger)
     {
         _vaccineService = vaccineService;
+        _logger = logger;
     }
 
     [HttpGet("manufacturers-autocomplete")]
@@ -62,5 +65,36 @@ public class VaccinesController : ControllerBase
             return NotFound();
         }
         return Ok(result);
+    }
+
+    [HttpPost("create")]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> CreateVaccineAsync([FromBody] CreateVaccineDto dto, CancellationToken ct)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("user_id")?.Value ?? User.FindFirst("uid")?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+
+        _logger.LogInformation("Creating a new vaccine with name: {VaccineName} by user: {UserId}", dto.VaccineName, firebaseUid);
+
+        try
+        {
+            await _vaccineService.CreateVaccineAsync(dto, ct);
+            return Ok(new { message = "Vaccine created successfully." });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Internal Server Error", details = ex.Message });
+        }
     }
 }

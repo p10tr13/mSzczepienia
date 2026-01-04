@@ -10,4 +10,5 @@ public interface IVaccineService
     Task<List<string>> GetNamesAutocompleteAsync(string? query, CancellationToken ct);
     Task<PagedResult<VaccineDto>> GetVaccinesAsync(GetVaccinesQuery query, CancellationToken ct);
     Task<VaccineDto?> GetVaccineByIdAsync(int id, CancellationToken ct);
+    Task CreateVaccineAsync(CreateVaccineDto dto, CancellationToken ct);
 }

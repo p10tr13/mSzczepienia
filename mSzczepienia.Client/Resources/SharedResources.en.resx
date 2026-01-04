@@ -741,4 +741,82 @@
   <data name="ErrorReviewingSubmission" xml:space="preserve">
     <value>Error occurred while reviewing submission</value>
   </data>
+  <data name="CreateNewVaccine" xml:space="preserve">
+    <value>Create New Vaccine</value>
+  </data>
+  <data name="VaccineName" xml:space="preserve">
+    <value>Vaccine Name</value>
+  </data>
+  <data name="Descriptions" xml:space="preserve">
+    <value>Descriptions</value>
+  </data>
+  <data name="PolishLanguage" xml:space="preserve">
+    <value>Polish Language</value>
+  </data>
+  <data name="ShortDescriptionPl" xml:space="preserve">
+    <value>Short description in polish</value>
+  </data>
+  <data name="ShortDescriptionEn" xml:space="preserve">
+    <value>Short description in english</value>
+  </data>
+  <data name="EnglishLanguage" xml:space="preserve">
+    <value>English Language</value>
+  </data>
+  <data name="FullDescriptionPl" xml:space="preserve">
+    <value>Full description in polish</value>
+  </data>
+  <data name="FullDescriptionEn" xml:space="preserve">
+    <value>Full description in english</value>
+  </data>
+  <data name="TargetDiseases" xml:space="preserve">
+    <value>Target Diseases</value>
+  </data>
+  <data name="IsNew?" xml:space="preserve">
+    <value>Is New?</value>
+  </data>
+  <data name="DiseaseNamePl" xml:space="preserve">
+    <value>Disease name in polish</value>
+  </data>
+  <data name="DiseaseNameEn" xml:space="preserve">
+    <value>Disease name in english</value>
+  </data>
+  <data name="AddNewDisease" xml:space="preserve">
+    <value>Adding new disease</value>
+  </data>
+  <data name="PickFromDb" xml:space="preserve">
+    <value>Picking from database</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="Db" xml:space="preserve">
+    <value>Database</value>
+  </data>
+  <data name="SearchDisease" xml:space="preserve">
+    <value>Search Disease</value>
+  </data>
+  <data name="AddAnotherDisease" xml:space="preserve">
+    <value>Add another disease</value>
+  </data>
+  <data name="Saving" xml:space="preserve">
+    <value>Saving</value>
+  </data>
+  <data name="CreateVaccine" xml:space="preserve">
+    <value>Create Vaccine</value>
+  </data>
+  <data name="EnterNewDiseaseNamePl" xml:space="preserve">
+    <value>Enter new disease name in polish</value>
+  </data>
+  <data name="EnterNewDiseaseNameEn" xml:space="preserve">
+    <value>Enter new disease name in english</value>
+  </data>
+  <data name="VaccineCreatedSuccess" xml:space="preserve">
+    <value>Vaccine has been created successfully</value>
+  </data>
+  <data name="ErrorNoDiseases" xml:space="preserve">
+    <value>No diseases were chosen</value>
+  </data>
+  <data name="ErrorRequiredFields" xml:space="preserve">
+    <value>Fill out all the required fields</value>
+  </data>
 </root>

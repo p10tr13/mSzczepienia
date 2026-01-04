@@ -741,4 +741,82 @@
   <data name="ErrorReviewingSubmission" xml:space="preserve">
     <value>Wystąpił błąd podczas przetwarzania wysłanej recenzji rekordów szczepień</value>
   </data>
+  <data name="CreateNewVaccine" xml:space="preserve">
+    <value>Dodaj nową szcepionkę</value>
+  </data>
+  <data name="VaccineName" xml:space="preserve">
+    <value>Nazwa szczepionki</value>
+  </data>
+  <data name="Descriptions" xml:space="preserve">
+    <value>Opisy</value>
+  </data>
+  <data name="PolishLanguage" xml:space="preserve">
+    <value>polski</value>
+  </data>
+  <data name="ShortDescriptionPl" xml:space="preserve">
+    <value>Krótki opis po polsku</value>
+  </data>
+  <data name="ShortDescriptionEn" xml:space="preserve">
+    <value>Krótki opis po angielsku</value>
+  </data>
+  <data name="EnglishLanguage" xml:space="preserve">
+    <value>angielski</value>
+  </data>
+  <data name="FullDescriptionPl" xml:space="preserve">
+    <value>Pełny opis po polsku</value>
+  </data>
+  <data name="FullDescriptionEn" xml:space="preserve">
+    <value>Pełny opis po angielsku</value>
+  </data>
+  <data name="TargetDiseases" xml:space="preserve">
+    <value>Choroby przeciwko którym chroni szczepionka</value>
+  </data>
+  <data name="IsNew?" xml:space="preserve">
+    <value>Czy jest nowa?</value>
+  </data>
+  <data name="DiseaseNamePl" xml:space="preserve">
+    <value>Polska nazwa choroby</value>
+  </data>
+  <data name="DiseaseNameEn" xml:space="preserve">
+    <value>Angielska nazwa choroby</value>
+  </data>
+  <data name="AddNewDisease" xml:space="preserve">
+    <value>Tworzysz nową chorobę</value>
+  </data>
+  <data name="PickFromDb" xml:space="preserve">
+    <value>Wybierasz z bazy</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nowa</value>
+  </data>
+  <data name="Db" xml:space="preserve">
+    <value>Baza danych</value>
+  </data>
+  <data name="SearchDisease" xml:space="preserve">
+    <value>Szukaj choroby</value>
+  </data>
+  <data name="AddAnotherDisease" xml:space="preserve">
+    <value>Dodaj kolejną chorobę</value>
+  </data>
+  <data name="Saving" xml:space="preserve">
+    <value>Zapisywanie</value>
+  </data>
+  <data name="CreateVaccine" xml:space="preserve">
+    <value>Stwórz szczepionkę</value>
+  </data>
+  <data name="EnterNewDiseaseNamePl" xml:space="preserve">
+    <value>Wpisz nazwę nowej choroby po polsku</value>
+  </data>
+  <data name="EnterNewDiseaseNameEn" xml:space="preserve">
+    <value>Wpisz nazwę nowej choroby po angielsku</value>
+  </data>
+  <data name="VaccineCreatedSuccess" xml:space="preserve">
+    <value>Szczepionka została stworzona</value>
+  </data>
+  <data name="ErrorNoDiseases" xml:space="preserve">
+    <value>Nie wybrano żadnych chorób</value>
+  </data>
+  <data name="ErrorRequiredFields" xml:space="preserve">
+    <value>Wypełnij wszystkie wymagane pola</value>
+  </data>
 </root>

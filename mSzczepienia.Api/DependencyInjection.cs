@@ -123,24 +123,25 @@ public static class DependencyInjection
         services.AddScoped<Repositories.Interfaces.ICitizenDeviceTokenRepository, Repositories.CitizenDeviceTokenRepository>();
         services.AddScoped<Repositories.Interfaces.IVaccinationEntryRepository, Repositories.VaccinationEntryRepository>();
         services.AddScoped<Repositories.Interfaces.IUnitOfWork, Repositories.UnitOfWork>();
+        services.AddScoped<Repositories.Interfaces.IDiseaseRepository, Repositories.DiseaseRepository>();
 
         return services;
     }
 
     public static IServiceCollection RegisterServices(this IServiceCollection services)
     {
-        services.AddScoped<Services.Interfaces.IFacilityService, Services.FacilityService>();
-        services.AddScoped<Services.Interfaces.IStatsService, Services.StatsService>();
-        services.AddScoped<Services.Interfaces.IVaccineService, Services.VaccineService>();
-        services.AddScoped<Services.Interfaces.IUserManagementService, Services.UserManagementService>();
-        services.AddScoped<Services.Interfaces.ICitizenService, Services.CitizenService>();
-        services.AddScoped<Services.Interfaces.IAccountService, Services.AccountService>();
-        services.AddScoped<Services.Interfaces.IVaccinationRecordService, Services.VaccinationRecordService>();
-        services.AddScoped<Services.Interfaces.IPersonnelService, Services.PersonnelService>();
-        services.AddScoped<Services.Interfaces.IOCRSubmissionsService, Services.OCRSubmissionsService>();
-        services.AddScoped<Services.Interfaces.IBlobService, Services.BlobService>();
-        services.AddScoped<Services.Interfaces.INotificationService, Services.NotificationService>();
-
+        services.AddScoped<IFacilityService, FacilityService>();
+        services.AddScoped<IStatsService, StatsService>();
+        services.AddScoped<IVaccineService, VaccineService>();
+        services.AddScoped<IUserManagementService, UserManagementService>();
+        services.AddScoped<ICitizenService, CitizenService>();
+        services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<IVaccinationRecordService, VaccinationRecordService>();
+        services.AddScoped<IPersonnelService, PersonnelService>();
+        services.AddScoped<IOCRSubmissionsService, OCRSubmissionsService>();
+        services.AddScoped<IBlobService, BlobService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IDiseaseService, DiseaseService>();
 
         return services;
     }

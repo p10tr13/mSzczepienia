@@ -819,4 +819,10 @@
   <data name="ErrorRequiredFields" xml:space="preserve">
     <value>Wypełnij wszystkie wymagane pola</value>
   </data>
+  <data name="PageNotFound" xml:space="preserve">
+    <value>Strona nie znaleziona</value>
+  </data>
+  <data name="PageNotFoundDescription" xml:space="preserve">
+    <value>Przepraszamy, ale strona, której szukasz, nie istnieje lub została przeniesiona. Sprawdź adres URL lub wróć na stronę główną.</value>
+  </data>
 </root>

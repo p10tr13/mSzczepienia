@@ -1,0 +1,33 @@
+﻿@inject IStringLocalizer<SharedResources> Localizer
+@inject NavigationManager NavigationManager
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex align-center justify-center" Style="height: 80vh;">
+    <MudPaper Class="d-flex flex-column align-center justify-center pa-4" Elevation="3">
+        <MudIcon Icon="@Icons.Material.TwoTone.SentimentDissatisfied" Color="Color.Primary" Style="font-size: 8rem; opacity: 0.8;" Class="mb-4" />
+
+        <MudText Typo="Typo.h1" Color="Color.Primary" Style="font-weight: 700;">
+            404
+        </MudText>
+
+        <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true" Class="mt-2">
+            @Localizer["PageNotFound"]
+        </MudText>
+
+        <MudText Typo="Typo.body1" Color="Color.Secondary" Align="Align.Center" Class="mb-8" Style="max-width: 500px;">
+            @Localizer["PageNotFoundDescription"]
+        </MudText>
+
+        <MudStack Row="true" Spacing="4">
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Home" OnClick="GoHome">
+                @Localizer["GoHome"]
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private void GoHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

@@ -14,11 +14,9 @@ namespace mSzczepienia.Api.Repositories;
 public class OCRSubmissionRepository : IOCRSubmissionRepository
 {
     private readonly AppDbContext _dbContext;
-    private readonly IBlobService _blobService;
-    public OCRSubmissionRepository(AppDbContext dbContext, IBlobService blobService)
+    public OCRSubmissionRepository(AppDbContext dbContext)
     {
         _dbContext = dbContext;
-        _blobService = blobService;
     }
 
     public async Task<PagedResult<SearchOCRSubmissionDTO>> GetPendingForFacilityAsync(int facilityId, SearchOCRSubmissionQueryDto query, CancellationToken ct)
@@ -124,7 +122,7 @@ public class OCRSubmissionRepository : IOCRSubmissionRepository
             };
         }
 
-    public async Task<List<VaccinationEntryDto>> ProcessOcrSubmissionAsync(string firebaseUid, List<IFormFile> files, CancellationToken ct)
+    public async Task AddOcrSubmissionAsync(string firebaseUid, string directoryUrl, List<IFormFile> files, CancellationToken ct)
     {
         // ADD NEW OCR SUBMISSION RECORD
         var citizen = await _dbContext.citizens
@@ -137,9 +135,6 @@ public class OCRSubmissionRepository : IOCRSubmissionRepository
             throw new InvalidOperationException("Citizen not found for the provided Firebase UID.");
         }
 
-        string uniqueGuid = Guid.NewGuid().ToString();
-        string directoryUrl = $"{firebaseUid}/{uniqueGuid}/";
-
         var newSubmission = new OcrSubmission
         {
             citizenId = citizen.citizenId,
@@ -147,27 +142,9 @@ public class OCRSubmissionRepository : IOCRSubmissionRepository
             status = OcrSubmissionStatus.Uploaded,
             photoUrl = directoryUrl,
         };
+
         _dbContext.ocrSubmissions.Add(newSubmission);
         await _dbContext.SaveChangesAsync();
-
-
-        // UPLOAD FILES TO BLOB STORAGE
-        await _blobService.UploadMultipleFilesAsync(directoryUrl, files);
-
-
-        // OCR PROCESS
-        // PLACEHOLDER
-
-        // RETURN PROCESSED ENTRIES
-        List<VaccinationEntryDto> processedEntries = new List<VaccinationEntryDto>
-        {
-            new VaccinationEntryDto
-            {
-                vaccineName = "Vaccine A",
-                vaccinationDate = DateTime.UtcNow.AddDays(-60)
-            }
-        };
-        return processedEntries;
     }
 
     public async Task<OcrSubmission?> GetByIdAsync(int submissionId, CancellationToken ct)

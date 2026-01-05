@@ -10,7 +10,7 @@ public interface IOCRSubmissionRepository
 {
     Task<PagedResult<SearchOCRSubmissionDTO>> GetPendingForFacilityAsync(int facilityId, SearchOCRSubmissionQueryDto query, CancellationToken ct);
     Task<PagedResult<SearchOCRSubmissionDTO>> GetPendingAsync(SearchOCRSubmissionQueryDto query, CancellationToken ct);
-    Task<List<VaccinationEntryDto>> ProcessOcrSubmissionAsync(string firebaseUid, List<IFormFile> files, CancellationToken ct);
+    Task AddOcrSubmissionAsync(string firebaseUid, string directoryUrl, List<IFormFile> files, CancellationToken ct);
     Task<OcrSubmission?> GetByIdAsync(int submissionId, CancellationToken ct);
     void Update(OcrSubmission submission);
 }

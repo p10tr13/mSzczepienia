@@ -111,5 +111,12 @@
     "analize": "Analizuj",
 
     "analyzingSubmission": "Analizowanie twoich zdjęć...",
-    "errorOccurred": "Wystąpił błąd"
+    "errorOccurred": "Wystąpił błąd",
+
+    "ocrDescription": "Należy pamiętać, że proces OCR może nie być w 100% dokładny. Dokładnie sprawdź wyodrębnione dane przed przesłaniem.",
+    "addAnotherVaccination": "Dodaj kolejne szczepienie",
+    "submitForVerification": "Prześlij do weryfikacji",
+
+    "modifyEntry": "Modyfikuj wpis",
+    "submit": "Prześlij"
 }

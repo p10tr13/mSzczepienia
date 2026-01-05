@@ -5,6 +5,7 @@ import 'package:mszczepienia/core/theme/app_colors.dart';
 import 'package:mszczepienia/logic/ocr_submission/ocr_submission_cubit.dart';
 import 'package:mszczepienia/logic/ocr_submission/ocr_submission_state.dart';
 import 'package:mszczepienia/ui/layout/layout.dart';
+import 'package:mszczepienia/ui/submission_process/entries_list.dart';
 
 class AnalyzePage extends StatefulWidget {
   const AnalyzePage({super.key});
@@ -43,7 +44,7 @@ class _AnalyzePageState extends State<AnalyzePage> {
                     Center(
                       child: Column(
                         children: [
-                          const SizedBox(height: 50),
+                          const SizedBox(height: 80),
                           CircularProgressIndicator(),
                           const SizedBox(height: 16),
                           Text(
@@ -68,6 +69,8 @@ class _AnalyzePageState extends State<AnalyzePage> {
                         ),
                       ],
                     ),
+                  ] else if (state is OcrSubmissionLoaded) ...[
+                    EntriesList(entries: state.entries),
                   ],
                 ],
               );

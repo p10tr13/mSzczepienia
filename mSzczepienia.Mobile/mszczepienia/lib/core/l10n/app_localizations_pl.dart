@@ -277,4 +277,20 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get errorOccurred => 'Wystąpił błąd';
+
+  @override
+  String get ocrDescription =>
+      'Należy pamiętać, że proces OCR może nie być w 100% dokładny. Dokładnie sprawdź wyodrębnione dane przed przesłaniem.';
+
+  @override
+  String get addAnotherVaccination => 'Dodaj kolejne szczepienie';
+
+  @override
+  String get submitForVerification => 'Prześlij do weryfikacji';
+
+  @override
+  String get modifyEntry => 'Modyfikuj wpis';
+
+  @override
+  String get submit => 'Prześlij';
 }

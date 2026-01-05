@@ -1,4 +1,5 @@
-﻿using mSzczepienia.Api.Repositories.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using mSzczepienia.Api.Repositories.Interfaces;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Facilities;
@@ -24,10 +25,12 @@ public class OCRSubmissionsService : IOCRSubmissionsService
     private readonly IVaccinationEntryRepository _vaccinationEntryRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IVaccinationRecordService _vaccinationRecordService;
+    private readonly IAzureOcrService _azureOcrService;
+    private readonly IUtilitiesService _utilitiesService;
 
     public OCRSubmissionsService(IOCRSubmissionRepository ocrSubmissionRepository, IPersonnelRepository personnelRepository, ICitizenRepository citizenRepository, IFacilityRepository facilityRepository, IBlobService blobService,
         ICitizenDeviceTokenRepository citizenDeviceTokenRepository, IVaccineRepository vaccineRepository, INotificationService notificationService, IVaccinationEntryRepository vaccinationEntryRepository, IUnitOfWork unitOfWork,
-        IVaccinationRecordService vaccinationRecordService)
+        IVaccinationRecordService vaccinationRecordService, IAzureOcrService azureOcrService, IUtilitiesService utilitiesService)
     {
         _ocrSubmissionRepository = ocrSubmissionRepository;
         _personnelRepository = personnelRepository;
@@ -40,6 +43,8 @@ public class OCRSubmissionsService : IOCRSubmissionsService
         _vaccinationEntryRepository = vaccinationEntryRepository;
         _unitOfWork = unitOfWork;
         _vaccinationRecordService = vaccinationRecordService;
+        _azureOcrService = azureOcrService;
+        _utilitiesService = utilitiesService;
     }
 
     public async Task<PagedResult<SearchOCRSubmissionDTO>> GetPendingForWorkerAsync(ClaimsPrincipal user, SearchOCRSubmissionQueryDto query, CancellationToken ct)
@@ -73,7 +78,52 @@ public class OCRSubmissionsService : IOCRSubmissionsService
 
     public async Task<List<VaccinationEntryDto>> ProcessOcrSubmissionAsync(string firebaseUid, List<IFormFile> files, CancellationToken ct)
     {
-        return await _ocrSubmissionRepository.ProcessOcrSubmissionAsync(firebaseUid, files, ct);
+        string uniqueGuid = Guid.NewGuid().ToString();
+        string directoryUrl = $"{firebaseUid}/{uniqueGuid}/";
+
+        // UPLOAD FILES TO BLOB STORAGE
+        await _blobService.UploadMultipleFilesAsync(directoryUrl, files);
+
+        // ADD NEW OCR SUBMISSION
+        await _ocrSubmissionRepository.AddOcrSubmissionAsync(firebaseUid, directoryUrl, files, ct);
+
+        // OCR PROCESS
+        var ocrEntries = await _azureOcrService.ProcessFilesAsync(files, ct);
+        var entriesDto = new List<VaccinationEntryDto>();
+
+        var vaccineNames = await _vaccineRepository.GetVaccineNamesAsync(ct);
+
+        int id = 0;
+        foreach (var entry in ocrEntries)
+        {
+            // Use levenstein distance to find best matching vaccine name
+            string bestMatchVaccineName = _utilitiesService.ChooseBestMatch(entry.vaccineName, vaccineNames);
+
+            // Parse date
+            DateTime dateTime = _utilitiesService.ParseDateTime(entry.vaccinationDate);
+
+            // Parse batch
+            string batch = string.Empty;
+            if (entry.batch != null)
+            {
+                batch = entry.batch.Trim().ToUpper();
+            }
+
+            entriesDto.Add(new VaccinationEntryDto
+            {
+                Id = id,
+                VaccineNameOcr = entry.vaccineName,
+                DateOcr = entry.vaccinationDate,
+                BatchOcr = entry.batch,
+                VaccineName = bestMatchVaccineName,
+                Date = dateTime,
+                Batch = batch,
+                Status = VaccinationEntryStatus.WaitingForReview.ToString()
+            });
+            id++;
+        }
+
+        return entriesDto;
     }
 
     public async Task<OCRSubmissionPhotoReviewDto?> GetSubmissionPhotoReviewAsync(int submissionId, CancellationToken ct)

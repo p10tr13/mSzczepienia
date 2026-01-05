@@ -23,7 +23,14 @@ class OcrSubmissionRemoteDatasource {
       );
     }
 
-    final response = await dio.post('/ocrsubmission/process', data: formData);
+    final response = await dio.post(
+      '/ocrsubmission/process',
+      data: formData,
+      options: Options(
+        sendTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+      ),
+    );
 
     final data = response.data;
 

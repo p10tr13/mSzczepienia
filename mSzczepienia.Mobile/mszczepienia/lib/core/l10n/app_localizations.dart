@@ -619,6 +619,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred'**
   String get errorOccurred;
+
+  /// No description provided for @ocrDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Please note that the OCR process may not be 100% accurate. Review the extracted data carefully before submission.'**
+  String get ocrDescription;
+
+  /// No description provided for @addAnotherVaccination.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Another Vaccination'**
+  String get addAnotherVaccination;
+
+  /// No description provided for @submitForVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit for Verification'**
+  String get submitForVerification;
+
+  /// No description provided for @modifyEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Modify Entry'**
+  String get modifyEntry;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
 }
 
 class _AppLocalizationsDelegate

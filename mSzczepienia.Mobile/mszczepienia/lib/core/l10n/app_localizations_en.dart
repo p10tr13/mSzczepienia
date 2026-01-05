@@ -275,4 +275,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorOccurred => 'An error occurred';
+
+  @override
+  String get ocrDescription =>
+      'Please note that the OCR process may not be 100% accurate. Review the extracted data carefully before submission.';
+
+  @override
+  String get addAnotherVaccination => 'Add Another Vaccination';
+
+  @override
+  String get submitForVerification => 'Submit for Verification';
+
+  @override
+  String get modifyEntry => 'Modify Entry';
+
+  @override
+  String get submit => 'Submit';
 }

@@ -15,4 +15,5 @@ public interface IVaccineRepository
     Task<VaccineDefinition?> GetVaccineDefinitionByIdAsync(int id, CancellationToken ct);
     Task<VaccineDefinition?> GetVaccineDefinitionByIdNoTrackingAsync(int id, CancellationToken ct);
     Task AddAsync(VaccineDefinition vaccine, CancellationToken ct);
+    Task<List<string>> GetVaccineNamesAsync(CancellationToken ct);
 }

@@ -8,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<BlobStorageSettings>(
     builder.Configuration.GetSection(BlobStorageSettings.SectionName));
-
+builder.Services.Configure<AzureOcrSettings>(
+    builder.Configuration.GetSection(AzureOcrSettings.SectionName));
 
 // Add services to the container.
 // Skip DbContext registration for testing - will be overridden in test factory

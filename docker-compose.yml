@@ -10,6 +10,9 @@ services:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
       - BlobStorage__ConnectionString=${BLOB_CONNECTION_STRING}
       - BlobStorage__ContainerName=mszczepienia-ocr
+      - AzureOcr__Endpoint=${AZURE_OCR_ENDPOINT}
+      - AzureOcr__ApiKey=${AZURE_OCR_APIKEY}
+      - AzureOcr__ModelId=szczepienia-v1
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - db

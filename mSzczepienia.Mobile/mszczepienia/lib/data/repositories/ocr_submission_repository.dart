@@ -16,7 +16,7 @@ class OcrSubmissionRepository {
     } on DioException catch (e) {
       throw Exception(e.response?.data ?? "Connection Error");
     } catch (e) {
-      throw Exception("Unknown Error");
+      throw Exception("Unknown Error: $e");
     }
   }
 }

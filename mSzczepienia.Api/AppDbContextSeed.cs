@@ -149,26 +149,32 @@ namespace mSzczepienia.Api
             }
 
             // Vaccines
-            if (!_dbContext.vaccineDefinitions.Any())
+            using (var reader = new StreamReader("Data/Csv/seeds_vaccines.csv"))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
-                using (var reader = new StreamReader("Data/Csv/seeds_vaccines.csv"))
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-                {
-                    var vaccineRecords = csv.GetRecords<VaccineCsvModel>().ToList();
-                    var entities = vaccineRecords.Select(x => new VaccineDefinition
-                    {
-                        vaccineName = x.vaccineName,
-                        manufacturer = x.manufacturer,
-                        vaccineDescriptionEn = x.vaccineDescriptionEn,
-                        vaccineDescriptionPl = x.vaccineDescriptionPl,
-                        shortDescriptionEn = x.shortDescriptionEn,
-                        shortDescriptionPl = x.shortDescriptionPl,
-                        creationDate = x.creationDate
-                    });
+                var vaccineRecords = csv.GetRecords<VaccineCsvModel>().ToList();
 
-                    _dbContext.vaccineDefinitions.AddRange(entities);
-                    _dbContext.SaveChanges();
+                foreach (var record in vaccineRecords)
+                {
+                    var existingVaccine = _dbContext.vaccineDefinitions
+                        .FirstOrDefault(v => v.vaccineName == record.vaccineName);
+
+                    if (existingVaccine == null)
+                    {
+                        // New
+                        _dbContext.vaccineDefinitions.Add(new VaccineDefinition
+                        {
+                            vaccineName = record.vaccineName,
+                            manufacturer = record.manufacturer,
+                            vaccineDescriptionEn = record.vaccineDescriptionEn,
+                            vaccineDescriptionPl = record.vaccineDescriptionPl,
+                            shortDescriptionEn = record.shortDescriptionEn,
+                            shortDescriptionPl = record.shortDescriptionPl,
+                            creationDate = record.creationDate
+                        });
+                    }
                 }
+                _dbContext.SaveChanges();
             }
 
             // Vaccine for disease

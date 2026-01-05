@@ -7,7 +7,7 @@ import 'package:mszczepienia/ui/authorization/pages/login_page.dart';
 import 'package:mszczepienia/ui/authorization/pages/sign_up_page.dart';
 import 'package:mszczepienia/ui/home/home_page.dart';
 import 'package:mszczepienia/ui/settings/settings_page.dart';
-import 'package:mszczepienia/ui/submission_process/analyze_page.dart';
+import 'package:mszczepienia/ui/submission_process/ocr_overview/analyze_page.dart';
 import 'package:mszczepienia/ui/submission_process/submission_status_page.dart';
 import 'package:mszczepienia/ui/submission_process/upload_photo_page.dart';
 import 'package:mszczepienia/ui/vaccination_details/vaccination_details_page.dart';

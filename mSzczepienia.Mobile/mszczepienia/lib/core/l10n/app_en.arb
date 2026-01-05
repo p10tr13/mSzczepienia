@@ -111,5 +111,12 @@
     "analize": "Analyze",
 
     "analyzingSubmission": "Analyzing your photos...",
-    "errorOccurred": "An error occurred"
+    "errorOccurred": "An error occurred",
+
+    "ocrDescription": "Please note that the OCR process may not be 100% accurate. Review the extracted data carefully before submission.",
+    "addAnotherVaccination": "Add Another Vaccination",
+    "submitForVerification": "Submit for Verification",
+
+    "modifyEntry": "Modify Entry",
+    "submit": "Submit"
 }

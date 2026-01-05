@@ -168,4 +168,12 @@ public class VaccineRepository : IVaccineRepository
     {
         _dbContext.vaccineDefinitions.Add(vaccine);
     }
+
+    public async Task<List<string>> GetVaccineNamesAsync(CancellationToken ct)
+    {
+        return await _dbContext.vaccineDefinitions
+            .AsNoTracking()
+            .Select(v => v.vaccineName)
+            .ToListAsync(ct);
+    }
 }

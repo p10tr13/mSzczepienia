@@ -837,4 +837,55 @@
   <data name="NoStaffFound" xml:space="preserve">
     <value>Nie znaleziono pracowników</value>
   </data>
+  <data name="FacilityCreatedSuccess" xml:space="preserve">
+    <value>Placówka medyczna została pomyślnie stworzona</value>
+  </data>
+  <data name="ErrorCreatingFacility" xml:space="preserve">
+    <value>Wystąpił błąd podczas tworzenia placówki medycznej</value>
+  </data>
+  <data name="AddNewFacility" xml:space="preserve">
+    <value>Dodaj nową placówkę medyczną</value>
+  </data>
+  <data name="CreateFacility" xml:space="preserve">
+    <value>Stwórz placówkę</value>
+  </data>
+  <data name="EnterCountry" xml:space="preserve">
+    <value>Wprowadź państwo</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Adres</value>
+  </data>
+  <data name="EnterPhoneNumber" xml:space="preserve">
+    <value>Wprowadź numer telefonu</value>
+  </data>
+  <data name="EnterFacilityName" xml:space="preserve">
+    <value>Wprowadź nazwę placówki</value>
+  </data>
+  <data name="EnterNIP" xml:space="preserve">
+    <value>Wprowadź NIP</value>
+  </data>
+  <data name="NIPMustBe10Digits" xml:space="preserve">
+    <value>NIP musi mieć 10 cyfr</value>
+  </data>
+  <data name="PostalCodeMustBeInFormat" xml:space="preserve">
+    <value>Popraw kod pocztowy</value>
+  </data>
+  <data name="PhoneNumberTooShort" xml:space="preserve">
+    <value>Numer telefonu jest za krótki</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Państwo</value>
+  </data>
+  <data name="EditFacility" xml:space="preserve">
+    <value>Edycja danych placówki medycznej</value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>Zapisz zmiany</value>
+  </data>
+  <data name="FacilityUpdatedSuccess" xml:space="preserve">
+    <value>Pomyślnie zaktualizowano dane placówki medycznej</value>
+  </data>
+  <data name="ErrorUpdatingFacility" xml:space="preserve">
+    <value>Wystąpił błąd podczas aktualizowania danych placówki</value>
+  </data>
 </root>

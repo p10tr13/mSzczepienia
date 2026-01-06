@@ -103,4 +103,34 @@ public class FacilityClient : IFacilityClient
             throw new HttpRequestException(message, null, response.StatusCode);
         }
     }
+
+    public async Task<int> CreateFacilityAsync(CreateFacilityDto dto, CancellationToken ct)
+    {
+        var response = await _httpClient.PostAsJsonAsync(facilityControllerUrl, dto, ct);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var newId = await response.Content.ReadFromJsonAsync<int>(cancellationToken: ct);
+            return newId;
+        }
+        else
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
+
+    public async Task UpdateFacilityAsync(int id, CreateFacilityDto dto, CancellationToken ct)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"{facilityControllerUrl}/{id}", dto, ct);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
+
 }

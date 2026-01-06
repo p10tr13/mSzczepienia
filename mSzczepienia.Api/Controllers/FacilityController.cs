@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO.Facilities;
 using mSzczepienia.Shared.DTO.Queries;
@@ -11,10 +12,12 @@ namespace mSzczepienia.Api.Controllers;
 [ApiController]
 public class FacilityController : ControllerBase
 {
+    private readonly ILogger<FacilityController> _logger;
     private readonly IFacilityService _facilityService;
 
-    public FacilityController(IFacilityService facilityService)
+    public FacilityController(ILogger<FacilityController> logger, IFacilityService facilityService)
     {
+        _logger = logger;
         _facilityService = facilityService;
     }
 
@@ -61,5 +64,59 @@ public class FacilityController : ControllerBase
             return NotFound();
         }
         return Ok(result);
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "admin")]
+    public async Task<ActionResult<int>> Create([FromBody] CreateFacilityDto dto, CancellationToken ct)
+    {
+        
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("user_id")?.Value ?? User.FindFirst("uid")?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+
+        _logger.LogInformation("Admin {FirebaseUid} is creating a facility", firebaseUid);
+
+        try
+        {
+            int newId = await _facilityService.CreateFacilityAsync(dto, ct);
+            return Ok(newId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while creating a facility by admin {FirebaseUid}", firebaseUid);
+            return StatusCode(500, "An error occurred while creating the facility.");
+        }
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CreateFacilityDto dto, CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("user_id")?.Value ?? User.FindFirst("uid")?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+
+        _logger.LogInformation("Admin {FirebaseUid} is updating facility {FacilityId}", firebaseUid, id);
+        try
+        {
+            await _facilityService.UpdateFacilityAsync(id, dto, ct);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while updating facility {FacilityId} by admin {FirebaseUid}", id, firebaseUid);
+            return StatusCode(500, "An error occurred while updating the facility.");
+        }
     }
 }

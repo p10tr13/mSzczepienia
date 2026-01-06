@@ -135,10 +135,10 @@ public class OCRSubmissionsService : IOCRSubmissionsService
         var citizenDetails = await _citizenRepository.GetCitizenDetailsByIdAsync(submission.citizenId, ct);
 
         int? facilityId = await _citizenRepository.GetFacilityIdByCitizenIdAsync(submission.citizenId, ct);
-        FacilityDto? facility = null;
+        MedicalFacility? facility = null;
         if (facilityId.HasValue)
         {
-            facility = await _facilityRepository.GetFacilityByIdAsync(facilityId.Value, ct);
+            facility = await _facilityRepository.GetByIdAsNoTrackingAsync(facilityId.Value, ct);
         }
 
         List<string> photos = new List<string>();
@@ -160,10 +160,10 @@ public class OCRSubmissionsService : IOCRSubmissionsService
             Pesel = citizenDetails?.pesel ?? string.Empty,
             PatientDateOfBirth = citizenDetails?.dateOfBirth ?? DateTime.MinValue,
             Photos = photos,
-            MedicalFacilityName = facility?.Name ?? citizenDetails?.facilityName ?? string.Empty,
-            MedicalFacilityStreet = facility?.Street ?? string.Empty,
-            MedicalFacilityCity = facility?.City ?? string.Empty,
-            MedicalFacilityPostalCode = facility?.PostalCode ?? string.Empty
+            MedicalFacilityName = facility?.facilityName ?? citizenDetails?.facilityName ?? string.Empty,
+            MedicalFacilityStreet = facility?.street ?? string.Empty,
+            MedicalFacilityCity = facility?.city ?? string.Empty,
+            MedicalFacilityPostalCode = facility?.postalCode ?? string.Empty
         };
 
         return dto;

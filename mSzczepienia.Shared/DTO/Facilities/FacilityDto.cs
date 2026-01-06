@@ -10,5 +10,6 @@ public class FacilityDto
     public string PostalCode { get; set; }
     public string Nip { get; set; }
     public string PhoneNumber { get; set; }
+    public string Country { get; set; }
     public DateTime CreationDate { get; set; }
 }

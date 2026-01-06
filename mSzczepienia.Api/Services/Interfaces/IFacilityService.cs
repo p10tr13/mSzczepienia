@@ -10,4 +10,6 @@ public interface IFacilityService
     Task<List<FacilityListDto>> GetFacilityNamesAutocompleteAsync(string? query, CancellationToken ct);
     Task<PagedResult<SearchFacilityDto>> SearchFacilitiesAsync(GetFacilitiesQuery query, CancellationToken ct);
     Task<FacilityDto?> GetFacilityByIdAsync(int id, CancellationToken ct);
+    Task<int> CreateFacilityAsync(CreateFacilityDto dto, CancellationToken ct);
+    Task UpdateFacilityAsync(int id, CreateFacilityDto dto, CancellationToken ct);
 }

@@ -109,22 +109,26 @@ public class FacilityRepository : IFacilityRepository
         return new PagedResult<MedicalFacility> { Items = items, TotalCount = totalItems, PageNumber = query.PageNumber, PageSize = query.PageSize };
     }
 
-    public async Task<FacilityDto?> GetFacilityByIdAsync(int id, CancellationToken ct)
+    public async Task<MedicalFacility?> GetByIdAsNoTrackingAsync(int id, CancellationToken ct)
     {
         return await _dbContext.medicalFacilities
             .AsNoTracking()
-            .Where(f => f.facilityId == id)
-            .Select(f => new FacilityDto
-            {
-                Id = f.facilityId,
-                Name = f.facilityName,
-                Street = f.street,
-                City = f.city,
-                PostalCode = f.postalCode,
-                Nip = f.nip,
-                PhoneNumber = f.phoneNumber,
-                CreationDate = f.creationDate,
-            })
-            .FirstOrDefaultAsync(ct);
+            .FirstOrDefaultAsync(f => f.facilityId == id, ct);
+    }
+
+    public async Task AddAsync(MedicalFacility facility, CancellationToken ct)
+    {
+        await _dbContext.medicalFacilities.AddAsync(facility, ct);
+    }
+
+    public async Task<MedicalFacility?> GetByIdAsync(int id, CancellationToken ct)
+    {
+        return await _dbContext.medicalFacilities
+            .FirstOrDefaultAsync(f => f.facilityId == id, ct);
+    }
+
+    public void Update(MedicalFacility facility)
+    {
+        _dbContext.medicalFacilities.Update(facility);
     }
 }

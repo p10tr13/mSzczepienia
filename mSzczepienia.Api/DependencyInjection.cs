@@ -124,6 +124,7 @@ public static class DependencyInjection
         services.AddScoped<Repositories.Interfaces.IVaccinationEntryRepository, Repositories.VaccinationEntryRepository>();
         services.AddScoped<Repositories.Interfaces.IUnitOfWork, Repositories.UnitOfWork>();
         services.AddScoped<Repositories.Interfaces.IDiseaseRepository, Repositories.DiseaseRepository>();
+        services.AddScoped<Repositories.Interfaces.IAdminRepository, Repositories.AdminRepository>();
 
         return services;
     }
@@ -142,8 +143,9 @@ public static class DependencyInjection
         services.AddScoped<IBlobService, BlobService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IDiseaseService, DiseaseService>();
-        services.AddScoped<Services.Interfaces.IAzureOcrService, Services.AzureOcrService>();
-        services.AddScoped<Services.Interfaces.IUtilitiesService, Services.UtilitiesService>();
+        services.AddScoped<IAzureOcrService, AzureOcrService>();
+        services.AddScoped<IUtilitiesService, UtilitiesService>();
+        services.AddScoped<IAdminService, AdminService>();
 
         return services;
     }

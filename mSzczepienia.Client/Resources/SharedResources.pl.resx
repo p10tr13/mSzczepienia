@@ -825,4 +825,16 @@
   <data name="PageNotFoundDescription" xml:space="preserve">
     <value>Przepraszamy, ale strona, której szukasz, nie istnieje lub została przeniesiona. Sprawdź adres URL lub wróć na stronę główną.</value>
   </data>
+  <data name="FacilityFilters" xml:space="preserve">
+    <value>Filtry placówek medycznych pracowników</value>
+  </data>
+  <data name="FacilityName" xml:space="preserve">
+    <value>Nazwa placówki</value>
+  </data>
+  <data name="ErrorLoadingStaff" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania pracowników</value>
+  </data>
+  <data name="NoStaffFound" xml:space="preserve">
+    <value>Nie znaleziono pracowników</value>
+  </data>
 </root>

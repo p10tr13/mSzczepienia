@@ -11,5 +11,6 @@ public interface IPersonnelRepository
     Task<PagedResult<PersonnelDto>> GetFacilityPersonnelAsync(GetPersonnelQuery query, CancellationToken ct);
     Task<int?> GetFacilityIdForWorkerByFirebaseUidAsync(string firebaseUid, CancellationToken ct);
     Task<Personnel?> GetByFirebaseUidAsync(string firebaseUid, CancellationToken ct);
+    Task<PagedResult<Personnel>> SearchPersonnelAsync(SearchPersonnelQuery query, CancellationToken ct);
     void Update(Personnel personnel);
 }

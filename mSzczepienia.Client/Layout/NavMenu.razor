@@ -6,23 +6,22 @@
 
             <MudText Typo="Typo.subtitle2" Class="px-4 mt-1 mb-2 mud-text-secondary">@Localizer["Administration"]</MudText>
 
-            <MudNavLink Href="/admin-dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">@Localizer["Dashboard"]</MudNavLink>
+            <MudNavLink Href="/admin-dashboard" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All">@Localizer["Dashboard"]</MudNavLink>
 
             <MudNavGroup Title="@Localizer["FacilityManagement"]" Icon="@Icons.Material.Filled.Business" Expanded="true">
-                <MudNavLink Href="/facilities" Icon="@Icons.Material.Filled.List">@Localizer["AllFacilities"]</MudNavLink>
-                <MudNavLink Href="/facilities/add" Icon="@Icons.Material.Filled.AddLocation">@Localizer["AddFacility"]</MudNavLink>
+                <MudNavLink Href="/facilities" Icon="@Icons.Material.Filled.List" Match="NavLinkMatch.All">@Localizer["AllFacilities"]</MudNavLink>
+                <MudNavLink Href="/facilities/add" Icon="@Icons.Material.Filled.AddLocation" Match="NavLinkMatch.All">@Localizer["AddFacility"]</MudNavLink>
             </MudNavGroup>
             <MudNavGroup Title="@Localizer["PersonnelManagement"]" Icon="@Icons.Material.Filled.Badge" Expanded="true">
-                <MudNavLink Href="/staff" Icon="@Icons.Material.Filled.Groups">@Localizer["StaffList"]</MudNavLink>
-                <MudNavLink Href="/staff/add" Icon="@Icons.Material.Filled.PersonAdd">@Localizer["AddStaff"]</MudNavLink>
+                <MudNavLink Href="/staff" Icon="@Icons.Material.Filled.Groups" Match="NavLinkMatch.All">@Localizer["StaffList"]</MudNavLink>
+                <MudNavLink Href="/staff/add" Icon="@Icons.Material.Filled.PersonAdd" Match="NavLinkMatch.All">@Localizer["AddStaff"]</MudNavLink>
             </MudNavGroup>
             <MudNavGroup Title="@Localizer["VaccineManagement"]" Icon="@Icons.Material.Filled.Vaccines" Expanded="true">
-                <MudNavLink Href="/vaccines" Icon="@Icons.Material.Filled.List">@Localizer["VaccineList"]</MudNavLink>
-                <MudNavLink Href="/vaccines/add" Icon="@Icons.Material.Filled.Add">@Localizer["AddVaccine"]</MudNavLink>
+                <MudNavLink Href="/vaccines" Icon="@Icons.Material.Filled.List" Match="NavLinkMatch.All">@Localizer["VaccineList"]</MudNavLink>
+                <MudNavLink Href="/vaccines/add" Icon="@Icons.Material.Filled.Add" Match="NavLinkMatch.All">@Localizer["AddVaccine"]</MudNavLink>
             </MudNavGroup>
             <MudNavGroup Title="@Localizer["System"]" Icon="@Icons.Material.Filled.Settings">
-                <MudNavLink Href="/users" Icon="@Icons.Material.Filled.People">@Localizer["Users"]</MudNavLink>
-                <MudNavLink Href="/audit-logs" Icon="@Icons.Material.Filled.History">@Localizer["AuditLogs"]</MudNavLink>
+                <MudNavLink Href="/audit-logs" Icon="@Icons.Material.Filled.History" Match="NavLinkMatch.All">@Localizer["AuditLogs"]</MudNavLink>
             </MudNavGroup>
         </Authorized>
     </AuthorizeView>
@@ -47,7 +46,7 @@
     </AuthorizeView>
     <AuthorizeView>
         <Authorized>
-            <MudNavLink Href="/profile" Icon="@Icons.Material.Filled.Person">@Localizer["MyProfile"]</MudNavLink>
+            <MudNavLink Href="/profile" Icon="@Icons.Material.Filled.Person" Match="NavLinkMatch.All">@Localizer["MyProfile"]</MudNavLink>
         </Authorized>
     </AuthorizeView>
 </MudNavMenu>

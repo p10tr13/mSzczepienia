@@ -12,14 +12,16 @@ namespace mSzczepienia.Api.Controllers
     public class PersonnelController : ControllerBase
     {
         private readonly IPersonnelService _personnelService;
+        private readonly ILogger<PersonnelController> _logger;
 
-        public PersonnelController(IPersonnelService personnelService)
+        public PersonnelController(IPersonnelService personnelService, ILogger<PersonnelController> logger)
         {
             _personnelService = personnelService;
+            _logger = logger;
         }
 
         [HttpGet]
-        [Authorize(Roles ="admin")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<PagedResult<PersonnelDto>>> GetPersonnelAsync([FromQuery] GetPersonnelQuery query, CancellationToken ct)
         {
             if (query.PageNumber <= 0 || query.PageSize <= 0)
@@ -36,6 +38,32 @@ namespace mSzczepienia.Api.Controllers
             }
             var result = await _personnelService.GetPersonnelAsync(query, ct);
             return Ok(result);
+        }
+
+        [HttpGet("search")]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<PagedResult<PersonnelDto>>> SearchPersonnelAsync([FromQuery] SearchPersonnelQuery query, CancellationToken ct)
+        {
+            if (query.Page <= 0 || query.PageSize <= 0)
+            {
+                return BadRequest("Page number and page size must be greater than zero.");
+            }
+
+            if (query.PageSize > 100)
+            {
+                return BadRequest("Page size must be less than or equal to 100.");
+            }
+
+            try
+            {
+                var result = await _personnelService.SearchPersonnelAsync(query, ct);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while searching for personnel.");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
     }
 }

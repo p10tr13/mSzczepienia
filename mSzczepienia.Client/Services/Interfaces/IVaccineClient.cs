@@ -11,4 +11,6 @@ public interface IVaccineClient
     Task<VaccineDto?> GetVaccineByIdAsync(int id, CancellationToken ct);
     Task<List<VaccineDto>> SearchVaccinesAsync(string term, int maxResults, CancellationToken ct);
     Task CreateVaccineAsync(CreateVaccineDto dto, CancellationToken ct);
+    Task<DetailedVaccineDto?> GetDetailedVaccineByIdAsync(int id, CancellationToken ct);
+    Task UpdateVaccineAsync(int id, CreateVaccineDto dto, CancellationToken ct);
 }

@@ -166,7 +166,7 @@ public class VaccineRepository : IVaccineRepository
 
     public async Task AddAsync(VaccineDefinition vaccine, CancellationToken ct)
     {
-        _dbContext.vaccineDefinitions.Add(vaccine);
+        await _dbContext.vaccineDefinitions.AddAsync(vaccine);
     }
 
     public async Task<List<string>> GetVaccineNamesAsync(CancellationToken ct)
@@ -175,5 +175,15 @@ public class VaccineRepository : IVaccineRepository
             .AsNoTracking()
             .Select(v => v.vaccineName)
             .ToListAsync(ct);
+    }
+
+    public void Update(VaccineDefinition vaccine)
+    {
+        _dbContext.vaccineDefinitions.Update(vaccine);
+    }
+
+    public void RemoveRangeVaccineDisease(IEnumerable<VaccineDisease> vaccineDisease)
+    {
+        _dbContext.vaccineDiseases.RemoveRange(vaccineDisease);
     }
 }

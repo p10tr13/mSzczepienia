@@ -292,7 +292,7 @@
     <value>Weryfikacje</value>
   </data>
   <data name="VerificationQueue" xml:space="preserve">
-    <value>Verification Queue</value>
+    <value>Kolejka weryfikacji</value>
   </data>
   <data name="PatientService" xml:space="preserve">
     <value>Obsługa pacjenta</value>
@@ -887,5 +887,14 @@
   </data>
   <data name="ErrorUpdatingFacility" xml:space="preserve">
     <value>Wystąpił błąd podczas aktualizowania danych placówki</value>
+  </data>
+  <data name="EditVaccine" xml:space="preserve">
+    <value>Edytuj szczepionkę</value>
+  </data>
+  <data name="VaccineUpdatedSuccess" xml:space="preserve">
+    <value>Szczepionka została pomyślnie edytowana</value>
+  </data>
+  <data name="VaccineNotFound" xml:space="preserve">
+    <value>Nie znaleziono szczepionki</value>
   </data>
 </root>

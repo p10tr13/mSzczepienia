@@ -105,4 +105,31 @@ public class VaccineClient : IVaccineClient
             throw new HttpRequestException(message, null, response.StatusCode);
         }
     }
+
+    public async Task<DetailedVaccineDto?> GetDetailedVaccineByIdAsync(int id, CancellationToken ct)
+    {
+        var response = await _httpClient.GetAsync($"{_controllerUrl}/detailed/{id}", ct);
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<DetailedVaccineDto>(cancellationToken: ct);
+        }
+        else
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(ct);
+            var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
+
+    public async Task UpdateVaccineAsync(int id, CreateVaccineDto dto, CancellationToken ct)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"{_controllerUrl}/{id}", dto, ct);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(content) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : content;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
 }

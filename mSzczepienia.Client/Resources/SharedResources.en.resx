@@ -888,4 +888,13 @@
   <data name="ErrorUpdatingFacility" xml:space="preserve">
     <value>Error occurred while updating medical facility</value>
   </data>
+  <data name="EditVaccine" xml:space="preserve">
+    <value>Edit Vaccine</value>
+  </data>
+  <data name="VaccineUpdatedSuccess" xml:space="preserve">
+    <value>Vaccine has been updated successfully</value>
+  </data>
+  <data name="VaccineNotFound" xml:space="preserve">
+    <value>Vaccine was not found</value>
+  </data>
 </root>

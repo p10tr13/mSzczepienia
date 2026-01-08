@@ -97,4 +97,52 @@ public class VaccinesController : ControllerBase
             return StatusCode(500, new { error = "Internal Server Error", details = ex.Message });
         }
     }
+
+    [HttpGet("detailed/{id}")]
+    [Authorize(Roles = "admin")]
+    public async Task<ActionResult<DetailedVaccineDto?>> GetDetailedVaccineByIdAsync([FromRoute] int id, CancellationToken ct)
+    {
+        try
+        {
+            var result = await _vaccineService.GetDetailedVaccineByIdAsync(id, ct);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+        catch (ArgumentException ex) {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Internal Server Error", details = ex.Message });
+        }
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CreateVaccineDto dto, CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("user_id")?.Value ?? User.FindFirst("uid")?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+
+        _logger.LogInformation("Admin {FirebaseUid} is updating facility {FacilityId}", firebaseUid, id);
+
+        try
+        {
+            await _vaccineService.UpdateVaccineAsync(id, dto, ct);
+            return NoContent();
+        }
+
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while updating vaccine {VaccineId} by admin {FirebaseUid}", id, firebaseUid);
+            return StatusCode(500, "An error occurred while updating the vaccine.");
+        }
+    }
 }

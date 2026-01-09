@@ -897,4 +897,28 @@
   <data name="VaccineNotFound" xml:space="preserve">
     <value>Nie znaleziono szczepionki</value>
   </data>
+  <data name="AdminNotFound" xml:space="preserve">
+    <value>Nie znaleziono danego administratora</value>
+  </data>
+  <data name="ErrorLoadingAdmin" xml:space="preserve">
+    <value>Wystąpił błąd podczas ładowania danych administratora</value>
+  </data>
+  <data name="BackToSearch" xml:space="preserve">
+    <value>Powrót do wyszukiwania</value>
+  </data>
+  <data name="AdministratorAccount" xml:space="preserve">
+    <value>Konto administratora</value>
+  </data>
+  <data name="SystemInfo" xml:space="preserve">
+    <value>Informacje systemowe</value>
+  </data>
+  <data name="AccountCreationDate" xml:space="preserve">
+    <value>Data utworzenia konta</value>
+  </data>
+  <data name="GUID" xml:space="preserve">
+    <value>GUID</value>
+  </data>
+  <data name="AdminDetails" xml:space="preserve">
+    <value>Szczegóły administratora</value>
+  </data>
 </root>

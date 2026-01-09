@@ -897,4 +897,28 @@
   <data name="VaccineNotFound" xml:space="preserve">
     <value>Vaccine was not found</value>
   </data>
+  <data name="AdminNotFound" xml:space="preserve">
+    <value>Admin was not found</value>
+  </data>
+  <data name="ErrorLoadingAdmin" xml:space="preserve">
+    <value>Error occurred while loading admin's data</value>
+  </data>
+  <data name="BackToSearch" xml:space="preserve">
+    <value>Back to search</value>
+  </data>
+  <data name="AdministratorAccount" xml:space="preserve">
+    <value>Administrator Account</value>
+  </data>
+  <data name="SystemInfo" xml:space="preserve">
+    <value>System Info</value>
+  </data>
+  <data name="AccountCreationDate" xml:space="preserve">
+    <value>Account creation date</value>
+  </data>
+  <data name="GUID" xml:space="preserve">
+    <value>GUID</value>
+  </data>
+  <data name="AdminDetails" xml:space="preserve">
+    <value>Admin Details</value>
+  </data>
 </root>

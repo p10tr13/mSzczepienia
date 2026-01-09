@@ -82,7 +82,7 @@
                                         </MudStack>
                                     </MudItem>
                                     <MudItem xs="12" sm="4" Class="d-flex justify-end">
-                                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OpenDetails(emp.Id))">
+                                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OpenPersonnelDetails(emp.Id))">
                                             @Localizer["Details"]
                                         </MudButton>
                                     </MudItem>
@@ -105,6 +105,9 @@
                                         </MudStack>
                                     </MudItem>
                                     <MudItem xs="12" sm="4" Class="d-flex justify-end">
+                                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OpenAdminDetails(admin.Id))">
+                                            @Localizer["Details"]
+                                        </MudButton>
                                     </MudItem>
                                 </MudGrid>
                             </MudPaper>
@@ -293,9 +296,14 @@
         return _adminResult?.TotalPages ?? 0;
     }
 
-    private void OpenDetails(int id)
+    private void OpenPersonnelDetails(int id)
     {
         NavigationManager.NavigateTo($"/staff/{id}");
+    }
+
+    private void OpenAdminDetails(Guid id)
+    {
+        NavigationManager.NavigateTo($"/admins/{id}");
     }
 
     private string FormatEnum(string en)

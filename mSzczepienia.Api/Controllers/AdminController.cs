@@ -45,4 +45,24 @@ public class AdminController : ControllerBase
             return StatusCode(500, "An error occurred while processing your request.");
         }
     }
+
+    [HttpGet("{adminId}")]
+    [Authorize(Roles = "admin")]
+    public async Task<ActionResult<DetailedAccountDto>> GetAdminByIdAsync([FromRoute] Guid adminId, CancellationToken ct)
+    {
+        try
+        {
+            var admin = await _adminService.GetAdminByIdAsync(adminId, ct);
+            return Ok(admin);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while retrieving admin {AdminId}", adminId);
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
+    }
 }

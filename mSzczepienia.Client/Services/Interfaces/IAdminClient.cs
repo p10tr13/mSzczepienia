@@ -7,4 +7,5 @@ namespace mSzczepienia.Client.Services.Interfaces;
 public interface IAdminClient
 {
     Task<PagedResult<AccountDto>> SearchAdminsAsync(SearchAdminQuery query, CancellationToken ct);
+    Task<DetailedAccountDto> GetAdminByIdAsync(Guid adminId, CancellationToken ct);
 }

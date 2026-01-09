@@ -44,4 +44,21 @@ public class AdminClient : IAdminClient
             throw new HttpRequestException(message, null, response.StatusCode);
         }
     }
+
+    public async Task<DetailedAccountDto> GetAdminByIdAsync(Guid adminId, CancellationToken ct)
+    {
+        var response = await _httpClient.GetAsync($"{adminControllerUrl}/{adminId}", ct);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result =  await response.Content.ReadFromJsonAsync<DetailedAccountDto>(cancellationToken: ct);
+            return result ?? new DetailedAccountDto();
+        }
+        else
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
 }

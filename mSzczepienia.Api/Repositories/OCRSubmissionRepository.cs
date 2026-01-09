@@ -157,4 +157,83 @@ public class OCRSubmissionRepository : IOCRSubmissionRepository
     {
         _dbContext.ocrSubmissions.Update(submission);
     }
+
+    public async Task<string> DeleteOcrSubmissionAsync(string firebaseUid, CancellationToken ct)
+    {
+        var citizen = await _dbContext.citizens
+            .AsNoTracking()
+            .Include(c => c.account)
+            .FirstOrDefaultAsync(c => c.account.firebaseUid == firebaseUid, ct);
+        if (citizen == null)
+        {
+            throw new InvalidOperationException("Citizen not found for the provided Firebase UID.");
+        }
+
+        var submission = await _dbContext.ocrSubmissions
+            .OrderByDescending(s => s.submissionDate)
+            .FirstOrDefaultAsync(s => s.citizenId == citizen.citizenId, ct);
+        if (submission == null)
+        {
+            throw new InvalidOperationException("OCR submission not found for the citizen.");
+        }
+
+        _dbContext.ocrSubmissions.Remove(submission);
+        await _dbContext.SaveChangesAsync(ct);
+        
+        return submission.photoUrl;
+    }
+
+    public async Task UpdateOcrSubmissionWithEntries(string firebaseUid, List<VaccinationEntryDto> entries, CancellationToken ct)
+    {
+        var citizen = await _dbContext.citizens
+            .Include(c => c.account)
+            .FirstOrDefaultAsync(c => c.account.firebaseUid == firebaseUid, ct);
+        if (citizen == null)
+        {
+            throw new InvalidOperationException("Citizen not found for the provided Firebase UID.");
+        }
+
+        var submission = await _dbContext.ocrSubmissions
+            .OrderByDescending(s => s.submissionDate)
+            .FirstOrDefaultAsync(s => s.citizenId == citizen.citizenId, ct);
+        if (submission == null)
+        {
+            throw new InvalidOperationException("OCR submission not found for the citizen.");
+        }
+
+        // Update submission status and date
+        submission.status = OcrSubmissionStatus.Pending;
+        submission.submissionDate = DateTime.UtcNow;
+        citizen.submissionStatus = SubmissionStatus.Pending;
+
+        // Add vaccination entries
+        foreach (var entryDto in entries)
+        {
+            var vaccine = await _dbContext.vaccineDefinitions
+                .AsNoTracking()
+                .FirstOrDefaultAsync(v => v.vaccineName == entryDto.VaccineName, ct);
+
+            DateTime? date = entryDto.Date;
+            if (entryDto.Date == new DateTime(1900, 1, 1))
+            {
+                date = null;
+            }
+
+            var vaccinationEntry = new VaccinationEntry
+            {
+                ocrSubmissionId = submission.submissionId,
+                vaccineNameOcr = entryDto.VaccineNameOcr ?? string.Empty,
+                dateOcr = entryDto.DateOcr ?? string.Empty,
+                batchOcr = entryDto.BatchOcr ?? string.Empty,
+                vaccineId = vaccine?.vaccineId,
+                date = date,
+                batch = entryDto.Batch,
+                status = entryDto.MapStringToEnum(),
+            };
+            _dbContext.vaccinationEntries.Add(vaccinationEntry);
+        }
+
+        await _dbContext.SaveChangesAsync(ct);
+    }
+
 }

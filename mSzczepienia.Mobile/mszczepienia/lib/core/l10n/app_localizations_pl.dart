@@ -283,7 +283,10 @@ class AppLocalizationsPl extends AppLocalizations {
       'Należy pamiętać, że proces OCR może nie być w 100% dokładny. Dokładnie sprawdź wyodrębnione dane przed przesłaniem.';
 
   @override
-  String get addAnotherVaccination => 'Dodaj kolejne szczepienie';
+  String get addAnotherVaccination => 'Dodaj szczepienie';
+
+  @override
+  String get cancelSubmission => 'Anuluj zgłoszenie';
 
   @override
   String get submitForVerification => 'Prześlij do weryfikacji';
@@ -292,5 +295,39 @@ class AppLocalizationsPl extends AppLocalizations {
   String get modifyEntry => 'Modyfikuj wpis';
 
   @override
+  String get saveChanges => 'Zapisz zmiany';
+
+  @override
+  String get batchCondition => 'Numer serii nie może być dłuższy niż 20 znaków';
+
+  @override
+  String get dateOfVacccinationCondition =>
+      'Data szczepienia musi być w formacie RRRR-MM-DD';
+
+  @override
+  String get vaccineName => 'Nazwa szczepionki';
+
+  @override
+  String get vaccineNameCondition =>
+      'Proszę wybrać prawidłową szczepionkę z listy';
+
+  @override
   String get submit => 'Prześlij';
+
+  @override
+  String get deleteEntry => 'Usuń ten wpis';
+
+  @override
+  String get deleteEntryDescription =>
+      'Czy na pewno chcesz usunąć ten wpis szczepienia?';
+
+  @override
+  String get delete => 'Usuń';
+
+  @override
+  String get cancelLoading => 'Anulowanie twojego zgłoszenia...';
+
+  @override
+  String get sendingSubmission =>
+      'Wysyłanie twojego zgłoszenia do weryfikacji...';
 }

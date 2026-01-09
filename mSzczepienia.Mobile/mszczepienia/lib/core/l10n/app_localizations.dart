@@ -629,8 +629,14 @@ abstract class AppLocalizations {
   /// No description provided for @addAnotherVaccination.
   ///
   /// In en, this message translates to:
-  /// **'Add Another Vaccination'**
+  /// **'Add Vaccination'**
   String get addAnotherVaccination;
+
+  /// No description provided for @cancelSubmission.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Submission'**
+  String get cancelSubmission;
 
   /// No description provided for @submitForVerification.
   ///
@@ -644,11 +650,71 @@ abstract class AppLocalizations {
   /// **'Modify Entry'**
   String get modifyEntry;
 
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChanges;
+
+  /// No description provided for @batchCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch number cannot be longer than 20 characters'**
+  String get batchCondition;
+
+  /// No description provided for @dateOfVacccinationCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of vaccination must be in the format YYYY-MM-DD'**
+  String get dateOfVacccinationCondition;
+
+  /// No description provided for @vaccineName.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaccine Name'**
+  String get vaccineName;
+
+  /// No description provided for @vaccineNameCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a valid vaccine from the list'**
+  String get vaccineNameCondition;
+
   /// No description provided for @submit.
   ///
   /// In en, this message translates to:
   /// **'Submit'**
   String get submit;
+
+  /// No description provided for @deleteEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete This Entry'**
+  String get deleteEntry;
+
+  /// No description provided for @deleteEntryDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this vaccination entry?'**
+  String get deleteEntryDescription;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @cancelLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelling your submission...'**
+  String get cancelLoading;
+
+  /// No description provided for @sendingSubmission.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending your submission for verification...'**
+  String get sendingSubmission;
 }
 
 class _AppLocalizationsDelegate

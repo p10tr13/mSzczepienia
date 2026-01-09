@@ -19,4 +19,24 @@ class OcrSubmissionRepository {
       throw Exception("Unknown Error: $e");
     }
   }
+
+  Future<void> cancelOcrSubmission() async {
+    try {
+      await remoteDataSource.cancelOcrSubmission();
+    } on DioException catch (e) {
+      throw Exception(e.response?.data ?? "Connection Error");
+    } catch (e) {
+      throw Exception("Unknown Error: $e");
+    }
+  }
+
+  Future<void> submitOcrSubmission(List<VaccinationEntryModel> entries) async {
+    try {
+      await remoteDataSource.submitOcrSubmission(entries);
+    } on DioException catch (e) {
+      throw Exception(e.response?.data ?? "Connection Error");
+    } catch (e) {
+      throw Exception("Unknown Error: $e");
+    }
+  }
 }

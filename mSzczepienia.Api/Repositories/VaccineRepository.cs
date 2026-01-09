@@ -186,4 +186,24 @@ public class VaccineRepository : IVaccineRepository
     {
         _dbContext.vaccineDiseases.RemoveRange(vaccineDisease);
     }
+
+    public async Task<List<VaccineNameDto>> SearchVaccineNamesAsync(string? query, CancellationToken ct)
+    {
+        var q = _dbContext.vaccineDefinitions.AsNoTracking();
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            q = q.Where(v => v.vaccineName.Contains(query));
+        }
+        return await q
+            .Select(v => new VaccineNameDto
+            {
+                VaccineId = v.vaccineId,
+                VaccineName = v.vaccineName
+            })
+            .Distinct()
+            .OrderBy(v => v.VaccineName)
+            .Take(10)
+            .ToListAsync(ct);
+    }
+
 }

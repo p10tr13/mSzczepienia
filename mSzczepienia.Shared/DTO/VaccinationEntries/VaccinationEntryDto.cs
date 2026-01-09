@@ -18,5 +18,17 @@ namespace mSzczepienia.Shared.DTO.VaccinationEntries
         public required DateTime Date { get; set; }
         public required string Batch { get; set; }
         public required string Status { get; set; }
+
+        public VaccinationEntryStatus MapStringToEnum()
+        {
+            return Status.ToLower() switch
+            {
+                "waitingforreview" => VaccinationEntryStatus.WaitingForReview,
+                "processed" => VaccinationEntryStatus.Processed,
+                "deleted" => VaccinationEntryStatus.Deleted,
+                "createdbyuser" => VaccinationEntryStatus.CreatedByUser,
+                _ => VaccinationEntryStatus.WaitingForReview,
+            };
+        }
     }
 }

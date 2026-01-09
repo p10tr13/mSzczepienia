@@ -13,4 +13,5 @@ public interface IVaccineService
     Task CreateVaccineAsync(CreateVaccineDto dto, CancellationToken ct);
     Task<DetailedVaccineDto?> GetDetailedVaccineByIdAsync(int id, CancellationToken ct);
     Task UpdateVaccineAsync(int id, CreateVaccineDto dto, CancellationToken ct);
+    Task<List<VaccineNameDto>> SearchVaccineNamesAsync(string? query, CancellationToken ct);
 }

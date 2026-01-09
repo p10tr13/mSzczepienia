@@ -114,9 +114,22 @@
     "errorOccurred": "Wystąpił błąd",
 
     "ocrDescription": "Należy pamiętać, że proces OCR może nie być w 100% dokładny. Dokładnie sprawdź wyodrębnione dane przed przesłaniem.",
-    "addAnotherVaccination": "Dodaj kolejne szczepienie",
+    "addAnotherVaccination": "Dodaj szczepienie",
+    "cancelSubmission": "Anuluj zgłoszenie",
     "submitForVerification": "Prześlij do weryfikacji",
 
     "modifyEntry": "Modyfikuj wpis",
-    "submit": "Prześlij"
+    "saveChanges": "Zapisz zmiany",
+    "batchCondition": "Numer serii nie może być dłuższy niż 20 znaków",
+    "dateOfVacccinationCondition": "Data szczepienia musi być w formacie RRRR-MM-DD",
+    "vaccineName": "Nazwa szczepionki",
+    "vaccineNameCondition": "Proszę wybrać prawidłową szczepionkę z listy",
+    "submit": "Prześlij",
+
+    "deleteEntry": "Usuń ten wpis",
+    "deleteEntryDescription": "Czy na pewno chcesz usunąć ten wpis szczepienia?",
+    "delete": "Usuń",
+
+    "cancelLoading": "Anulowanie twojego zgłoszenia...",
+    "sendingSubmission": "Wysyłanie twojego zgłoszenia do weryfikacji..."
 }

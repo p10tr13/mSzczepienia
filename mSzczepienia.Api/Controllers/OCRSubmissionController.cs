@@ -206,4 +206,34 @@ public class OCRSubmissionController : ControllerBase
 
         return Ok();
     }
+
+    [HttpDelete("delete")]
+    [Authorize]
+    public async Task<IActionResult> DeleteOcrSubmissionAsync(CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+
+        await _service.DeleteOcrSubmissionAsync(firebaseUid, ct);
+        return Ok();
+    }
+
+    [HttpPost("submit")]
+    [Authorize]
+    public async Task<IActionResult> UpdateOcrSubmissionWithEntries([FromBody] List<VaccinationEntryDto> entries, CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+
+        await _service.UpdateOcrSubmissionWithEntries(firebaseUid, entries, ct);
+        return Ok();
+    }
 }

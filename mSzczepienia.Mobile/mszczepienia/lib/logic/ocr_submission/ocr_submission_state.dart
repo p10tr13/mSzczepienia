@@ -4,7 +4,11 @@ abstract class OcrSubmissionState {}
 
 class OcrSubmissionInitial extends OcrSubmissionState {}
 
-class OcrSubmissionLoading extends OcrSubmissionState {}
+class OcrSubmissionProcessingLoading extends OcrSubmissionState {}
+
+class OcrSubmissionSubmittingLoading extends OcrSubmissionState {}
+
+class OcrSubmissionCancellingLoading extends OcrSubmissionState {}
 
 class OcrSubmissionLoaded extends OcrSubmissionState {
   final List<VaccinationEntryModel> entries;

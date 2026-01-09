@@ -45,4 +45,23 @@ class OcrSubmissionRemoteDatasource {
 
     return items.map((json) => VaccinationEntryModel.fromJson(json)).toList();
   }
+
+  Future<void> cancelOcrSubmission() async {
+    await dio.delete('/ocrsubmission/delete');
+  }
+
+  Future<void> submitOcrSubmission(List<VaccinationEntryModel> entries) async {
+    final List<Map<String, dynamic>> jsonEntries = entries
+        .map((e) => e.toJson())
+        .toList();
+
+    await dio.post(
+      '/ocrsubmission/submit',
+      data: jsonEntries,
+      options: Options(
+        sendTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+      ),
+    );
+  }
 }

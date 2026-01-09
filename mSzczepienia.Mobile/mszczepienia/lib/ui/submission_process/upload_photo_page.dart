@@ -163,14 +163,14 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
                         return ElevatedButton(
                           onPressed: () {
                             if (decodedImagePaths.isNotEmpty &&
-                                state is! OcrSubmissionLoading) {
+                                state is! OcrSubmissionProcessingLoading) {
                               final imageFiles = decodedImagePaths
                                   .map((path) => File(path))
                                   .toList();
                               context
                                   .read<OcrSubmissionCubit>()
                                   .processVaccinationBooklet(imageFiles);
-                              context.push('/submission-status/analyze');
+                              context.go('/submission-status/analyze');
                             }
                           },
                           style: ElevatedButton.styleFrom(

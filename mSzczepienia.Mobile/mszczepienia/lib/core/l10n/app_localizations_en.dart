@@ -281,7 +281,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please note that the OCR process may not be 100% accurate. Review the extracted data carefully before submission.';
 
   @override
-  String get addAnotherVaccination => 'Add Another Vaccination';
+  String get addAnotherVaccination => 'Add Vaccination';
+
+  @override
+  String get cancelSubmission => 'Cancel Submission';
 
   @override
   String get submitForVerification => 'Submit for Verification';
@@ -290,5 +293,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get modifyEntry => 'Modify Entry';
 
   @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get batchCondition =>
+      'Batch number cannot be longer than 20 characters';
+
+  @override
+  String get dateOfVacccinationCondition =>
+      'Date of vaccination must be in the format YYYY-MM-DD';
+
+  @override
+  String get vaccineName => 'Vaccine Name';
+
+  @override
+  String get vaccineNameCondition =>
+      'Please select a valid vaccine from the list';
+
+  @override
   String get submit => 'Submit';
+
+  @override
+  String get deleteEntry => 'Delete This Entry';
+
+  @override
+  String get deleteEntryDescription =>
+      'Are you sure you want to delete this vaccination entry?';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get cancelLoading => 'Cancelling your submission...';
+
+  @override
+  String get sendingSubmission => 'Sending your submission for verification...';
 }

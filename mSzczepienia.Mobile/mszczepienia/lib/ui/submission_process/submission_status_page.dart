@@ -50,7 +50,7 @@ class _SubmissionStatusPageState extends State<SubmissionStatusPage> {
     switch (status) {
       case 'NotUploaded':
         submissionStatus = l10n.statusNotUploaded;
-        statusColor = Colors.grey;
+        statusColor = AppColors.darkGrey;
         statusIcon = Icons.hourglass_empty;
         break;
       case 'Pending':
@@ -70,7 +70,7 @@ class _SubmissionStatusPageState extends State<SubmissionStatusPage> {
         break;
       default:
         submissionStatus = l10n.statusNotUploaded;
-        statusColor = Colors.grey;
+        statusColor = AppColors.darkGrey;
         statusIcon = Icons.hourglass_empty;
     }
   }

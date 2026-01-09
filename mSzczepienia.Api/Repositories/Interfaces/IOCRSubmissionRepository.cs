@@ -13,4 +13,6 @@ public interface IOCRSubmissionRepository
     Task AddOcrSubmissionAsync(string firebaseUid, string directoryUrl, List<IFormFile> files, CancellationToken ct);
     Task<OcrSubmission?> GetByIdAsync(int submissionId, CancellationToken ct);
     void Update(OcrSubmission submission);
+    Task<string> DeleteOcrSubmissionAsync(string firebaseUid, CancellationToken ct);
+    Task UpdateOcrSubmissionWithEntries(string firebaseUid, List<VaccinationEntryDto> entries, CancellationToken ct);
 }

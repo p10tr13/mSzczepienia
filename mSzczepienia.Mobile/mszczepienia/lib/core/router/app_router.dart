@@ -7,7 +7,9 @@ import 'package:mszczepienia/ui/authorization/pages/login_page.dart';
 import 'package:mszczepienia/ui/authorization/pages/sign_up_page.dart';
 import 'package:mszczepienia/ui/home/home_page.dart';
 import 'package:mszczepienia/ui/settings/settings_page.dart';
-import 'package:mszczepienia/ui/submission_process/ocr_overview/analyze_page.dart';
+import 'package:mszczepienia/ui/submission_process/ocr_overview/pages/add_entry_page.dart';
+import 'package:mszczepienia/ui/submission_process/ocr_overview/pages/analyze_page.dart';
+import 'package:mszczepienia/ui/submission_process/ocr_overview/pages/edit_entry_page.dart';
 import 'package:mszczepienia/ui/submission_process/submission_status_page.dart';
 import 'package:mszczepienia/ui/submission_process/upload_photo_page.dart';
 import 'package:mszczepienia/ui/vaccination_details/vaccination_details_page.dart';
@@ -48,6 +50,17 @@ class AppRouter {
       GoRoute(
         path: '/submission-status/analyze',
         builder: (context, state) => const AnalyzePage(),
+      ),
+      GoRoute(
+        path: '/submission-status/edit-entry',
+        builder: (context, state) {
+          final indexParam = state.uri.queryParameters['index'];
+          return EditEntryPage(index: int.parse(indexParam!));
+        },
+      ),
+      GoRoute(
+        path: '/submission-status/add-entry',
+        builder: (context, state) => const AddEntryPage(),
       ),
       GoRoute(
         path: '/submission-status',

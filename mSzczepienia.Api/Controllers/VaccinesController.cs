@@ -145,4 +145,18 @@ public class VaccinesController : ControllerBase
             return StatusCode(500, "An error occurred while updating the vaccine.");
         }
     }
+
+    [HttpGet("vaccine-names")]
+    [Authorize]
+    public async Task<ActionResult<List<VaccineNameDto>>> SearchVaccineNamesAsync([FromQuery] string? query, CancellationToken ct)
+    {
+        var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("user_id")?.Value ?? User.FindFirst("uid")?.Value;
+
+        if (string.IsNullOrEmpty(firebaseUid))
+        {
+            return Unauthorized("Invalid token: UID not found.");
+        }
+        var result = await _vaccineService.SearchVaccineNamesAsync(query, ct);
+        return Ok(result);
+    }
 }

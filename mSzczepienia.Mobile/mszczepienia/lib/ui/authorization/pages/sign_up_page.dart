@@ -151,9 +151,17 @@ class _SignUpPageState extends State<SignUpPage> {
                                   keyboardType: TextInputType.datetime,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return l10n.enterDateOfBirth;
+                                      return null;
                                     }
-                                    if (value.length != 10) {
+                                    final dateRegex = RegExp(
+                                      r'^\d{4}-\d{2}-\d{2}$',
+                                    );
+                                    if (!dateRegex.hasMatch(value)) {
+                                      return l10n.dateOfBirthCondition;
+                                    }
+                                    try {
+                                      DateTime.parse(value);
+                                    } catch (e) {
                                       return l10n.dateOfBirthCondition;
                                     }
                                     return null;

@@ -382,4 +382,16 @@ public class OCRSubmissionsService : IOCRSubmissionsService
 
         await _unitOfWork.SaveChangesAsync(ct);
     }
+
+    public async Task DeleteOcrSubmissionAsync(string firebaseUid, CancellationToken ct)
+    {
+        string directoryUrl = await _ocrSubmissionRepository.DeleteOcrSubmissionAsync(firebaseUid, ct);
+
+        await _blobService.DeleteDirectoryAsync(directoryUrl);
+    }
+
+    public async Task UpdateOcrSubmissionWithEntries(string firebaseUid, List<VaccinationEntryDto> entries, CancellationToken ct)
+    {
+        await _ocrSubmissionRepository.UpdateOcrSubmissionWithEntries(firebaseUid, entries, ct);
+    }
 }

@@ -70,5 +70,14 @@ namespace mSzczepienia.Api.Services
             }
             return sasUrls;
         }
+
+        public async Task DeleteDirectoryAsync(string directoryUrl)
+        {
+            await foreach (var blobItem in _containerClient.GetBlobsAsync(prefix: directoryUrl))
+            {
+                var blobClient = _containerClient.GetBlobClient(blobItem.Name);
+                await blobClient.DeleteIfExistsAsync();
+            }
+        }
     }
 }

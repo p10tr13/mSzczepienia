@@ -18,4 +18,5 @@ public interface IVaccineRepository
     Task<List<string>> GetVaccineNamesAsync(CancellationToken ct);
     void Update(VaccineDefinition vaccine);
     void RemoveRangeVaccineDisease(IEnumerable<VaccineDisease> vaccineDisease);
+    Task<List<VaccineNameDto>> SearchVaccineNamesAsync(string? query, CancellationToken ct);
 }

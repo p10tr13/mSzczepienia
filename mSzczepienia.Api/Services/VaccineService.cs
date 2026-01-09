@@ -165,4 +165,10 @@ public class VaccineService : IVaccineService
         _vaccineRepository.Update(vaccine);
         await _unitOfWork.SaveChangesAsync(ct);
     }
+
+    public async Task<List<VaccineNameDto>> SearchVaccineNamesAsync(string? query, CancellationToken ct)
+    {
+        return await _vaccineRepository.SearchVaccineNamesAsync(query, ct);
+    }
+
 }

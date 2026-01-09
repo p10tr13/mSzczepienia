@@ -114,9 +114,22 @@
     "errorOccurred": "An error occurred",
 
     "ocrDescription": "Please note that the OCR process may not be 100% accurate. Review the extracted data carefully before submission.",
-    "addAnotherVaccination": "Add Another Vaccination",
+    "addAnotherVaccination": "Add Vaccination",
+    "cancelSubmission": "Cancel Submission",
     "submitForVerification": "Submit for Verification",
 
     "modifyEntry": "Modify Entry",
-    "submit": "Submit"
+    "saveChanges": "Save Changes",
+    "batchCondition": "Batch number cannot be longer than 20 characters",
+    "dateOfVacccinationCondition": "Date of vaccination must be in the format YYYY-MM-DD",
+    "vaccineName": "Vaccine Name",
+    "vaccineNameCondition": "Please select a valid vaccine from the list",
+    "submit": "Submit",
+
+    "deleteEntry": "Delete This Entry",
+    "deleteEntryDescription": "Are you sure you want to delete this vaccination entry?",
+    "delete": "Delete",
+
+    "cancelLoading": "Cancelling your submission...",
+    "sendingSubmission": "Sending your submission for verification..."
 }

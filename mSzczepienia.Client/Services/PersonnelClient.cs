@@ -92,4 +92,15 @@ public class PersonnelClient : IPersonnelClient
             throw new HttpRequestException(message, null, response.StatusCode);
         }
     }
+
+    public async Task UpdatePersonnelAsync(int personnelId, UpdatePersonnelDto updatePersonnelDto, CancellationToken ct)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"{personnelControllerUrl}/{personnelId}", updatePersonnelDto, ct);
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
 }

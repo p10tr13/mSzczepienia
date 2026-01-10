@@ -945,4 +945,25 @@
   <data name="EmploymentInfo" xml:space="preserve">
     <value>Employment &amp; Permissions</value>
   </data>
+  <data name="EditStaff" xml:space="preserve">
+    <value>Edit Staff</value>
+  </data>
+  <data name="EditingMedicalAccount" xml:space="preserve">
+    <value>Editing medical account</value>
+  </data>
+  <data name="MedicalInformation" xml:space="preserve">
+    <value>Medical Information</value>
+  </data>
+  <data name="EmploymentAndSystem" xml:space="preserve">
+    <value>Employment &amp; System</value>
+  </data>
+  <data name="AssignedFacility" xml:space="preserve">
+    <value>Assigned Facility</value>
+  </data>
+  <data name="StaffUpdatedSuccess" xml:space="preserve">
+    <value>Staff data updated successfully</value>
+  </data>
+  <data name="ErrorUpdatingStaff" xml:space="preserve">
+    <value>Error occurred while updating staff</value>
+  </data>
 </root>

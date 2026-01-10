@@ -945,4 +945,25 @@
   <data name="EmploymentInfo" xml:space="preserve">
     <value>Zatrudnienie i uprawnienia</value>
   </data>
+  <data name="EditStaff" xml:space="preserve">
+    <value>Edycja danych pracownika placówki medycznej</value>
+  </data>
+  <data name="EditingMedicalAccount" xml:space="preserve">
+    <value>Edytujesz konto medyczne</value>
+  </data>
+  <data name="MedicalInformation" xml:space="preserve">
+    <value>Dane Medyczne</value>
+  </data>
+  <data name="EmploymentAndSystem" xml:space="preserve">
+    <value>Zatrudnienie i System</value>
+  </data>
+  <data name="AssignedFacility" xml:space="preserve">
+    <value>Przypisana placówka</value>
+  </data>
+  <data name="StaffUpdatedSuccess" xml:space="preserve">
+    <value>Dane pracownika zaktualizowane</value>
+  </data>
+  <data name="ErrorUpdatingStaff" xml:space="preserve">
+    <value>Wystąpił błąd podczas aktualizowania danych pracownika</value>
+  </data>
 </root>

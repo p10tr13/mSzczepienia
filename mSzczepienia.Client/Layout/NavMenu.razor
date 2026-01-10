@@ -20,9 +20,6 @@
                 <MudNavLink Href="/vaccines" Icon="@Icons.Material.Filled.List" Match="NavLinkMatch.All">@Localizer["VaccineList"]</MudNavLink>
                 <MudNavLink Href="/vaccines/add" Icon="@Icons.Material.Filled.Add" Match="NavLinkMatch.All">@Localizer["AddVaccine"]</MudNavLink>
             </MudNavGroup>
-            <MudNavGroup Title="@Localizer["System"]" Icon="@Icons.Material.Filled.Settings">
-                <MudNavLink Href="/audit-logs" Icon="@Icons.Material.Filled.History" Match="NavLinkMatch.All">@Localizer["AuditLogs"]</MudNavLink>
-            </MudNavGroup>
         </Authorized>
     </AuthorizeView>
     <AuthorizeView Roles="worker">

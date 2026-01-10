@@ -7,6 +7,7 @@
 @using mSzczepienia.Shared.DTO.Personnel
 @using mSzczepienia.Shared.Enums
 @using mSzczepienia.Client.Shared.Components.Skeletons
+@using System.Text.RegularExpressions
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8 mb-8">
 
@@ -36,10 +37,10 @@
                 <CardHeaderActions>
                     <MudStack Row="true" Spacing="2">
                         <MudChip T="string" Color="Color.Tertiary" Variant="Variant.Text" Icon="@Icons.Material.Filled.Work">
-                            @_personnel.Position.ToString()
+                            @FormatEnum(_personnel.Position.ToString())
                         </MudChip>
                         <MudChip T="string" Color="Color.Default" Variant="Variant.Text" Icon="@Icons.Material.Filled.Security">
-                            @_personnel.Role.ToString()
+                            @FormatEnum(_personnel.Role.ToString())
                         </MudChip>
                     </MudStack>
                 </CardHeaderActions>
@@ -177,5 +178,10 @@
     private void GoBack()
     {
         NavigationManager.NavigateTo($"/staff?SelectedRole={(int)Role.HealthWorker}");
+    }
+
+    private string FormatEnum(string en)
+    {
+        return Regex.Replace(en, "(\\B[A-Z])", " $1");
     }
 }

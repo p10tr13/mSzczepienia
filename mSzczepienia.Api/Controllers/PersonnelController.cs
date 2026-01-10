@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using mSzczepienia.Shared.DTO;
-using mSzczepienia.Shared.DTO.Queries;
-using mSzczepienia.Shared.DTO.Personnel;
 using mSzczepienia.Api.Services.Interfaces;
+using mSzczepienia.Shared.DTO;
+using mSzczepienia.Shared.DTO.Personnel;
+using mSzczepienia.Shared.DTO.Queries;
+using System.Security.Claims;
 
 namespace mSzczepienia.Api.Controllers
 {
@@ -87,6 +88,45 @@ namespace mSzczepienia.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while retrieving personnel details for ID {Id}.", id);
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> UpdatePersonnelAsync([FromRoute] int id, [FromBody] UpdatePersonnelDto dto, CancellationToken ct)
+        {
+            var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("user_id")?.Value ?? User.FindFirst("uid")?.Value;
+
+            if (string.IsNullOrEmpty(firebaseUid))
+            {
+                return Unauthorized("Invalid token: UID not found.");
+            }
+
+            _logger.LogInformation("Admin with UID {FirebaseUid} is attempting to update personnel with ID {Id}.", firebaseUid, id);
+
+            if (id <= 0)
+            {
+                return BadRequest("Id must be greater than zero.");
+            }
+            try
+            {
+                await _personnelService.UpdatePersonnelAsync(id, dto, ct);
+                return NoContent();
+            }
+            catch (KeyNotFoundException knfEx)
+            {
+                _logger.LogWarning(knfEx, "Personnel with ID {Id} not found for update.", id);
+                return NotFound(knfEx.Message);
+            }
+            catch (InvalidOperationException invEx)
+            {
+                _logger.LogWarning(invEx, "Validation error while updating personnel with ID {Id}.", id);
+                return BadRequest(invEx.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while updating personnel with ID {Id}.", id);
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }

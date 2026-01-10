@@ -103,7 +103,7 @@
             </MudCardContent>
 
             <MudCardActions Class="pa-4 justify-end">
-                <MudButton OnClick="@(() => NavManager.NavigateTo("/staff/list"))" Class="mr-2">@Localizer["Cancel"]</MudButton>
+                <MudButton OnClick="@(() => NavManager.NavigateTo("/staff"))" Class="mr-2">@Localizer["Cancel"]</MudButton>
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary"
                            Disabled="@_processing">
                     @if (_processing)
@@ -150,7 +150,7 @@
             if (success)
             {
                 Snackbar.Add(Localizer["UserCreated"], Severity.Success);
-                NavManager.NavigateTo("/staff/list");
+                NavManager.NavigateTo("/staff");
             }
             else
             {

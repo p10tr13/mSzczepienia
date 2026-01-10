@@ -65,5 +65,30 @@ namespace mSzczepienia.Api.Controllers
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<DetailedPersonnelDto>> GetDetailedPersonnelByIdAsync([FromRoute] int id, CancellationToken ct)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Id must be greater than zero.");
+            }
+            try
+            {
+                var result = await _personnelService.GetDetailedPersonnelByIdAsync(id, ct);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException knfEx)
+            {
+                _logger.LogWarning(knfEx, "Personnel with ID {Id} not found.", id);
+                return NotFound(knfEx.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while retrieving personnel details for ID {Id}.", id);
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        }
     }
 }

@@ -130,4 +130,11 @@ public class PersonnelRepository : IPersonnelRepository
     {
         _dbContext.personnel.Update(personnel);
     }
+
+    public async Task<Personnel?> GetByIdAsync(int id, CancellationToken ct)
+    {
+        return await _dbContext.personnel
+            .Include(p => p.account)
+            .FirstOrDefaultAsync(p => p.personnelId == id, ct);
+    }
 }

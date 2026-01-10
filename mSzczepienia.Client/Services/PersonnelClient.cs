@@ -75,4 +75,21 @@ public class PersonnelClient : IPersonnelClient
             throw new HttpRequestException(message, null, response.StatusCode);
         }
     }
+
+    public async Task<DetailedPersonnelDto?> GetPersonnelByIdAsync(int personnelId, CancellationToken ct)
+    {
+        var response = await _httpClient.GetAsync($"{personnelControllerUrl}/{personnelId}", ct);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<DetailedPersonnelDto>(cancellationToken: ct);
+            return result ?? new DetailedPersonnelDto();
+        }
+        else
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
 }

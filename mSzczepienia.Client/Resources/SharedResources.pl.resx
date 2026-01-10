@@ -936,4 +936,13 @@
   <data name="ErrorUpdatingAdmin" xml:space="preserve">
     <value>Wystąpił błąd podczas aktualizowania administratora</value>
   </data>
+  <data name="StaffDetails" xml:space="preserve">
+    <value>Szczegóły pracownika</value>
+  </data>
+  <data name="MedicalStaffAccount" xml:space="preserve">
+    <value>Konto pracownika medycznego</value>
+  </data>
+  <data name="EmploymentInfo" xml:space="preserve">
+    <value>Zatrudnienie i uprawnienia</value>
+  </data>
 </root>

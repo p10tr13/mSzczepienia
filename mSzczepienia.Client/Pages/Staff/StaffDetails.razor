@@ -1,0 +1,181 @@
+﻿@page "/staff/{Id:int}"
+@attribute [Authorize(Roles = "admin")]
+@inject NavigationManager NavigationManager
+@inject IPersonnelClient PersonnelClient
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<SharedResources> Localizer
+@using mSzczepienia.Shared.DTO.Personnel
+@using mSzczepienia.Shared.Enums
+@using mSzczepienia.Client.Shared.Components.Skeletons
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8 mb-8">
+
+    <MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary">@Localizer["StaffDetails"]</MudText>
+
+    @if (_isLoading)
+    {
+        <AdvancedAccountDetailsSeleton />
+    }
+    else if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <ErrorState Message="@_errorMessage" OnRetry="LoadStaffData" />
+    }
+    else if (_personnel != null)
+    {
+        <MudCard Elevation="3" Class="pa-4">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudAvatar Color="Color.Tertiary" Size="Size.Large">
+                        @_personnel.Name.FirstOrDefault()@_personnel.Surname.FirstOrDefault()
+                    </MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5">@_personnel.Name @_personnel.Surname</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Tertiary">@Localizer["MedicalStaffAccount"]</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudStack Row="true" Spacing="2">
+                        <MudChip T="string" Color="Color.Tertiary" Variant="Variant.Text" Icon="@Icons.Material.Filled.Work">
+                            @_personnel.Position.ToString()
+                        </MudChip>
+                        <MudChip T="string" Color="Color.Default" Variant="Variant.Text" Icon="@Icons.Material.Filled.Security">
+                            @_personnel.Role.ToString()
+                        </MudChip>
+                    </MudStack>
+                </CardHeaderActions>
+            </MudCardHeader>
+
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">@Localizer["BasicInfo"]</MudText>
+                        <MudDivider />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_personnel.Name" Label="@Localizer["First Name"]" ReadOnly="true" Variant="Variant.Outlined"
+                                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_personnel.Surname" Label="@Localizer["Surname"]" ReadOnly="true" Variant="Variant.Outlined" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_personnel.Email" Label="@Localizer["Email"]" ReadOnly="true" Variant="Variant.Outlined"
+                                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_personnel.DateOfBirth.ToShortDateString()" Label="@Localizer["DateOfBirth"]" ReadOnly="true" Variant="Variant.Outlined"
+                                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Cake" />
+                    </MudItem>
+
+                    <MudItem xs="12" Class="mt-4">
+                        <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">@Localizer["EmploymentInfo"]</MudText>
+                        <MudDivider />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_personnel.PwzNumber" Label="@Localizer["PWZ"]" ReadOnly="true" Variant="Variant.Outlined"
+                                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Badge" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_personnel.FacilityName" Label="@Localizer["FacilityName"]" ReadOnly="true" Variant="Variant.Outlined"
+                                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Launch"
+                                      OnAdornmentClick="OpenFacility" AdornmentColor="Color.Primary"
+                                      Style="cursor: pointer;" />
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudTextField Value="@($"{_personnel.FacilityStreet}, {_personnel.FacilityPostalCode} {_personnel.FacilityCity}")"
+                                      Label="@Localizer["MedicalFacilityAddress"]" ReadOnly="true" Variant="Variant.Outlined"
+                                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.LocationOn" />
+                    </MudItem>
+
+                    <MudItem xs="12" Class="mt-4">
+                        <MudText Typo="Typo.h6" Color="Color.Default" Class="mb-2">@Localizer["SystemInfo"]</MudText>
+                        <MudDivider />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_personnel.CreationDate.ToString("g")" Label="@Localizer["AccountCreationDate"]" ReadOnly="true" Variant="Variant.Outlined"
+                                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.CalendarToday" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="@_personnel.Id.ToString()" Label="@Localizer["GUID"]" ReadOnly="true" Variant="Variant.Outlined"
+                                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Fingerprint" />
+                    </MudItem>
+
+                </MudGrid>
+            </MudCardContent>
+
+            <MudCardActions Class="pa-4 justify-space-between">
+                <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack">
+                    @Localizer["BackToSearch"]
+                </MudButton>
+
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Edit" OnClick="EditStaff">
+                    @Localizer["EditDetails"]
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private DetailedPersonnelDto? _personnel;
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadStaffData();
+    }
+
+    private async Task LoadStaffData()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+
+        try
+        {
+            _personnel = await PersonnelClient.GetPersonnelByIdAsync(Id, CancellationToken.None);
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            _errorMessage = Localizer["PersonnelNotFound"];
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = Localizer["ErrorLoadingData"];
+            Snackbar.Add($"{_errorMessage}: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private void EditStaff()
+    {
+        NavigationManager.NavigateTo($"/staff/{Id}/edit");
+    }
+
+    private void OpenFacility()
+    {
+        if (_personnel != null)
+        {
+            NavigationManager.NavigateTo($"/facilities/{_personnel.FacilityId}");
+        }
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo($"/staff?SelectedRole={(int)Role.HealthWorker}");
+    }
+}

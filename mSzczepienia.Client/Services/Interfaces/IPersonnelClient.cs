@@ -8,4 +8,5 @@ public interface IPersonnelClient
 {
     Task<PagedResult<PersonnelDto>> GetPersonnelByFacilityAsync(int facilityId, int pageIndex, int pageSize, CancellationToken ct);
     Task<PagedResult<PersonnelDto>> SearchPersonnelAsync(SearchPersonnelQuery query, CancellationToken ct);
+    Task<DetailedPersonnelDto?> GetPersonnelByIdAsync(int personnelId, CancellationToken ct);
 }

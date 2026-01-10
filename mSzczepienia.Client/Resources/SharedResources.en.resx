@@ -936,4 +936,13 @@
   <data name="ErrorUpdatingAdmin" xml:space="preserve">
     <value>Error occurred while updating administrator</value>
   </data>
+  <data name="StaffDetails" xml:space="preserve">
+    <value>Staff Details</value>
+  </data>
+  <data name="MedicalStaffAccount" xml:space="preserve">
+    <value>Medical Staff Account</value>
+  </data>
+  <data name="EmploymentInfo" xml:space="preserve">
+    <value>Employment &amp; Permissions</value>
+  </data>
 </root>

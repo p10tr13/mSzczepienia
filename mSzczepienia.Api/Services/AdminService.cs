@@ -4,6 +4,8 @@ using mSzczepienia.Shared.DTO.Accounts;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Queries;
 using mSzczepienia.Shared.Enums;
+using mSzczepienia.Shared.DTO.Admins;
+using FirebaseAdmin.Auth;
 
 namespace mSzczepienia.Api.Services;
 
@@ -60,5 +62,52 @@ public class AdminService : IAdminService
             DateOfBirth = admin.dateOfBirth,
             Role = admin.role
         };
+    }
+
+    public async Task UpdateAdminAsync(Guid id, UpdateAdminDto updateAdminDto, CancellationToken ct)
+    {
+        var admin = await _accountRepository.GetByIdAsync(id, ct);
+
+        if (admin == null || admin.role != Role.Admin)
+        {
+            throw new KeyNotFoundException("Admin not found.");
+        }
+
+        bool emailChanged = !string.Equals(admin.email, updateAdminDto.Email, StringComparison.OrdinalIgnoreCase);
+        if (emailChanged)
+        {
+            var existingAccountWithEmail = await _accountRepository.GetByEmailAsync(updateAdminDto.Email, ct);
+            if (existingAccountWithEmail != null && existingAccountWithEmail.accountId != id)
+            {
+                throw new InvalidOperationException("The provided email is already in use by another account.");
+            }
+
+            try
+            {
+                var args = new UserRecordArgs
+                {
+                    Uid = admin.firebaseUid,
+                    Email = updateAdminDto.Email,
+                };
+
+                await FirebaseAuth.DefaultInstance.UpdateUserAsync(args, ct);
+            }
+            catch (FirebaseAuthException ex)
+            {
+                if (ex.AuthErrorCode == AuthErrorCode.EmailAlreadyExists)
+                {                    
+                    throw new InvalidOperationException("The provided email is already in use in Firebase Authentication.", ex);
+                }
+                throw;
+            }
+        }
+
+        admin.name = updateAdminDto.Name;
+        admin.surname = updateAdminDto.Surname;
+        admin.email = updateAdminDto.Email;
+        admin.dateOfBirth = updateAdminDto.DateOfBirth;
+
+        _accountRepository.Update(admin);
+        await _unitOfWork.SaveChangesAsync(ct);
     }
 }

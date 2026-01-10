@@ -24,6 +24,12 @@ public class AccountRepository : IAccountRepository
             .FirstOrDefaultAsync(a => a.accountId == accountId, ct);
     }
 
+    public async Task<Account?> GetByEmailAsync(string email, CancellationToken ct)
+    {
+        return await _dbContext.accounts
+            .FirstOrDefaultAsync(a => a.email == email, ct);
+    }
+
     public void Update(Account account)
     {
         _dbContext.accounts.Update(account);

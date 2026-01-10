@@ -111,7 +111,7 @@
     {
         _isLoading = true;
         _errorMessage = null;
-        await Task.Delay(2000);
+
         try
         {
             _admin = await AdminClient.GetAdminByIdAsync(Id, CancellationToken.None);

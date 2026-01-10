@@ -921,4 +921,19 @@
   <data name="AdminDetails" xml:space="preserve">
     <value>Admin Details</value>
   </data>
+  <data name="EditAdmin" xml:space="preserve">
+    <value>Edit admin details</value>
+  </data>
+  <data name="ReadOnly" xml:space="preserve">
+    <value>Read only</value>
+  </data>
+  <data name="EditingAdministratorAccount" xml:space="preserve">
+    <value>Editing administrator account</value>
+  </data>
+  <data name="AdminUpdatedSuccess" xml:space="preserve">
+    <value>Administrator data updated successfully</value>
+  </data>
+  <data name="ErrorUpdatingAdmin" xml:space="preserve">
+    <value>Error occurred while updating administrator</value>
+  </data>
 </root>

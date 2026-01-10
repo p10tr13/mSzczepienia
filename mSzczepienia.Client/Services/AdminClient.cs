@@ -4,6 +4,7 @@ using mSzczepienia.Shared.DTO.Accounts;
 using mSzczepienia.Shared.DTO.Queries;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.WebUtilities;
+using mSzczepienia.Shared.DTO.Admins;
 
 namespace mSzczepienia.Client.Services;
 
@@ -55,6 +56,18 @@ public class AdminClient : IAdminClient
             return result ?? new DetailedAccountDto();
         }
         else
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken: ct);
+            var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;
+            throw new HttpRequestException(message, null, response.StatusCode);
+        }
+    }
+
+    public async Task UpdateAdminAsync(Guid adminId, UpdateAdminDto updateAdminDto, CancellationToken ct)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"{adminControllerUrl}/{adminId}", updateAdminDto, ct);
+
+        if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync(cancellationToken: ct);
             var message = string.IsNullOrWhiteSpace(errorContent) ? $"Server error: {response.ReasonPhrase} ({(int)response.StatusCode})" : errorContent;

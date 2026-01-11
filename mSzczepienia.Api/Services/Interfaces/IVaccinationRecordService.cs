@@ -15,4 +15,5 @@ public interface IVaccinationRecordService
     Task UpdateVaccinationRecordAsync(string requesterFirebaseUid, int recordId, UpdateVaccinationRecordDto dto, CancellationToken ct);
     Task DeleteVaccinationRecordAsync(string requesterFirebaseUid, int recordId, CancellationToken ct);
     Task CreateRecordsFromEntriesAsync(int citizenId, List<VaccinationEntry> validEntries, CancellationToken ct);
+    Task RemindAboutNextVaccinationsAsync(CancellationToken ct);
 }

@@ -6,6 +6,7 @@ using mSzczepienia.Api.Middlewares;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Api.Services;
 using System.Security.Claims;
+using mSzczepienia.Api.Workers;
 
 namespace mSzczepienia.Api;
 
@@ -20,6 +21,7 @@ public static class DependencyInjection
         services.RegisterRepositories();
         services.RegisterServices();
         services.AddSingleton<IBlobService, BlobService>();
+        services.AddHostedService<ReminderWorker>();
 
         return services;
     }

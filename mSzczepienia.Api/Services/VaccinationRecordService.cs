@@ -210,4 +210,34 @@ public class VaccinationRecordService : IVaccinationRecordService
             await _vaccinationRecordRepository.AddAsync(newRecord, ct);
         }
     }
+
+    public async Task RemindAboutNextVaccinationsAsync(CancellationToken ct)
+    {
+        var tokens = await _citizenDeviceTokenRepository.GetDeviceTokensForNextVaccinationsAsync(ct);
+
+        foreach (var token in tokens)
+        {
+            string title;
+            string subtitle;
+            if (token.language == "pl")
+            {
+                title = $"Nadchodzi termin kolejnego szczepienia: {token.vaccineName}";
+                subtitle = "Przypominamy o nadchodz¹cym terminie szczepienia za 7 dni.";
+            }
+            else
+            {
+                title = $"Upcoming vaccination appointment: {token.vaccineName}";
+                subtitle = "This is a reminder for your upcoming vaccination in 7 days.";
+            }
+            try
+            {
+                await _notificationService.SendNotificationAsync(token.deviceToken, title, subtitle);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send vaccination reminder notification");
+            }
+        }
+
+    }
 }

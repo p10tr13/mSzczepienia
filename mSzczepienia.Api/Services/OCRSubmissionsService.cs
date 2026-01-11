@@ -97,6 +97,7 @@ public class OCRSubmissionsService : IOCRSubmissionsService
         foreach (var entry in ocrEntries)
         {
             // Use levenstein distance to find best matching vaccine name
+            // If string.Empty - match not found
             string bestMatchVaccineName = _utilitiesService.ChooseBestMatch(entry.vaccineName, vaccineNames);
 
             // Parse date
@@ -109,18 +110,21 @@ public class OCRSubmissionsService : IOCRSubmissionsService
                 batch = entry.batch.Trim().ToUpper();
             }
 
-            entriesDto.Add(new VaccinationEntryDto
+            if (bestMatchVaccineName != string.Empty)
             {
-                Id = id,
-                VaccineNameOcr = entry.vaccineName,
-                DateOcr = entry.vaccinationDate,
-                BatchOcr = entry.batch,
-                VaccineName = bestMatchVaccineName,
-                Date = dateTime,
-                Batch = batch,
-                Status = VaccinationEntryStatus.WaitingForReview.ToString()
-            });
-            id++;
+                entriesDto.Add(new VaccinationEntryDto
+                {
+                    Id = id,
+                    VaccineNameOcr = entry.vaccineName,
+                    DateOcr = entry.vaccinationDate,
+                    BatchOcr = entry.batch,
+                    VaccineName = bestMatchVaccineName,
+                    Date = dateTime,
+                    Batch = batch,
+                    Status = VaccinationEntryStatus.WaitingForReview.ToString()
+                });
+                id++;
+            }
         }
 
         return entriesDto;

@@ -28,6 +28,7 @@ namespace  mSzczepienia.Api.Services
         {
             if (options == null || options.Count == 0 || input == null)
                 return string.Empty;
+
             string bestMatch = options[0];
             int lowestDistance = CalculateLevensteinDistance(input, bestMatch);
             foreach (var option in options.Skip(1))
@@ -39,7 +40,16 @@ namespace  mSzczepienia.Api.Services
                     bestMatch = option;
                 }
             }
-            return bestMatch;
+
+            // If accuracy is lower than 25%, return empty string
+            if (lowestDistance <= input.Length / 4)
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return bestMatch;
+            }
         }
 
         public DateTime ParseDateTime(string? rawDate)

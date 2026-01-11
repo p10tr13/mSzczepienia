@@ -145,7 +145,7 @@ public static class DependencyInjection
         services.AddScoped<IBlobService, BlobService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IDiseaseService, DiseaseService>();
-        services.AddScoped<IAzureOcrService, AzureOcrService>();
+        services.AddScoped<IAzureOcrService, AzureOpenAIService>();
         services.AddScoped<IUtilitiesService, UtilitiesService>();
         services.AddScoped<IAdminService, AdminService>();
 

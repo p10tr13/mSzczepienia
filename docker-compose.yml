@@ -13,6 +13,9 @@ services:
       - AzureOcr__Endpoint=${AZURE_OCR_ENDPOINT}
       - AzureOcr__ApiKey=${AZURE_OCR_APIKEY}
       - AzureOcr__ModelId=szczepienia-v1
+      - AzureOpenAI__Endpoint=${AZURE_OPENAI_ENDPOINT}
+      - AzureOpenAI__ApiKey=${AZURE_OPENAI_APIKEY}
+      - AzureOpenAI__DeploymentName=${AZURE_OPENAI_DEPLOYMENT_NAME}
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - db

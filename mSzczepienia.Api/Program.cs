@@ -10,6 +10,8 @@ builder.Services.Configure<BlobStorageSettings>(
     builder.Configuration.GetSection(BlobStorageSettings.SectionName));
 builder.Services.Configure<AzureOcrSettings>(
     builder.Configuration.GetSection(AzureOcrSettings.SectionName));
+builder.Services.Configure<AzureOpenAiSettings>(
+    builder.Configuration.GetSection(AzureOpenAiSettings.SectionName));
 
 // Add services to the container.
 // Skip DbContext registration for testing - will be overridden in test factory

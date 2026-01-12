@@ -110,7 +110,7 @@
     "cancel": "Anuluj",
     "analize": "Analizuj",
 
-    "analyzingSubmission": "Analizowanie twoich zdjęć...",
+    "analyzingSubmission": "Analizowanie twoich zdjęć... Proces może potrwać do 5 minut.",
     "errorOccurred": "Wystąpił błąd",
 
     "ocrDescription": "Należy pamiętać, że proces OCR może nie być w 100% dokładny. Dokładnie sprawdź wyodrębnione dane przed przesłaniem.",

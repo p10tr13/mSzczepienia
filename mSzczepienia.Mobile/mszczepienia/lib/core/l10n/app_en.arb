@@ -110,7 +110,7 @@
     "cancel": "Cancel",
     "analize": "Analyze",
 
-    "analyzingSubmission": "Analyzing your photos...",
+    "analyzingSubmission": "Analyzing your photos... The process may take up to 5 minutes.",
     "errorOccurred": "An error occurred",
 
     "ocrDescription": "Please note that the OCR process may not be 100% accurate. Review the extracted data carefully before submission.",

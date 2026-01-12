@@ -27,8 +27,8 @@ class OcrSubmissionRemoteDatasource {
       '/ocrsubmission/process',
       data: formData,
       options: Options(
-        sendTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
+        sendTimeout: const Duration(seconds: 300),
+        receiveTimeout: const Duration(seconds: 300),
       ),
     );
 

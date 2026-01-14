@@ -7,14 +7,25 @@ class LoadingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(),
-          const SizedBox(height: 16),
-          Text(message, style: const TextStyle(fontSize: 16)),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 24.0,
+        right: 24.0,
+        bottom: 48.0,
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(
+              message, 
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16)
+            ),
+          ],
+        ),
       ),
     );
   }

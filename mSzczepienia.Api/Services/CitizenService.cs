@@ -1,3 +1,4 @@
+using FirebaseAdmin.Auth;
 using mSzczepienia.Api.Repositories.Interfaces;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO;
@@ -76,6 +77,13 @@ namespace mSzczepienia.Api.Services
                 medicalFacility = existingFacility
             };
             await _citizenRepository.AddAsync(citizen, ct);
+
+            // Firebase add role
+            var claims = new Dictionary<string, object>
+            {
+                { "role", "citizen"}
+            };
+            await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(firebaseUid, claims);
 
             await _unitOfWork.SaveChangesAsync(ct);
         }

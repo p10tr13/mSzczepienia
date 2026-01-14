@@ -96,6 +96,9 @@ class AuthRepository {
       );
       await citizenRepository.createCitizenDetails(newCitizen);
 
+      // Refresh token to include custom claims (role) set by backend
+      await firebaseAuth.currentUser?.getIdToken(true);
+
       // Save to secure storage
       await storage.write(key: _userKey, value: newCitizen.toJsonString());
 

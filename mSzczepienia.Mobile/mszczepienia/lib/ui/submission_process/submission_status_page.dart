@@ -21,6 +21,7 @@ class _SubmissionStatusPageState extends State<SubmissionStatusPage> {
   late Color statusColor;
   late IconData statusIcon;
   final ImagePickerHelper imagePickerHelper = ImagePickerHelper();
+  static const int _maxImages = 5;
 
   void _showPhotoSourceDialog() {
     ImagePickerHelper.showPhotoSourceDialog(
@@ -40,8 +41,9 @@ class _SubmissionStatusPageState extends State<SubmissionStatusPage> {
 
   Future<void> _pickMultipleImages() async {
     final paths = await imagePickerHelper.pickMultipleImages();
-    if (paths.isNotEmpty && mounted) {
-      final encodedPaths = ImagePickerHelper.encodeImagePaths(paths);
+    final limitedPaths = paths.take(_maxImages).toList();
+    if (limitedPaths.isNotEmpty && mounted) {
+      final encodedPaths = ImagePickerHelper.encodeImagePaths(limitedPaths);
       context.push('/upload-photo?imagePaths=$encodedPaths');
     }
   }
@@ -58,7 +60,7 @@ class _SubmissionStatusPageState extends State<SubmissionStatusPage> {
         statusColor = AppColors.defaultBlue;
         statusIcon = Icons.hourglass_top;
         break;
-      case 'Approved':
+      case 'Accepted':
         submissionStatus = l10n.statusApproved;
         statusColor = Colors.green;
         statusIcon = Icons.check_circle;

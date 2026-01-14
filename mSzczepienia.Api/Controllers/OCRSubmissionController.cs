@@ -151,7 +151,7 @@ public class OCRSubmissionController : ControllerBase
     }
 
     [HttpPost("process")]
-    [Authorize]
+    [Authorize(Roles = "citizen")]
     public async Task<ActionResult<List<VaccinationEntryDto>>> ProcessOcrSubmissionAsync([FromForm] List<IFormFile> files, CancellationToken ct)
     {
         var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -208,7 +208,7 @@ public class OCRSubmissionController : ControllerBase
     }
 
     [HttpDelete("delete")]
-    [Authorize]
+    [Authorize(Roles = "citizen")]
     public async Task<IActionResult> DeleteOcrSubmissionAsync(CancellationToken ct)
     {
         var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -223,7 +223,7 @@ public class OCRSubmissionController : ControllerBase
     }
 
     [HttpPost("submit")]
-    [Authorize]
+    [Authorize(Roles = "citizen")]
     public async Task<IActionResult> UpdateOcrSubmissionWithEntries([FromBody] List<VaccinationEntryDto> entries, CancellationToken ct)
     {
         var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

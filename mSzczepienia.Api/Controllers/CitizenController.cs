@@ -87,13 +87,11 @@ namespace mSzczepienia.Api.Controllers
         [HttpPost("new-citizen-details")]
         public async Task<IActionResult> CreateCitizen([FromBody] CitizenDetailsDto citizenDto, CancellationToken ct)
         {
-            // 1. Validation
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            // 2. Get Firebase UID from token
             var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(firebaseUid))
@@ -101,14 +99,12 @@ namespace mSzczepienia.Api.Controllers
                 return Unauthorized("Invalid token: UID not found.");
             }
 
-            // Check if the user profile already exists
             var existingUser = await _citizenService.GetCitizenDetailsAsync(firebaseUid, ct);
             if (existingUser != null)
             {
                 return Conflict("User profile already exists.");
             }
 
-            // 3. Wywo³anie serwisu
             try
             {
                 await _citizenService.CreateCitizenAsync(firebaseUid, citizenDto, ct);
@@ -139,7 +135,7 @@ namespace mSzczepienia.Api.Controllers
         }
 
         [HttpGet("submission-status")]
-        [Authorize]
+        [Authorize(Roles = "citizen")]
         public async Task<ActionResult<CitizenSubmissionStatusDto>> GetCitizenSubmissionStatus(CancellationToken ct)
         {
             var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

@@ -147,7 +147,7 @@ public class VaccinesController : ControllerBase
     }
 
     [HttpGet("vaccine-names")]
-    [Authorize]
+    [Authorize(Roles = "citizen")]
     public async Task<ActionResult<List<VaccineNameDto>>> SearchVaccineNamesAsync([FromQuery] string? query, CancellationToken ct)
     {
         var firebaseUid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("user_id")?.Value ?? User.FindFirst("uid")?.Value;

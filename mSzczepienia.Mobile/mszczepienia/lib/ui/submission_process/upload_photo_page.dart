@@ -31,7 +31,10 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
     );
   }
 
+  static const int _maxImages = 5;
+
   Future<void> pickSingleImage() async {
+    if (decodedImagePaths.length >= _maxImages) return;
     final path = await imagePickerHelper.pickImage(ImageSource.camera);
     if (path != null && mounted && !decodedImagePaths.contains(path)) {
       setState(() {
@@ -41,12 +44,16 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
   }
 
   Future<void> pickMultipleImages() async {
+    if (decodedImagePaths.length >= _maxImages) return;
     final paths = await imagePickerHelper.pickMultipleImages();
-    if (paths.isNotEmpty &&
-        mounted &&
-        !decodedImagePaths.any((path) => paths.contains(path))) {
+    final remainingSlots = _maxImages - decodedImagePaths.length;
+    final newPaths = paths
+        .where((path) => !decodedImagePaths.contains(path))
+        .take(remainingSlots)
+        .toList();
+    if (newPaths.isNotEmpty && mounted) {
       setState(() {
-        decodedImagePaths.addAll(paths);
+        decodedImagePaths.addAll(newPaths);
       });
     }
   }
@@ -143,7 +150,10 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
                     height: 56,
                     child: OutlinedButton(
                       onPressed: () {
-                        showPhotoSourceDialog();
+                        if (decodedImagePaths.length < _maxImages)
+                        {
+                          showPhotoSourceDialog();
+                        }
                       },
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: borderColor, width: 2.0),

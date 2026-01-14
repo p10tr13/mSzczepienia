@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FirebaseAdmin.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using mSzczepienia.Api.Services.Interfaces;
 using mSzczepienia.Shared.DTO.Users;
@@ -36,5 +37,16 @@ public class UserManagementController : ControllerBase
         {
             return StatusCode(500, new { error = "Internal Server Error", details = ex.Message });
         }
+    }
+
+    [HttpPost("set-citizen-role/{uid}")]
+    public async Task<IActionResult> SetRole(string uid)
+    {
+        var claims = new Dictionary<string, object>
+        {
+            { "role", "citizen" }
+        };
+        await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(uid, claims);
+        return Ok();
     }
 }

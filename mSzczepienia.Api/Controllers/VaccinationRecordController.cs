@@ -19,7 +19,7 @@ public class VaccinationRecordController : ControllerBase
         _vaccinationRecordService = vaccinationRecordService;
     }
 
-    [Authorize]
+    [Authorize(Roles = "citizen")]
     [HttpGet("history")]
     public async Task<ActionResult<PagedResult<VaccinationRecordOverviewDto>>> SearchVaccinesAsync([FromQuery] GetVaccinationRecordOverviewQuery query, CancellationToken ct)
     {
@@ -44,7 +44,7 @@ public class VaccinationRecordController : ControllerBase
         return Ok(result);
     }
 
-    [Authorize]
+    [Authorize(Roles = "citizen")]
     [HttpGet("details")]
     public async Task<ActionResult<List<VaccinationRecordDetailsDto>>> GetVaccinationRecordsDetailsAsync([FromQuery] GetVaccinationRecordDetailsQuery query, CancellationToken ct)
     {

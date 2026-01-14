@@ -104,7 +104,7 @@
     "statusApproved": "Approved",
     "statusRejected": "Rejected",
 
-    "selectPhotoSource": "Select Photo Source",
+    "selectPhotoSource": "Select Photos Source (up to 5 photos)",
     "takePhoto": "Take Photo",
     "chooseFromGallery": "Choose from Gallery",
     "cancel": "Cancel",

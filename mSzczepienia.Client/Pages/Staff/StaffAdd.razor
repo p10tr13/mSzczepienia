@@ -48,7 +48,7 @@
                     </MudItem>
 
                     <MudItem xs="12" sm="6">
-                        <MudSelect Label="@Localizer["Role"]" @bind-Value="model.Role" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelect Label="@Localizer["Role"]" @bind-Value="model.Role" Variant="Variant.Outlined">
                             <MudSelectItem Value="@Role.HealthWorker">@Localizer["HealthcareWorker"]</MudSelectItem>
                             <MudSelectItem Value="@Role.Admin">@Localizer["Admin"]</MudSelectItem>
                         </MudSelect>
@@ -68,11 +68,10 @@
                         </MudItem>
 
                         <MudItem xs="12" sm="6">
-                            <MudSelect Label="@Localizer["Position"]" @bind-Value="model.Position" Variant="Variant.Outlined">
-                                @foreach (mSzczepienia.Shared.Enums.Position item in Enum.GetValues(typeof(mSzczepienia.Shared.Enums.Position)))
-                                {
-                                    <MudSelectItem Value="@((mSzczepienia.Shared.Enums.Position?)item)">@item.ToString()</MudSelectItem>
-                                }
+                            <MudSelect T="mSzczepienia.Shared.Enums.Position?" Label="@Localizer["Position"]" @bind-Value="model.Position" Variant="Variant.Outlined">
+                                <MudSelectItem T="mSzczepienia.Shared.Enums.Position?" Value="@mSzczepienia.Shared.Enums.Position.Doctor">@Localizer["Doctor"]</MudSelectItem>
+                                <MudSelectItem T="mSzczepienia.Shared.Enums.Position?" Value="@mSzczepienia.Shared.Enums.Position.Nurse">@Localizer["Nurse"]</MudSelectItem>
+                                <MudSelectItem T="mSzczepienia.Shared.Enums.Position?" Value="@mSzczepienia.Shared.Enums.Position.OfficeWorker">@Localizer["OfficeWorker"]</MudSelectItem>
                             </MudSelect>
                         </MudItem>
 

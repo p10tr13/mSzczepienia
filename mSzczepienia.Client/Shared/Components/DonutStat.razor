@@ -1,13 +1,14 @@
 ﻿@inject IStringLocalizer<SharedResources> Localizer
 
 <MudGrid Class="align-center justify-center">
-    <MudItem xs="12" sm="6" Class="d-flex justify-center">
-        <MudChart ChartType="ChartType.Donut"
-                  Width="@ChartSize"
-                  Height="@ChartSize"
-                  InputData="Data"
-                  InputLabels="Labels"
-                  ChartOptions="Options" />
+    <MudItem xs="12" sm="6" Class="d-flex flex-column align-center justify-center">
+        <MudChart ChartType="ChartType.Donut" Width="@ChartSize" Height="@ChartSize" InputData="_chartData" InputLabels="Labels" ChartOptions="Options" />
+        @if (_isEmpty)
+        {
+            <MudText Typo="Typo.h6" Align="Align.Center" Class="mud-text-secondary pt-4">
+                @Localizer["NoDataToShow"]
+            </MudText>
+        }
     </MudItem>
 
     <MudItem xs="12" sm="6" Class="d-flex flex-column align-center justify-center">
@@ -20,7 +21,7 @@
     </MudItem>
 </MudGrid>
 
-@if (ShowLegend)
+@if (ShowLegend && !_isEmpty)
 {
     <div class="d-flex justify-center mt-4 gap-4 flex-wrap">
         <div class="d-flex align-center"><MudIcon Icon="@Icons.Material.Filled.Circle" Style="color: #00c853; font-size: 1rem;" Class="mr-1" /> <MudText Typo="Typo.caption">@Localizer["Reviewed"]</MudText></div>
@@ -49,6 +50,9 @@
 
     private ChartOptions Options { get; set; }
 
+    private double[] _chartData = Array.Empty<double>();
+    private bool _isEmpty = false;
+
     protected override void OnParametersSet()
     {
         Labels = new string[]
@@ -58,11 +62,26 @@
             Localizer["Rejected"]
         };
 
-        Options = new ChartOptions
+        if (Data == null || Data.Length == 0 || Data.Sum() == 0)
         {
-            ChartPalette = new[] { "#00c853", "#2979ff", "#ff1744" },
-            ShowLegend = false
-        };
+            _isEmpty = true;
+            _chartData = new double[] { 1 };
+            Options = new ChartOptions
+            {
+                ChartPalette = new[] { "#e0e0e0" },
+                ShowLegend = false
+            };
+        }
+        else
+        {
+            _isEmpty = false;
+            _chartData = Data;
+            Options = new ChartOptions
+            {
+                ChartPalette = new[] { "#00c853", "#2979ff", "#ff1744" },
+                ShowLegend = false
+            };
+        }
     }
 }
 

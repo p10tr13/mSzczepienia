@@ -315,8 +315,8 @@
   <data name="PESEL" xml:space="preserve">
     <value>PESEL</value>
   </data>
-  <data name="MonthlyStats" xml:space="preserve">
-    <value>Monthly stats</value>
+  <data name="YouFacilityStats" xml:space="preserve">
+    <value>Stats of your medical facility</value>
   </data>
   <data name="BookletsToVerify" xml:space="preserve">
     <value>Booklets to verify</value>
@@ -523,7 +523,7 @@
     <value>Upload</value>
   </data>
   <data name="UploadBookletPhoto" xml:space="preserve">
-    <value>Upload Booklet Photo</value>
+    <value>Upload vaccination card photo</value>
   </data>
   <data name="VaccinationRecords" xml:space="preserve">
     <value>Vaccination Records</value>
@@ -965,5 +965,20 @@
   </data>
   <data name="ErrorUpdatingStaff" xml:space="preserve">
     <value>Error occurred while updating staff</value>
+  </data>
+  <data name="Nurse" xml:space="preserve">
+    <value>Nurse</value>
+  </data>
+  <data name="OfficeWorker" xml:space="preserve">
+    <value>Office Worker</value>
+  </data>
+  <data name="Doctor" xml:space="preserve">
+    <value>Doctor</value>
+  </data>
+  <data name="HealthcareWorker" xml:space="preserve">
+    <value>Healthcare Worker</value>
+  </data>
+  <data name="NoDataToShow" xml:space="preserve">
+    <value>No data to show</value>
   </data>
 </root>

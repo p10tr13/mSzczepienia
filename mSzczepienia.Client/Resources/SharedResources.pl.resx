@@ -315,8 +315,8 @@
   <data name="PESEL" xml:space="preserve">
     <value>PESEL</value>
   </data>
-  <data name="MonthlyStats" xml:space="preserve">
-    <value>Statystyki miesięczne</value>
+  <data name="YouFacilityStats" xml:space="preserve">
+    <value>Statystyki twojej placówki</value>
   </data>
   <data name="BookletsToVerify" xml:space="preserve">
     <value>Książeczki do weryfikacji</value>
@@ -523,7 +523,7 @@
     <value>Wgraj</value>
   </data>
   <data name="UploadBookletPhoto" xml:space="preserve">
-    <value>Wgraj zdjęcie książeczki szczepień</value>
+    <value>Wgraj zdjęcie karty szczepień</value>
   </data>
   <data name="VaccinationRecords" xml:space="preserve">
     <value>Wykonane szczepienia</value>
@@ -965,5 +965,20 @@
   </data>
   <data name="ErrorUpdatingStaff" xml:space="preserve">
     <value>Wystąpił błąd podczas aktualizowania danych pracownika</value>
+  </data>
+  <data name="Nurse" xml:space="preserve">
+    <value>Pielęgniarz / Pielęgniarka</value>
+  </data>
+  <data name="OfficeWorker" xml:space="preserve">
+    <value>Pracownik biura placówki</value>
+  </data>
+  <data name="Doctor" xml:space="preserve">
+    <value>Doktor</value>
+  </data>
+  <data name="HealthcareWorker" xml:space="preserve">
+    <value>Pracownik służby zdrowia</value>
+  </data>
+  <data name="NoDataToShow" xml:space="preserve">
+    <value>Brak danych do wyświetlenia</value>
   </data>
 </root>

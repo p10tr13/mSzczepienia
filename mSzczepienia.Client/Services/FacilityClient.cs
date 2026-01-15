@@ -25,11 +25,12 @@ public class FacilityClient : IFacilityClient
         return facilityNames ?? new List<string>();
     }
 
-    public async Task<PagedResult<SearchFacilityDto>> GetFacilitiesAsync(string? City, string? Street, string? PostalCode, int? Id, int Page, int PageSize,
+    public async Task<PagedResult<SearchFacilityDto>> GetFacilitiesAsync(string? Name, string? City, string? Street, string? PostalCode, int? Id, int Page, int PageSize,
         CancellationToken ct)
     {
         var queryParams = new Dictionary<string, string?>
         {
+            { "Name", Name },
             { "City", City },
             { "Street", Street },
             { "ZipCode", PostalCode },
@@ -59,6 +60,7 @@ public class FacilityClient : IFacilityClient
     {
         var queryParams = new Dictionary<string, string?>
         {
+            { "Name", query.Name },
             { "City", query.City },
             { "Street", query.Street },
             { "ZipCode", query.ZipCode },

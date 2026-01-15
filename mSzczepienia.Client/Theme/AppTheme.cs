@@ -12,7 +12,6 @@ public class MyAppTheme : MudTheme
             Secondary = "#D4213D",
             Success = "#009205",
             Error = "#FF0000",
-            Info = "#B8DEF5",
 
             Background = "#F5F5F5",
             Surface = "#FFFFFF",
@@ -29,7 +28,6 @@ public class MyAppTheme : MudTheme
             Secondary = "#D4213D",
             Success = "#009205",
             Error = "#FF0000",
-            Info = "#B8DEF5",
 
             TextPrimary = "#F5F5F5",
             TextSecondary = "#BDBDBD",

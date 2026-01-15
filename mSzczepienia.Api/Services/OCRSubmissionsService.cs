@@ -203,6 +203,16 @@ public class OCRSubmissionsService : IOCRSubmissionsService
         _citizenRepository.Update(citizen);
 
         _vaccinationEntryRepository.DeleteRange(entries);
+
+        try
+        {
+            await _blobService.DeleteDirectoryAsync(submission.photoUrl);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
         await _unitOfWork.SaveChangesAsync(ct);
 
         // After successful rejection, fetch device tokens and send notifications
@@ -354,6 +364,14 @@ public class OCRSubmissionsService : IOCRSubmissionsService
 
         citizen.submissionStatus = SubmissionStatus.Accepted;
         _citizenRepository.Update(citizen);
+
+        try
+        {
+            await _blobService.DeleteDirectoryAsync(submission.photoUrl);
+        }
+        catch (Exception) {
+            throw;
+        }
 
         await _unitOfWork.SaveChangesAsync(ct);
 

@@ -12,6 +12,7 @@
 @using mSzczepienia.Shared.DTO.Stats
 @using mSzczepienia.Client.Shared.Components
 @using mSzczepienia.Client.Shared.Components.Skeletons
+@using System.Text.RegularExpressions
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-8">
     <MudGrid Spacing="4">
@@ -129,7 +130,7 @@
                             <MudGrid Class="align-center">
                                 <MudItem xs="12" sm="8">
                                     <MudText Typo="Typo.subtitle1"><b>@emp.Name @emp.Surname</b></MudText>
-                                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@emp.Position</MudText>
+                                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@FormatEnum(emp.Position)</MudText>
 
                                     <MudStack Row="true" Spacing="2" Class="mt-1">
                                         <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.Email" Variant="Variant.Text" Color="Color.Primary">@emp.Email</MudChip>
@@ -321,5 +322,20 @@
     private void OpenEmployeeDetails(int personnelId)
     {
         NavigationManager.NavigateTo($"/staff/{personnelId}");
+    }
+
+    private string FormatEnum(string en)
+    {
+        switch (en)
+        {
+            case "Doctor":
+                return Localizer["Doctor"];
+            case "Nurse":
+                return Localizer["Nurse"];
+            case "OfficeWorker":
+                return Localizer["OfficeWorker"];
+            default:
+                return Regex.Replace(en, "(\\B[A-Z])", " $1");
+        }
     }
 }

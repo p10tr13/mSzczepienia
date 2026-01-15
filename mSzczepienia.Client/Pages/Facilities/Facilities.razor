@@ -18,6 +18,8 @@
                 <MudDivider Class="mb-4" />
 
                 <MudStack Spacing="3">
+                    <MudTextField @bind-Value="Name" Label="@Localizer["FacilityName"]" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                  Placeholder="@Localizer["EnterFacilityName"]" />
                     <MudAutocomplete T="string" @bind-Value="City" Label="@Localizer["City"]" Variant="Variant.Outlined"
                                      Margin="Margin.Dense" Placeholder="@Localizer["EnterCity"]" ResetValueOnEmptyText="true" SearchFunc="@GetCitiesAsync"
                                      CoerceText="false" DebounceInterval="500" AdornmentIcon="@Icons.Material.Filled.Search" />
@@ -116,6 +118,10 @@
 
 @code {
     [Parameter]
+    [SupplyParameterFromQuery(Name = "Name")]
+    public string? Name { get; set; }
+
+    [Parameter]
     [SupplyParameterFromQuery(Name = "City")]
     public string? City { get; set; }
 
@@ -157,7 +163,7 @@
 
         try
         {
-            facilities = await FacilityClient.GetFacilitiesAsync(City, Street, PostalCode, Id, Page, PageSize, new CancellationToken());
+            facilities = await FacilityClient.GetFacilitiesAsync(Name, City, Street, PostalCode, Id, Page, PageSize, new CancellationToken());
         }
         catch (HttpRequestException httpEx)
         {
@@ -217,6 +223,7 @@
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
 
+        query.Remove("Name");
         query.Remove("City");
         query.Remove("Street");
         query.Remove("PostalCode");
@@ -225,6 +232,8 @@
 
         query.Add("Page", Page.ToString());
 
+        if (!string.IsNullOrWhiteSpace(Name))
+            query["Name"] = Name;
         if (!string.IsNullOrWhiteSpace(City))
             query["City"] = City;
         if (!string.IsNullOrWhiteSpace(Street))

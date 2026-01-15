@@ -77,6 +77,11 @@ public class FacilityRepository : IFacilityRepository
         }
         else
         {
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                queryable = queryable.Where(f => f.facilityName.Contains(query.Name));
+            }
+            
             if (!string.IsNullOrWhiteSpace(query.City))
             {
                 queryable = queryable.Where(f => f.city.Contains(query.City));

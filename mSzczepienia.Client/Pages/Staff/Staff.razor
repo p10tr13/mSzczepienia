@@ -308,6 +308,16 @@
 
     private string FormatEnum(string en)
     {
-        return Regex.Replace(en, "(\\B[A-Z])", " $1");
+        switch (en)
+        {
+            case "Doctor":
+                return Localizer["Doctor"];
+            case "Nurse":
+                return Localizer["Nurse"];
+            case "OfficeWorker":
+                return Localizer["OfficeWorker"];
+            default:
+                return Regex.Replace(en, "(\\B[A-Z])", " $1");
+        }
     }
 }

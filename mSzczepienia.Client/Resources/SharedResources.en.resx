@@ -981,4 +981,13 @@
   <data name="NoDataToShow" xml:space="preserve">
     <value>No data to show</value>
   </data>
+  <data name="NotUploaded" xml:space="preserve">
+    <value>Not Uploaded</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Pending verification</value>
+  </data>
+  <data name="Accepted" xml:space="preserve">
+    <value>Accepted</value>
+  </data>
 </root>

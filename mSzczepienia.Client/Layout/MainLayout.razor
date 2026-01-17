@@ -29,7 +29,10 @@
 
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <MudDrawerHeader>
-            <MudText Typo="Typo.h6" Color="Color.Primary"><b>mSzczepienia</b></MudText>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudImage Src="images/logo.png" Alt="Logo" Width="35" Height="35" ObjectFit="ObjectFit.Contain" />
+                <MudText Typo="Typo.h6" Color="Color.Primary"><b>mSzczepienia</b></MudText>
+            </MudStack>
         </MudDrawerHeader>
         <NavMenu />
     </MudDrawer>

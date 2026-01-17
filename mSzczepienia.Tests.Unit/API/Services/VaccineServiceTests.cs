@@ -9,12 +9,16 @@ namespace mSzczepienia.Tests.Unit.API.Services;
 public class VaccineServiceTests
 {
     private readonly IVaccineRepository _vaccineRepositoryMock;
+    private readonly IDiseaseRepository _diseaseRepositoryMock;
+    private readonly IUnitOfWork _unitOfWorkMock;
     private readonly VaccineService _sut; // SUT = System Under Test
 
     public VaccineServiceTests()
     {
         _vaccineRepositoryMock = Substitute.For<IVaccineRepository>();
-        _sut = new VaccineService(_vaccineRepositoryMock);
+        _diseaseRepositoryMock = Substitute.For<IDiseaseRepository>();
+        _unitOfWorkMock = Substitute.For<IUnitOfWork>();
+        _sut = new VaccineService(_vaccineRepositoryMock, _diseaseRepositoryMock, _unitOfWorkMock);
     }
 
     [Fact]

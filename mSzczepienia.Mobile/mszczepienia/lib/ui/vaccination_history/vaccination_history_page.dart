@@ -63,8 +63,6 @@ class _VaccinationHistoryState extends State<VaccinationHistoryPage> {
       _isLoading = true;
     });
 
-    debugPrint('Loading page: $_currentPage');
-
     context.read<VaccinationRecordsCubit>().loadHistory(
       _currentPage,
       _pageSize,

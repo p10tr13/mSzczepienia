@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mszczepienia/core/l10n/app_localizations.dart';
+import 'package:mszczepienia/core/notifications/notification_service.dart';
 import 'package:mszczepienia/core/router/app_router.dart';
 import 'package:mszczepienia/core/theme/app_theme.dart';
 import 'package:mszczepienia/logic/auth/auth_cubit.dart';
 import 'package:mszczepienia/logic/auth/auth_state.dart';
 import 'package:mszczepienia/logic/facility/facilities_cubit.dart';
 import 'package:mszczepienia/logic/language/language_cubit.dart';
-import 'package:mszczepienia/logic/language/language_repository.dart';
+import 'package:mszczepienia/data/repositories/language_repository.dart';
 import 'package:mszczepienia/logic/language/language_state.dart';
 import 'package:mszczepienia/logic/theme/theme_cubit.dart';
-import 'package:mszczepienia/logic/theme/theme_repository.dart';
+import 'package:mszczepienia/data/repositories/theme_repository.dart';
 import 'package:mszczepienia/logic/theme/theme_state.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -26,10 +28,11 @@ class MockAuthCubit extends Mock implements AuthCubit {
   Stream<AuthState> get stream => Stream.value(Unauthenticated());
 }
 
-
 class MockFacilitiesCubit extends Mock implements FacilitiesCubit {}
 
 class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
+
+class MockNotificationService extends Mock implements NotificationService {}
 
 // Fake repositories for integration testing
 class FakeThemeRepository extends ThemeRepository {
@@ -66,6 +69,7 @@ void main() {
   group('Settings Page Integration Tests', () {
     late MockAuthCubit mockAuthCubit;
     late MockFacilitiesCubit mockFacilitiesCubit;
+    late MockNotificationService mockNotificationService;
     late ThemeCubit themeCubit;
     late LanguageCubit languageCubit;
     late AppRouter appRouter;
@@ -73,6 +77,26 @@ void main() {
     setUp(() {
       mockAuthCubit = MockAuthCubit();
       mockFacilitiesCubit = MockFacilitiesCubit();
+      mockNotificationService = MockNotificationService();
+
+      // Register mock NotificationService in GetIt
+      final sl = GetIt.instance;
+      if (sl.isRegistered<NotificationService>()) {
+        sl.unregister<NotificationService>();
+      }
+      sl.registerSingleton<NotificationService>(mockNotificationService);
+
+      // Setup default stub for uploadFcmToken
+      when(
+        () => mockNotificationService.uploadFcmToken(any()),
+      ).thenAnswer((_) async {});
+    });
+
+    tearDown(() {
+      final sl = GetIt.instance;
+      if (sl.isRegistered<NotificationService>()) {
+        sl.unregister<NotificationService>();
+      }
     });
 
     Widget createTestApp({
@@ -128,10 +152,9 @@ void main() {
         themeCubit = _TestThemeCubit(fakeThemeRepo);
         languageCubit = _TestLanguageCubit(fakeLanguageRepo);
 
-        await tester.pumpWidget(createTestApp(
-          themeCubit: themeCubit,
-          languageCubit: languageCubit,
-        ));
+        await tester.pumpWidget(
+          createTestApp(themeCubit: themeCubit, languageCubit: languageCubit),
+        );
         await tester.pumpAndSettle();
 
         // Navigate to settings (since we're unauthenticated, we're on login page)
@@ -161,10 +184,9 @@ void main() {
         themeCubit = _TestThemeCubit(fakeThemeRepo);
         languageCubit = _TestLanguageCubit(fakeLanguageRepo);
 
-        await tester.pumpWidget(createTestApp(
-          themeCubit: themeCubit,
-          languageCubit: languageCubit,
-        ));
+        await tester.pumpWidget(
+          createTestApp(themeCubit: themeCubit, languageCubit: languageCubit),
+        );
         await tester.pumpAndSettle();
 
         // Start with English
@@ -200,10 +222,9 @@ void main() {
         themeCubit = _TestThemeCubit(fakeThemeRepo);
         languageCubit = _TestLanguageCubit(fakeLanguageRepo);
 
-        await tester.pumpWidget(createTestApp(
-          themeCubit: themeCubit,
-          languageCubit: languageCubit,
-        ));
+        await tester.pumpWidget(
+          createTestApp(themeCubit: themeCubit, languageCubit: languageCubit),
+        );
         await tester.pumpAndSettle();
 
         // Initial state
@@ -225,35 +246,30 @@ void main() {
       },
     );
 
-    testWidgets(
-      'Login page renders correctly with all elements',
-      (WidgetTester tester) async {
-        final fakeThemeRepo = FakeThemeRepository();
-        final fakeLanguageRepo = FakeLanguageRepository();
+    testWidgets('Login page renders correctly with all elements', (
+      WidgetTester tester,
+    ) async {
+      final fakeThemeRepo = FakeThemeRepository();
+      final fakeLanguageRepo = FakeLanguageRepository();
 
-        themeCubit = _TestThemeCubit(fakeThemeRepo);
-        languageCubit = _TestLanguageCubit(fakeLanguageRepo);
+      themeCubit = _TestThemeCubit(fakeThemeRepo);
+      languageCubit = _TestLanguageCubit(fakeLanguageRepo);
 
-        await tester.pumpWidget(createTestApp(
-          themeCubit: themeCubit,
-          languageCubit: languageCubit,
-        ));
-        await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        createTestApp(themeCubit: themeCubit, languageCubit: languageCubit),
+      );
+      await tester.pumpAndSettle();
 
-        // Verify login page elements are present (unauthenticated state)
-        expect(find.text('Good morning!'), findsOneWidget);
-        expect(find.byType(TextFormField), findsWidgets);
+      // Verify login page elements are present (unauthenticated state)
+      expect(find.text('Good morning!'), findsOneWidget);
+      expect(find.byType(TextFormField), findsWidgets);
 
-        // Find login button (text is "Log In" with capital I)
-        expect(
-            find.widgetWithText(ElevatedButton, 'Log In'), findsOneWidget);
+      // Find login button (text is "Log In" with capital I)
+      expect(find.widgetWithText(ElevatedButton, 'Log In'), findsOneWidget);
 
-        // Find sign up button (OutlinedButton, not TextButton)
-        expect(
-            find.widgetWithText(OutlinedButton, 'Sign Up'),
-            findsOneWidget);
-      },
-    );
+      // Find sign up button (OutlinedButton, not TextButton)
+      expect(find.widgetWithText(OutlinedButton, 'Sign Up'), findsOneWidget);
+    });
   });
 }
 

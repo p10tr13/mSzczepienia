@@ -4,7 +4,7 @@ import 'package:mszczepienia/core/di/dependency_injection.dart';
 import 'package:mszczepienia/core/notifications/notification_service.dart';
 import 'package:mszczepienia/data/models/citizen_details_model.dart';
 import 'package:mszczepienia/data/repositories/citizen_repository.dart';
-import 'package:mszczepienia/logic/language/language_repository.dart';
+import 'package:mszczepienia/data/repositories/language_repository.dart';
 
 class AuthRepository {
   final FirebaseAuth firebaseAuth;

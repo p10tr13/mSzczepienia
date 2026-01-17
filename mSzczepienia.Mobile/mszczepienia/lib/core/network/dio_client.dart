@@ -7,7 +7,10 @@ class DioClient {
   DioClient()
     : _dio = Dio(
         BaseOptions(
-          baseUrl: 'http://10.0.2.2:8080/api',
+          // For testing
+          // baseUrl: 'http://10.0.2.2:8080/api',
+          // For deployment
+          baseUrl: 'http://74.161.152.171:8080/api',
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
           headers: {'Content-Type': 'application/json'},

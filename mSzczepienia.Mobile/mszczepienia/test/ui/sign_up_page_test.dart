@@ -45,10 +45,23 @@ void main() {
     mockAuthCubit = MockAuthCubit();
     mockAuthCubitLoading = MockAuthCubitLoading();
     mockFacilitiesCubit = MockFacilitiesCubit();
-    
+
     // Setup stubs
-    when(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any())).thenAnswer((_) async {});
-    when(() => mockFacilitiesCubit.loadFacilities('szp')).thenAnswer((_) async {});
+    when(
+      () => mockAuthCubit.signUpRequested(
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockFacilitiesCubit.loadFacilities(any()),
+    ).thenAnswer((_) async {});
   });
 
   Widget createWidgetUnderTest({bool loading = false}) {
@@ -88,7 +101,9 @@ void main() {
       expect(find.byType(SingleChildScrollView), findsOneWidget);
     });
 
-    testWidgets('All required text fields are present', (WidgetTester tester) async {
+    testWidgets('All required text fields are present', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -119,7 +134,7 @@ void main() {
 
       final fields = find.byType(TextFormField);
       await tester.enterText(fields.first, 'John');
-      
+
       expect(find.text('John'), findsOneWidget);
     });
 
@@ -129,7 +144,7 @@ void main() {
 
       final fields = find.byType(TextFormField);
       await tester.enterText(fields.at(1), 'Doe');
-      
+
       expect(find.text('Doe'), findsOneWidget);
     });
 
@@ -144,13 +159,24 @@ void main() {
       await tester.enterText(fields.at(2), '1234'); // PESEL - too short
       await tester.enterText(fields.at(4), 'test@example.com');
       await tester.enterText(fields.at(5), 'password123');
-      
+
       // Click Sign Up
       await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
 
       // signUpRequested should not be called because PESEL is too short
-      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any()));
+      verifyNever(
+        () => mockAuthCubit.signUpRequested(
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+        ),
+      );
     });
 
     testWidgets('Email field validates format', (WidgetTester tester) async {
@@ -163,16 +189,29 @@ void main() {
       await tester.enterText(fields.at(2), '12345678901'); // PESEL - OK
       await tester.enterText(fields.at(4), 'invalidemail'); // Email without @
       await tester.enterText(fields.at(5), 'password123');
-      
+
       // Click Sign Up
       await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
 
       // signUpRequested should not be called
-      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any()));
+      verifyNever(
+        () => mockAuthCubit.signUpRequested(
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+        ),
+      );
     });
 
-    testWidgets('Password field validates minimum length', (WidgetTester tester) async {
+    testWidgets('Password field validates minimum length', (
+      WidgetTester tester,
+    ) async {
       await pumpWidgetWithSize(tester, createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -182,13 +221,24 @@ void main() {
       await tester.enterText(fields.at(2), '12345678901');
       await tester.enterText(fields.at(4), 'test@example.com');
       await tester.enterText(fields.at(5), '123'); // Password too short
-      
+
       // Click Sign Up
       await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
 
       // signUpRequested should not be called
-      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any()));
+      verifyNever(
+        () => mockAuthCubit.signUpRequested(
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+        ),
+      );
     });
 
     testWidgets('Form validates empty fields', (WidgetTester tester) async {
@@ -200,7 +250,18 @@ void main() {
       await tester.pumpAndSettle();
 
       // signUpRequested should not be called
-      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any()));
+      verifyNever(
+        () => mockAuthCubit.signUpRequested(
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+        ),
+      );
     });
 
     testWidgets('Name field is required', (WidgetTester tester) async {
@@ -208,19 +269,30 @@ void main() {
       await tester.pumpAndSettle();
 
       final fields = find.byType(TextFormField);
-      
+
       // Leave name empty
       await tester.enterText(fields.at(1), 'Doe'); // surname
       await tester.enterText(fields.at(2), '12345678901'); // PESEL
       await tester.enterText(fields.at(4), 'test@example.com'); // email
       await tester.enterText(fields.at(5), 'password123'); // password
-      
+
       // Click Sign Up
       await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
 
       // signUpRequested should not be called
-      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any()));
+      verifyNever(
+        () => mockAuthCubit.signUpRequested(
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+        ),
+      );
     });
 
     testWidgets('Surname field is required', (WidgetTester tester) async {
@@ -228,22 +300,35 @@ void main() {
       await tester.pumpAndSettle();
 
       final fields = find.byType(TextFormField);
-      
+
       // Leave surname empty
       await tester.enterText(fields.first, 'John'); // name
       await tester.enterText(fields.at(2), '12345678901'); // PESEL
       await tester.enterText(fields.at(4), 'test@example.com'); // email
       await tester.enterText(fields.at(5), 'password123'); // password
-      
+
       // Click Sign Up
       await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
 
       // signUpRequested should not be called
-      verifyNever(() => mockAuthCubit.signUpRequested(any(), any(), any(), any(), any(), any(), any(), any()));
+      verifyNever(
+        () => mockAuthCubit.signUpRequested(
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+        ),
+      );
     });
 
-    testWidgets('Container border uses theme outline color', (WidgetTester tester) async {
+    testWidgets('Container border uses theme outline color', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -255,14 +340,17 @@ void main() {
       expect(containerFinder, findsWidgets);
 
       // Get the Container widget and check its decoration
-      final container = tester.widgetList<Container>(containerFinder).firstWhere(
-        (c) => c.decoration is BoxDecoration && 
-               (c.decoration as BoxDecoration).border != null,
-      );
+      final container = tester
+          .widgetList<Container>(containerFinder)
+          .firstWhere(
+            (c) =>
+                c.decoration is BoxDecoration &&
+                (c.decoration as BoxDecoration).border != null,
+          );
 
       final decoration = container.decoration as BoxDecoration;
       final border = decoration.border as Border;
-      
+
       // Get the expected theme outline color
       final context = tester.element(find.byType(SignUpPage));
       final expectedColor = Theme.of(context).colorScheme.outline;
@@ -271,13 +359,15 @@ void main() {
       expect(border.top.color, equals(expectedColor));
     });
 
-    testWidgets('Eye icon in password field toggles visibility', (WidgetTester tester) async {
+    testWidgets('Eye icon in password field toggles visibility', (
+      WidgetTester tester,
+    ) async {
       await pumpWidgetWithSize(tester, createWidgetUnderTest());
       await tester.pumpAndSettle();
 
       // Look for eye icon in password field (there are 2 - password and repeat password)
       expect(find.byIcon(Icons.visibility_off_outlined), findsNWidgets(2));
-      
+
       // Click the first one to show password
       await tester.tap(find.byIcon(Icons.visibility_off_outlined).first);
       await tester.pumpAndSettle();
@@ -293,12 +383,14 @@ void main() {
       // DateOfBirth should be a TextFormField
       final fields = find.byType(TextFormField);
       expect(fields, findsWidgets);
-      
+
       // Should have a field with hint text 'YYYY-MM-DD'
       expect(find.text('YYYY-MM-DD'), findsOneWidget);
     });
 
-    testWidgets('Show loading indicator when AuthLoading', (WidgetTester tester) async {
+    testWidgets('Show loading indicator when AuthLoading', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest(loading: true));
       await tester.pump();
 

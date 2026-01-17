@@ -43,7 +43,7 @@ void main() {
     creationDate: DateTime.now(),
     pesel: '12345678901',
     facilityName: 'Test Hospital',
-    submissionStatus: 'NotUploaded'
+    submissionStatus: 'NotUploaded',
   );
 
   setUp(() {
@@ -63,11 +63,11 @@ void main() {
       expect(appRouter.authCubit, mockAuthCubit);
     });
 
-    test('has 6 routes defined', () {
+    test('has 12 routes defined', () {
       appRouter = AppRouter(authCubit: mockAuthCubit);
       final routes = appRouter.router.configuration.routes;
 
-      expect(routes.length, 6);
+      expect(routes.length, 12);
     });
 
     test('has correct route paths', () {
@@ -76,11 +76,23 @@ void main() {
           .map((r) => (r as dynamic).path)
           .toList();
 
+      // Main routes
       expect(routePaths, contains('/'));
       expect(routePaths, contains('/settings'));
       expect(routePaths, contains('/account'));
       expect(routePaths, contains('/login'));
       expect(routePaths, contains('/signup'));
+
+      // Submission process routes
+      expect(routePaths, contains('/submission-status'));
+      expect(routePaths, contains('/submission-status/analyze'));
+      expect(routePaths, contains('/submission-status/edit-entry'));
+      expect(routePaths, contains('/submission-status/add-entry'));
+      expect(routePaths, contains('/upload-photo'));
+
+      // Vaccination history routes
+      expect(routePaths, contains('/history'));
+      expect(routePaths, contains('/history/details'));
     });
 
     test('has redirect function defined', () {
@@ -306,6 +318,112 @@ void main() {
 
       final isLoggedIn = appRouter.authCubit!.state is Authenticated;
       const path = '/settings';
+      final isAuth = path == '/login' || path == '/signup';
+
+      final shouldRedirectToHome = isLoggedIn && isAuth;
+      final shouldRedirectToLogin = !isLoggedIn && !isAuth;
+      expect(shouldRedirectToHome, isFalse);
+      expect(shouldRedirectToLogin, isFalse);
+    });
+
+    // Tests for new routes
+    test('submission-status path is protected route', () {
+      mockAuthCubit.setState(Unauthenticated());
+      appRouter = AppRouter(authCubit: mockAuthCubit);
+
+      final isLoggedIn = appRouter.authCubit!.state is Authenticated;
+      const path = '/submission-status';
+      final isAuth = path == '/login' || path == '/signup';
+
+      // Should redirect to login when unauthenticated
+      final shouldRedirectToLogin = !isLoggedIn && !isAuth;
+      expect(shouldRedirectToLogin, isTrue);
+    });
+
+    test('upload-photo path is protected route', () {
+      mockAuthCubit.setState(Unauthenticated());
+      appRouter = AppRouter(authCubit: mockAuthCubit);
+
+      final isLoggedIn = appRouter.authCubit!.state is Authenticated;
+      const path = '/upload-photo';
+      final isAuth = path == '/login' || path == '/signup';
+
+      final shouldRedirectToLogin = !isLoggedIn && !isAuth;
+      expect(shouldRedirectToLogin, isTrue);
+    });
+
+    test('history path is protected route', () {
+      mockAuthCubit.setState(Unauthenticated());
+      appRouter = AppRouter(authCubit: mockAuthCubit);
+
+      final isLoggedIn = appRouter.authCubit!.state is Authenticated;
+      const path = '/history';
+      final isAuth = path == '/login' || path == '/signup';
+
+      final shouldRedirectToLogin = !isLoggedIn && !isAuth;
+      expect(shouldRedirectToLogin, isTrue);
+    });
+
+    test('history/details path is protected route', () {
+      mockAuthCubit.setState(Unauthenticated());
+      appRouter = AppRouter(authCubit: mockAuthCubit);
+
+      final isLoggedIn = appRouter.authCubit!.state is Authenticated;
+      const path = '/history/details';
+      final isAuth = path == '/login' || path == '/signup';
+
+      final shouldRedirectToLogin = !isLoggedIn && !isAuth;
+      expect(shouldRedirectToLogin, isTrue);
+    });
+
+    test('authenticated user can access submission-status', () {
+      mockAuthCubit.setState(Authenticated(testUser));
+      appRouter = AppRouter(authCubit: mockAuthCubit);
+
+      final isLoggedIn = appRouter.authCubit!.state is Authenticated;
+      const path = '/submission-status';
+      final isAuth = path == '/login' || path == '/signup';
+
+      final shouldRedirectToHome = isLoggedIn && isAuth;
+      final shouldRedirectToLogin = !isLoggedIn && !isAuth;
+      expect(shouldRedirectToHome, isFalse);
+      expect(shouldRedirectToLogin, isFalse);
+    });
+
+    test('authenticated user can access history', () {
+      mockAuthCubit.setState(Authenticated(testUser));
+      appRouter = AppRouter(authCubit: mockAuthCubit);
+
+      final isLoggedIn = appRouter.authCubit!.state is Authenticated;
+      const path = '/history';
+      final isAuth = path == '/login' || path == '/signup';
+
+      final shouldRedirectToHome = isLoggedIn && isAuth;
+      final shouldRedirectToLogin = !isLoggedIn && !isAuth;
+      expect(shouldRedirectToHome, isFalse);
+      expect(shouldRedirectToLogin, isFalse);
+    });
+
+    test('authenticated user can access upload-photo', () {
+      mockAuthCubit.setState(Authenticated(testUser));
+      appRouter = AppRouter(authCubit: mockAuthCubit);
+
+      final isLoggedIn = appRouter.authCubit!.state is Authenticated;
+      const path = '/upload-photo';
+      final isAuth = path == '/login' || path == '/signup';
+
+      final shouldRedirectToHome = isLoggedIn && isAuth;
+      final shouldRedirectToLogin = !isLoggedIn && !isAuth;
+      expect(shouldRedirectToHome, isFalse);
+      expect(shouldRedirectToLogin, isFalse);
+    });
+
+    test('authenticated user can access analyze page', () {
+      mockAuthCubit.setState(Authenticated(testUser));
+      appRouter = AppRouter(authCubit: mockAuthCubit);
+
+      final isLoggedIn = appRouter.authCubit!.state is Authenticated;
+      const path = '/submission-status/analyze';
       final isAuth = path == '/login' || path == '/signup';
 
       final shouldRedirectToHome = isLoggedIn && isAuth;

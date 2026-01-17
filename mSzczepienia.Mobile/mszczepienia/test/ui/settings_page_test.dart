@@ -133,8 +133,9 @@ void main() {
       expect(find.byIcon(Icons.pin_drop_rounded), findsOneWidget);
     });
 
-    testWidgets('Theme option shows dark mode text in light theme',
-        (WidgetTester tester) async {
+    testWidgets('Theme option shows dark mode text in light theme', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -142,8 +143,9 @@ void main() {
       expect(find.text('Change to dark mode'), findsOneWidget);
     });
 
-    testWidgets('Tapping theme option calls switchToDark when in light mode',
-        (WidgetTester tester) async {
+    testWidgets('Tapping theme option calls switchToDark when in light mode', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -155,21 +157,24 @@ void main() {
       verify(() => mockThemeCubit.switchToDark()).called(1);
     });
 
-    testWidgets('Tapping language option calls switchToPolish when in English',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(createWidgetUnderTest());
-      await tester.pumpAndSettle();
+    testWidgets(
+      'Tapping language option calls switchToPolish when in English',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(createWidgetUnderTest());
+        await tester.pumpAndSettle();
 
-      // Tap on language option by tapping on Language text
-      await tester.tap(find.text('Language'));
-      await tester.pumpAndSettle();
+        // Tap on language option by tapping on Language text
+        await tester.tap(find.text('Language'));
+        await tester.pumpAndSettle();
 
-      // Verify switchToPolish was called
-      verify(() => mockLanguageCubit.switchToPolish()).called(1);
-    });
+        // Verify switchToPolish was called
+        verify(() => mockLanguageCubit.switchToPolish()).called(1);
+      },
+    );
 
-    testWidgets('InkWell widgets are present for both options',
-        (WidgetTester tester) async {
+    testWidgets('InkWell widgets are present for both options', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 

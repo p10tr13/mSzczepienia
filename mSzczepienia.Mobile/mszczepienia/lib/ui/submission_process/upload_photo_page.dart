@@ -150,8 +150,7 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
                     height: 56,
                     child: OutlinedButton(
                       onPressed: () {
-                        if (decodedImagePaths.length < _maxImages)
-                        {
+                        if (decodedImagePaths.length < _maxImages) {
                           showPhotoSourceDialog();
                         }
                       },

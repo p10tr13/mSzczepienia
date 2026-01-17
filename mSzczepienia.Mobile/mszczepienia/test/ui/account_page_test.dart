@@ -46,10 +46,12 @@ void main() {
     mockAuthCubitAuthenticated = MockAuthCubitAuthenticated();
 
     // Setup stubs
-    when(() => mockAuthCubitAuthenticated.logoutRequested())
-        .thenAnswer((_) async {});
-    when(() => mockAuthCubitUnauthenticated.logoutRequested())
-        .thenAnswer((_) async {});
+    when(
+      () => mockAuthCubitAuthenticated.logoutRequested(),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockAuthCubitUnauthenticated.logoutRequested(),
+    ).thenAnswer((_) async {});
   });
 
   Widget createWidgetUnderTest({bool authenticated = true}) {
@@ -94,50 +96,65 @@ void main() {
       expect(find.text('Your Account'), findsOneWidget);
     });
 
-    testWidgets('User name is displayed when authenticated',
-        (WidgetTester tester) async {
+    testWidgets('User name is displayed when authenticated', (
+      WidgetTester tester,
+    ) async {
       await pumpWidgetWithSize(
-          tester, createWidgetUnderTest(authenticated: true));
+        tester,
+        createWidgetUnderTest(authenticated: true),
+      );
       await tester.pumpAndSettle();
 
       // Check if user's name is displayed
       expect(find.text('John'), findsOneWidget);
     });
 
-    testWidgets('User surname is displayed when authenticated',
-        (WidgetTester tester) async {
+    testWidgets('User surname is displayed when authenticated', (
+      WidgetTester tester,
+    ) async {
       await pumpWidgetWithSize(
-          tester, createWidgetUnderTest(authenticated: true));
+        tester,
+        createWidgetUnderTest(authenticated: true),
+      );
       await tester.pumpAndSettle();
 
       // Check if user's surname is displayed
       expect(find.text('Doe'), findsOneWidget);
     });
 
-    testWidgets('User email is displayed when authenticated',
-        (WidgetTester tester) async {
+    testWidgets('User email is displayed when authenticated', (
+      WidgetTester tester,
+    ) async {
       await pumpWidgetWithSize(
-          tester, createWidgetUnderTest(authenticated: true));
+        tester,
+        createWidgetUnderTest(authenticated: true),
+      );
       await tester.pumpAndSettle();
 
       // Check if user's email is displayed
       expect(find.text('john.doe@example.com'), findsOneWidget);
     });
 
-    testWidgets('User PESEL is displayed when authenticated',
-        (WidgetTester tester) async {
+    testWidgets('User PESEL is displayed when authenticated', (
+      WidgetTester tester,
+    ) async {
       await pumpWidgetWithSize(
-          tester, createWidgetUnderTest(authenticated: true));
+        tester,
+        createWidgetUnderTest(authenticated: true),
+      );
       await tester.pumpAndSettle();
 
       // Check if user's PESEL is displayed
       expect(find.text('90011512345'), findsOneWidget);
     });
 
-    testWidgets('User medical facility is displayed when authenticated',
-        (WidgetTester tester) async {
+    testWidgets('User medical facility is displayed when authenticated', (
+      WidgetTester tester,
+    ) async {
       await pumpWidgetWithSize(
-          tester, createWidgetUnderTest(authenticated: true));
+        tester,
+        createWidgetUnderTest(authenticated: true),
+      );
       await tester.pumpAndSettle();
 
       // Check if user's medical facility is displayed
@@ -184,8 +201,9 @@ void main() {
       expect(find.text('PESEL'), findsOneWidget);
     });
 
-    testWidgets('Medical Facility label is present',
-        (WidgetTester tester) async {
+    testWidgets('Medical Facility label is present', (
+      WidgetTester tester,
+    ) async {
       await pumpWidgetWithSize(tester, createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -233,10 +251,13 @@ void main() {
       expect(find.byIcon(Icons.person), findsOneWidget);
     });
 
-    testWidgets('Tapping Log Out calls logoutRequested',
-        (WidgetTester tester) async {
+    testWidgets('Tapping Log Out calls logoutRequested', (
+      WidgetTester tester,
+    ) async {
       await pumpWidgetWithSize(
-          tester, createWidgetUnderTest(authenticated: true));
+        tester,
+        createWidgetUnderTest(authenticated: true),
+      );
       await tester.pumpAndSettle();
 
       // Tap on Log Out option
@@ -246,9 +267,10 @@ void main() {
       // Verify logoutRequested was called
       verify(() => mockAuthCubitAuthenticated.logoutRequested()).called(1);
     });
-    
-    testWidgets('InkWell widgets are present for Call Support and Log Out',
-        (WidgetTester tester) async {
+
+    testWidgets('InkWell widgets are present for Call Support and Log Out', (
+      WidgetTester tester,
+    ) async {
       await pumpWidgetWithSize(tester, createWidgetUnderTest());
       await tester.pumpAndSettle();
 

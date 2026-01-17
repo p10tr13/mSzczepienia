@@ -29,7 +29,11 @@ class Layout extends StatelessWidget {
                   color: AppColors.logoRed,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.shield, color: Colors.white, size: 20),
+                child: const Icon(
+                  Icons.health_and_safety,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               const Text(
@@ -41,22 +45,6 @@ class Layout extends StatelessWidget {
         ),
       ),
       body: SafeArea(child: child),
-
-      //TEMPORATY DISABLED GRADIENT BACKGROUND FOR SMOOTHNESS OF THE APP
-      // body: Container(
-      //   width: double.infinity,
-      //   height: double.infinity,
-      //   decoration: BoxDecoration(
-      //     gradient: LinearGradient(
-      //       begin: Alignment.topLeft,
-      //       end: Alignment.bottomRight,
-      //       colors: isDarkMode
-      //           ? [AppColors.darkGrey, AppColors.defaultBlue]
-      //           : [AppColors.lightGrey, AppColors.lightBlue],
-      //     ),
-      //   ),
-      //   child: SafeArea(child: child),
-      // ),
     );
   }
 }

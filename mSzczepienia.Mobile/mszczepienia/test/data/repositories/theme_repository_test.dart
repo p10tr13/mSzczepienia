@@ -1,7 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:mszczepienia/logic/theme/theme_repository.dart';
+import 'package:mszczepienia/data/repositories/theme_repository.dart';
 
 // Mock FlutterSecureStorage
 class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
@@ -18,8 +18,9 @@ void main() {
   group('ThemeRepository', () {
     group('getCurrentTheme', () {
       test('returns stored theme when available', () async {
-        when(() => mockStorage.read(key: 'chosen_theme'))
-            .thenAnswer((_) async => 'dark');
+        when(
+          () => mockStorage.read(key: 'chosen_theme'),
+        ).thenAnswer((_) async => 'dark');
 
         final result = await repository.getCurrentTheme();
 
@@ -28,8 +29,9 @@ void main() {
       });
 
       test('returns light when no theme stored (null)', () async {
-        when(() => mockStorage.read(key: 'chosen_theme'))
-            .thenAnswer((_) async => null);
+        when(
+          () => mockStorage.read(key: 'chosen_theme'),
+        ).thenAnswer((_) async => null);
 
         final result = await repository.getCurrentTheme();
 
@@ -37,10 +39,12 @@ void main() {
       });
 
       test('returns light and deletes key on error', () async {
-        when(() => mockStorage.read(key: 'chosen_theme'))
-            .thenThrow(Exception('Storage error'));
-        when(() => mockStorage.delete(key: 'chosen_theme'))
-            .thenAnswer((_) async {});
+        when(
+          () => mockStorage.read(key: 'chosen_theme'),
+        ).thenThrow(Exception('Storage error'));
+        when(
+          () => mockStorage.delete(key: 'chosen_theme'),
+        ).thenAnswer((_) async {});
 
         final result = await repository.getCurrentTheme();
 
@@ -51,8 +55,9 @@ void main() {
 
     group('setCurrentTheme', () {
       test('saves dark theme to storage', () async {
-        when(() => mockStorage.write(key: 'dark', value: 'dark'))
-            .thenAnswer((_) async {});
+        when(
+          () => mockStorage.write(key: 'dark', value: 'dark'),
+        ).thenAnswer((_) async {});
 
         await repository.setCurrentTheme('dark');
 
@@ -60,8 +65,9 @@ void main() {
       });
 
       test('saves light theme to storage', () async {
-        when(() => mockStorage.write(key: 'light', value: 'light'))
-            .thenAnswer((_) async {});
+        when(
+          () => mockStorage.write(key: 'light', value: 'light'),
+        ).thenAnswer((_) async {});
 
         await repository.setCurrentTheme('light');
 
@@ -69,16 +75,19 @@ void main() {
       });
 
       test('throws exception on storage error', () async {
-        when(() => mockStorage.write(key: 'dark', value: 'dark'))
-            .thenThrow(Exception('Write error'));
+        when(
+          () => mockStorage.write(key: 'dark', value: 'dark'),
+        ).thenThrow(Exception('Write error'));
 
         expect(
           () => repository.setCurrentTheme('dark'),
-          throwsA(isA<Exception>().having(
-            (e) => e.toString(),
-            'message',
-            contains('Could not save theme preference'),
-          )),
+          throwsA(
+            isA<Exception>().having(
+              (e) => e.toString(),
+              'message',
+              contains('Could not save theme preference'),
+            ),
+          ),
         );
       });
     });

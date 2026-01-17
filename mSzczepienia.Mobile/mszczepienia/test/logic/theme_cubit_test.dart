@@ -2,7 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mszczepienia/logic/theme/theme_cubit.dart';
-import 'package:mszczepienia/logic/theme/theme_repository.dart';
+import 'package:mszczepienia/data/repositories/theme_repository.dart';
 import 'package:mszczepienia/logic/theme/theme_state.dart';
 
 // Mock ThemeRepository
@@ -17,8 +17,9 @@ void main() {
 
   group('ThemeCubit', () {
     test('initial state is LightTheme', () {
-      when(() => mockRepository.getCurrentTheme())
-          .thenAnswer((_) async => 'light');
+      when(
+        () => mockRepository.getCurrentTheme(),
+      ).thenAnswer((_) async => 'light');
 
       final cubit = ThemeCubit(mockRepository);
 
@@ -28,8 +29,9 @@ void main() {
     blocTest<ThemeCubit, ThemeState>(
       'checkAppStart emits DarkTheme when stored theme is dark',
       setUp: () {
-        when(() => mockRepository.getCurrentTheme())
-            .thenAnswer((_) async => 'dark');
+        when(
+          () => mockRepository.getCurrentTheme(),
+        ).thenAnswer((_) async => 'dark');
       },
       build: () => ThemeCubit(mockRepository),
       wait: const Duration(milliseconds: 100),
@@ -39,8 +41,9 @@ void main() {
     blocTest<ThemeCubit, ThemeState>(
       'checkAppStart emits LightTheme when stored theme is light',
       setUp: () {
-        when(() => mockRepository.getCurrentTheme())
-            .thenAnswer((_) async => 'light');
+        when(
+          () => mockRepository.getCurrentTheme(),
+        ).thenAnswer((_) async => 'light');
       },
       build: () => ThemeCubit(mockRepository),
       wait: const Duration(milliseconds: 100),
@@ -48,11 +51,12 @@ void main() {
     );
 
     test('checkAppStart emits LightTheme on error', () async {
-      when(() => mockRepository.getCurrentTheme())
-          .thenThrow(Exception('Storage error'));
+      when(
+        () => mockRepository.getCurrentTheme(),
+      ).thenThrow(Exception('Storage error'));
 
       final cubit = ThemeCubit(mockRepository);
-      
+
       // Wait for checkAppStart to complete
       await Future.delayed(const Duration(milliseconds: 100));
 
@@ -61,10 +65,12 @@ void main() {
     });
 
     test('switchToDark emits DarkTheme and saves to repository', () async {
-      when(() => mockRepository.getCurrentTheme())
-          .thenAnswer((_) async => 'light');
-      when(() => mockRepository.setCurrentTheme('dark'))
-          .thenAnswer((_) async {});
+      when(
+        () => mockRepository.getCurrentTheme(),
+      ).thenAnswer((_) async => 'light');
+      when(
+        () => mockRepository.setCurrentTheme('dark'),
+      ).thenAnswer((_) async {});
 
       final cubit = ThemeCubit(mockRepository);
 
@@ -79,10 +85,12 @@ void main() {
     });
 
     test('switchToLight emits LightTheme and saves to repository', () async {
-      when(() => mockRepository.getCurrentTheme())
-          .thenAnswer((_) async => 'dark');
-      when(() => mockRepository.setCurrentTheme('light'))
-          .thenAnswer((_) async {});
+      when(
+        () => mockRepository.getCurrentTheme(),
+      ).thenAnswer((_) async => 'dark');
+      when(
+        () => mockRepository.setCurrentTheme('light'),
+      ).thenAnswer((_) async {});
 
       final cubit = ThemeCubit(mockRepository);
 
@@ -97,10 +105,12 @@ void main() {
     });
 
     test('can switch from Light to Dark and back', () async {
-      when(() => mockRepository.getCurrentTheme())
-          .thenAnswer((_) async => 'light');
-      when(() => mockRepository.setCurrentTheme(any()))
-          .thenAnswer((_) async {});
+      when(
+        () => mockRepository.getCurrentTheme(),
+      ).thenAnswer((_) async => 'light');
+      when(
+        () => mockRepository.setCurrentTheme(any()),
+      ).thenAnswer((_) async {});
 
       final cubit = ThemeCubit(mockRepository);
 

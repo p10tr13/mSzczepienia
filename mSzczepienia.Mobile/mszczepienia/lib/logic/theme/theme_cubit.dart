@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mszczepienia/logic/theme/theme_repository.dart';
+import 'package:mszczepienia/data/repositories/theme_repository.dart';
 import 'package:mszczepienia/logic/theme/theme_state.dart';
 
 class ThemeCubit extends Cubit<ThemeState> {

@@ -86,11 +86,13 @@ void main() {
       // Act & Assert
       expect(
         () => dataSource.fetchCitizenDetails(),
-        throwsA(isA<DioException>().having(
-          (e) => e.type,
-          'type',
-          DioExceptionType.connectionTimeout,
-        )),
+        throwsA(
+          isA<DioException>().having(
+            (e) => e.type,
+            'type',
+            DioExceptionType.connectionTimeout,
+          ),
+        ),
       );
     });
   });
@@ -109,10 +111,12 @@ void main() {
         submissionStatus: '',
       );
 
-      when(() => mockDio.post(
-            '/citizens/new-citizen-details',
-            data: any(named: 'data'),
-          )).thenAnswer(
+      when(
+        () => mockDio.post(
+          '/citizens/new-citizen-details',
+          data: any(named: 'data'),
+        ),
+      ).thenAnswer(
         (_) async => Response(
           statusCode: 201,
           requestOptions: RequestOptions(path: '/citizens/new-citizen-details'),
@@ -123,10 +127,12 @@ void main() {
       await dataSource.createCitizenDetails(citizenDetails);
 
       // Assert
-      verify(() => mockDio.post(
-            '/citizens/new-citizen-details',
-            data: any(named: 'data'),
-          )).called(1);
+      verify(
+        () => mockDio.post(
+          '/citizens/new-citizen-details',
+          data: any(named: 'data'),
+        ),
+      ).called(1);
     });
 
     test('sends correct data in POST request', () async {
@@ -144,10 +150,12 @@ void main() {
 
       Map<String, dynamic>? capturedData;
 
-      when(() => mockDio.post(
-            '/citizens/new-citizen-details',
-            data: any(named: 'data'),
-          )).thenAnswer((invocation) async {
+      when(
+        () => mockDio.post(
+          '/citizens/new-citizen-details',
+          data: any(named: 'data'),
+        ),
+      ).thenAnswer((invocation) async {
         capturedData = invocation.namedArguments[const Symbol('data')];
         return Response(
           statusCode: 201,
@@ -180,20 +188,22 @@ void main() {
         submissionStatus: '',
       );
 
-      when(() => mockDio.post(
-            '/citizens/new-citizen-details',
-            data: any(named: 'data'),
-          )).thenThrow(
+      when(
+        () => mockDio.post(
+          '/citizens/new-citizen-details',
+          data: any(named: 'data'),
+        ),
+      ).thenThrow(
         DioException(
           type: DioExceptionType.badResponse,
           response: Response(
             statusCode: 500,
             data: {'error': 'Internal server error'},
-            requestOptions:
-                RequestOptions(path: '/citizens/new-citizen-details'),
+            requestOptions: RequestOptions(
+              path: '/citizens/new-citizen-details',
+            ),
           ),
-          requestOptions:
-              RequestOptions(path: '/citizens/new-citizen-details'),
+          requestOptions: RequestOptions(path: '/citizens/new-citizen-details'),
         ),
       );
 

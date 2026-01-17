@@ -22,7 +22,9 @@ void main() {
   setUp(() {
     mockAuthCubit = MockAuthCubit();
     // Setup stub for loginRequested
-    when(() => mockAuthCubit.loginRequested(any(), any(), any())).thenAnswer((_) async {});
+    when(
+      () => mockAuthCubit.loginRequested(any(), any(), any()),
+    ).thenAnswer((_) async {});
   });
 
   Widget createWidgetUnderTest() {
@@ -47,7 +49,9 @@ void main() {
       expect(find.byType(SingleChildScrollView), findsOneWidget);
     });
 
-    testWidgets('Email and Password text fields are present', (WidgetTester tester) async {
+    testWidgets('Email and Password text fields are present', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -73,7 +77,9 @@ void main() {
       expect(find.byType(OutlinedButton), findsOneWidget);
     });
 
-    testWidgets('Email field validates empty input', (WidgetTester tester) async {
+    testWidgets('Email field validates empty input', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -91,7 +97,7 @@ void main() {
 
       // Find first text field (email)
       final emailField = find.byType(TextFormField).first;
-      
+
       // Enter valid email
       await tester.enterText(emailField, 'test@example.com');
       await tester.pumpAndSettle();
@@ -100,7 +106,9 @@ void main() {
       expect(find.text('test@example.com'), findsOneWidget);
     });
 
-    testWidgets('Password field is obscured by default', (WidgetTester tester) async {
+    testWidgets('Password field is obscured by default', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -108,7 +116,9 @@ void main() {
       expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
     });
 
-    testWidgets('Eye icon toggles password visibility', (WidgetTester tester) async {
+    testWidgets('Eye icon toggles password visibility', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -120,25 +130,29 @@ void main() {
       expect(find.byIcon(Icons.visibility_outlined), findsOneWidget);
     });
 
-    testWidgets('Can enter text in password field', (WidgetTester tester) async {
+    testWidgets('Can enter text in password field', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
       final fields = find.byType(TextFormField);
-      
+
       await tester.enterText(fields.at(1), 'password123');
       // Check if the text was entered correctly
       expect(find.byType(TextFormField), findsNWidgets(2));
     });
 
-    testWidgets('Form validation works - empty email shows error', (WidgetTester tester) async {
+    testWidgets('Form validation works - empty email shows error', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
       // Fill only password field
       final fields = find.byType(TextFormField);
       await tester.enterText(fields.at(1), 'password123');
-      
+
       // Click login
       await tester.tap(find.byType(ElevatedButton), warnIfMissed: false);
       await tester.pumpAndSettle();
@@ -147,7 +161,9 @@ void main() {
       verifyNever(() => mockAuthCubit.loginRequested(any(), any(), any()));
     });
 
-    testWidgets('Form validation works - invalid email shows error', (WidgetTester tester) async {
+    testWidgets('Form validation works - invalid email shows error', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -155,7 +171,7 @@ void main() {
       final fields = find.byType(TextFormField);
       await tester.enterText(fields.first, 'invalidemail');
       await tester.enterText(fields.at(1), 'password123');
-      
+
       // Click login
       await tester.tap(find.byType(ElevatedButton), warnIfMissed: false);
       await tester.pumpAndSettle();
@@ -170,7 +186,7 @@ void main() {
 
       // Check if the container widgets are present
       expect(find.byType(Container), findsWidgets);
-      
+
       // Check if form exists
       expect(find.byType(Form), findsOneWidget);
     });

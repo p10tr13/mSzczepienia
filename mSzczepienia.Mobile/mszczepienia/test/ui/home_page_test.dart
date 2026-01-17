@@ -70,8 +70,9 @@ void main() {
       expect(find.byType(SingleChildScrollView), findsOneWidget);
     });
 
-    testWidgets('Shows greeting for unauthenticated user',
-        (WidgetTester tester) async {
+    testWidgets('Shows greeting for unauthenticated user', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest(authenticated: false));
       await tester.pumpAndSettle();
 
@@ -79,8 +80,9 @@ void main() {
       expect(find.text('Good morning!'), findsOneWidget);
     });
 
-    testWidgets('Shows personalized greeting for authenticated user',
-        (WidgetTester tester) async {
+    testWidgets('Shows personalized greeting for authenticated user', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest(authenticated: true));
       await tester.pumpAndSettle();
 
@@ -88,8 +90,9 @@ void main() {
       expect(find.text('Good morning, John'), findsOneWidget);
     });
 
-    testWidgets('Vaccination Booklet option is present',
-        (WidgetTester tester) async {
+    testWidgets('Vaccination Booklet option is present', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -97,8 +100,9 @@ void main() {
       expect(find.text('Vaccination Booklet'), findsOneWidget);
     });
 
-    testWidgets('Vaccination History option is present',
-        (WidgetTester tester) async {
+    testWidgets('Vaccination History option is present', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -122,8 +126,9 @@ void main() {
       expect(find.text('Your Account'), findsOneWidget);
     });
 
-    testWidgets('Camera icon for Vaccination Booklet is present',
-        (WidgetTester tester) async {
+    testWidgets('Camera icon for Vaccination Booklet is present', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -131,8 +136,9 @@ void main() {
       expect(find.byIcon(Icons.camera_alt_rounded), findsOneWidget);
     });
 
-    testWidgets('History icon for Vaccination History is present',
-        (WidgetTester tester) async {
+    testWidgets('History icon for Vaccination History is present', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
@@ -156,16 +162,18 @@ void main() {
       expect(find.byIcon(Icons.account_circle_rounded), findsOneWidget);
     });
 
-    testWidgets('All four menu options are tappable',
-        (WidgetTester tester) async {
+    testWidgets('All four menu options are tappable', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 
       expect(find.byType(InkWell), findsAtLeastNWidgets(4));
     });
 
-    testWidgets('Menu option descriptions are present',
-        (WidgetTester tester) async {
+    testWidgets('Menu option descriptions are present', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pumpAndSettle();
 

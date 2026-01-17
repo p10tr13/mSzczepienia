@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mszczepienia/core/di/dependency_injection.dart';
 import 'package:mszczepienia/core/notifications/notification_service.dart';
-import 'package:mszczepienia/logic/language/language_repository.dart';
+import 'package:mszczepienia/data/repositories/language_repository.dart';
 import 'package:mszczepienia/logic/language/language_state.dart';
 
 class LanguageCubit extends Cubit<LanguageState> {

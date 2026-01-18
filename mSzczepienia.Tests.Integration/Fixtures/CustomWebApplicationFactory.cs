@@ -231,6 +231,45 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             context.SaveChanges();
         }
 
+        // Add test accounts for citizens
+        List<Account> citizenAccounts = new();
+        if (!context.accounts.Any(a => a.firebaseUid == "test-citizen-uid-1"))
+        {
+            citizenAccounts = new List<Account>
+            {
+                new Account
+                {
+                    accountId = Guid.NewGuid(),
+                    firebaseUid = "test-citizen-uid-1",
+                    email = "citizen1@test.com",
+                    role = Role.Citizen,
+                    name = "John",
+                    surname = "Smith",
+                    creationDate = DateTime.UtcNow,
+                    dateOfBirth = new DateTime(1980, 3, 10)
+                },
+                new Account
+                {
+                    accountId = Guid.NewGuid(),
+                    firebaseUid = "test-citizen-uid-2",
+                    email = "citizen2@test.com",
+                    role = Role.Citizen,
+                    name = "Anna",
+                    surname = "Johnson",
+                    creationDate = DateTime.UtcNow,
+                    dateOfBirth = new DateTime(1988, 7, 25)
+                }
+            };
+            context.accounts.AddRange(citizenAccounts);
+            context.SaveChanges();
+        }
+        else
+        {
+            citizenAccounts = context.accounts
+                .Where(a => a.firebaseUid == "test-citizen-uid-1" || a.firebaseUid == "test-citizen-uid-2")
+                .ToList();
+        }
+
         // Add test OCR submissions for stats
         if (!context.ocrSubmissions.Any())
         {
@@ -240,7 +279,8 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 new Citizen
                 {
                     citizenId = 1,
-                    accountId = Guid.NewGuid(),
+                    accountId = citizenAccounts.First(a => a.firebaseUid == "test-citizen-uid-1").accountId,
+                    account = citizenAccounts.First(a => a.firebaseUid == "test-citizen-uid-1"),
                     pesel = "12345678901",
                     facilityId = 1,
                     submissionStatus = SubmissionStatus.Pending
@@ -248,7 +288,8 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 new Citizen
                 {
                     citizenId = 2,
-                    accountId = Guid.NewGuid(),
+                    accountId = citizenAccounts.First(a => a.firebaseUid == "test-citizen-uid-2").accountId,
+                    account = citizenAccounts.First(a => a.firebaseUid == "test-citizen-uid-2"),
                     pesel = "98765432101",
                     facilityId = 2,
                     submissionStatus = SubmissionStatus.Pending
@@ -372,6 +413,73 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             };
 
             context.personnel.AddRange(personnel);
+            context.SaveChanges();
+
+            // Add vaccination records for testing
+            var vaccinationRecords = new List<VaccinationRecord>
+            {
+                new VaccinationRecord
+                {
+                    recordId = 1,
+                    citizenId = 1,
+                    vaccineId = 1,
+                    vaccinationDate = DateTime.UtcNow.AddDays(-30),
+                    doseNumber = "1",
+                    batch = "BATCH001",
+                    nextVaccinationDate = DateTime.UtcNow.AddDays(21),
+                    remarks = "First dose",
+                    creationDate = DateTime.UtcNow.AddDays(-30)
+                },
+                new VaccinationRecord
+                {
+                    recordId = 2,
+                    citizenId = 1,
+                    vaccineId = 1,
+                    vaccinationDate = DateTime.UtcNow.AddDays(-10),
+                    doseNumber = "2",
+                    batch = "BATCH002",
+                    nextVaccinationDate = null,
+                    remarks = "Second dose",
+                    creationDate = DateTime.UtcNow.AddDays(-10)
+                },
+                new VaccinationRecord
+                {
+                    recordId = 3,
+                    citizenId = 1,
+                    vaccineId = 3,
+                    vaccinationDate = DateTime.UtcNow.AddDays(-5),
+                    doseNumber = "1",
+                    batch = "BATCH003",
+                    nextVaccinationDate = null,
+                    remarks = "Influenza vaccine",
+                    creationDate = DateTime.UtcNow.AddDays(-5)
+                },
+                new VaccinationRecord
+                {
+                    recordId = 4,
+                    citizenId = 2,
+                    vaccineId = 2,
+                    vaccinationDate = DateTime.UtcNow.AddDays(-20),
+                    doseNumber = "1",
+                    batch = "BATCH004",
+                    nextVaccinationDate = DateTime.UtcNow.AddDays(21),
+                    remarks = "First dose Moderna",
+                    creationDate = DateTime.UtcNow.AddDays(-20)
+                },
+                new VaccinationRecord
+                {
+                    recordId = 5,
+                    citizenId = 2,
+                    vaccineId = 4,
+                    vaccinationDate = DateTime.UtcNow.AddDays(-15),
+                    doseNumber = "1",
+                    batch = "BATCH005",
+                    remarks = "MMR vaccine",
+                    creationDate = DateTime.UtcNow.AddDays(-15)
+                }
+            };
+
+            context.vaccinationRecords.AddRange(vaccinationRecords);
             context.SaveChanges();
         }
     }

@@ -1,6 +1,4 @@
 using System.Net;
-using System.Text.Json;
-using mSzczepienia.Api;
 using mSzczepienia.Shared.DTO;
 using mSzczepienia.Shared.DTO.Facilities;
 using mSzczepienia.Shared.DTO.Queries;

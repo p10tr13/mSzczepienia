@@ -107,6 +107,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                     postalCode = "00-001",
                     country = "Poland",
                     nip = "1234567890",
+                    phoneNumber = "+48123456789",
                     creationDate = DateTime.UtcNow
                 },
                 new MedicalFacility
@@ -118,6 +119,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                     postalCode = "31-001",
                     country = "Poland",
                     nip = "0987654321",
+                    phoneNumber = "+48987654321",
                     creationDate = DateTime.UtcNow
                 },
                 new MedicalFacility
@@ -129,6 +131,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                     postalCode = "00-002",
                     country = "Poland",
                     nip = "1111111111",
+                    phoneNumber = "+48111111111",
                     creationDate = DateTime.UtcNow
                 }
             );
@@ -171,7 +174,10 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                     vaccineId = 1,
                     vaccineName = "Pfizer-BioNTech",
                     manufacturer = "Pfizer",
-                    vaccineDescription = "mRNA COVID-19 vaccine",
+                    vaccineDescriptionEn = "mRNA COVID-19 vaccine",
+                    vaccineDescriptionPl = "Szczepionka mRNA COVID-19",
+                    shortDescriptionEn = "COVID-19 vaccine",
+                    shortDescriptionPl = "Szczepionka COVID-19",
                     creationDate = DateTime.UtcNow
                 },
                 new VaccineDefinition
@@ -179,7 +185,10 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                     vaccineId = 2,
                     vaccineName = "Moderna",
                     manufacturer = "Moderna",
-                    vaccineDescription = "mRNA COVID-19 vaccine",
+                    vaccineDescriptionEn = "mRNA COVID-19 vaccine",
+                    vaccineDescriptionPl = "Szczepionka mRNA COVID-19",
+                    shortDescriptionEn = "COVID-19 vaccine",
+                    shortDescriptionPl = "Szczepionka COVID-19",
                     creationDate = DateTime.UtcNow
                 },
                 new VaccineDefinition
@@ -187,7 +196,10 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                     vaccineId = 3,
                     vaccineName = "Fluzone",
                     manufacturer = "Sanofi",
-                    vaccineDescription = "Seasonal influenza vaccine",
+                    vaccineDescriptionEn = "Seasonal influenza vaccine",
+                    vaccineDescriptionPl = "Szczepionka na grypę sezonową",
+                    shortDescriptionEn = "Influenza vaccine",
+                    shortDescriptionPl = "Szczepionka na grypę",
                     creationDate = DateTime.UtcNow
                 },
                 new VaccineDefinition
@@ -195,7 +207,10 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                     vaccineId = 4,
                     vaccineName = "M-M-R II",
                     manufacturer = "Merck",
-                    vaccineDescription = "Measles, mumps, rubella vaccine",
+                    vaccineDescriptionEn = "Measles, mumps, rubella vaccine",
+                    vaccineDescriptionPl = "Szczepionka na odrę, świnkę, różyczkę",
+                    shortDescriptionEn = "MMR vaccine",
+                    shortDescriptionPl = "Szczepionka MMR",
                     creationDate = DateTime.UtcNow
                 }
             };
@@ -302,13 +317,69 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
 
             context.ocrSubmissions.AddRange(ocrSubmissions);
             context.SaveChanges();
+
+            // Create Accounts for personnel
+            var accounts = new List<Account>
+            {
+                new Account
+                {
+                    accountId = Guid.NewGuid(),
+                    firebaseUid = "test-worker-uid-1",
+                    email = "worker1@test.com",
+                    role = Role.HealthWorker,
+                    name = "Jan",
+                    surname = "Kowalski",
+                    creationDate = DateTime.UtcNow,
+                    dateOfBirth = new DateTime(1985, 5, 15)
+                },
+                new Account
+                {
+                    accountId = Guid.NewGuid(),
+                    firebaseUid = "test-worker-uid-2",
+                    email = "worker2@test.com",
+                    role = Role.HealthWorker,
+                    name = "Maria",
+                    surname = "Nowak",
+                    creationDate = DateTime.UtcNow,
+                    dateOfBirth = new DateTime(1990, 8, 20)
+                }
+            };
+
+            context.accounts.AddRange(accounts);
+            context.SaveChanges();
+
+            // Create Personnel linked to Accounts and Facilities
+            var personnel = new List<Personnel>
+            {
+                new Personnel
+                {
+                    personnelId = 1,
+                    accountId = accounts[0].accountId,
+                    account = accounts[0],
+                    facilityId = 1,
+                    pwzNumber = "PWZ123456",
+                    position = Position.Nurse
+                },
+                new Personnel
+                {
+                    personnelId = 2,
+                    accountId = accounts[1].accountId,
+                    account = accounts[1],
+                    facilityId = 2,
+                    pwzNumber = "PWZ654321",
+                    position = Position.Doctor
+                }
+            };
+
+            context.personnel.AddRange(personnel);
+            context.SaveChanges();
         }
     }
 
-    public HttpClient CreateClientWithAuth(string? role = null)
+    public HttpClient CreateClientWithAuth(string? role = null, string? firebaseUid = null)
     {
         var client = CreateClient();
-        var token = GenerateTestJwtToken(role);
+        var token = GenerateTestJwtToken(role, firebaseUid);
         client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         return client;
     }
@@ -318,15 +389,15 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
         return CreateClient();
     }
 
-    public string GenerateTestJwtToken(string? role = null)
+    public string GenerateTestJwtToken(string? role = null, string? firebaseUid = null)
     {
         var key = GetSymmetricSecurityKey();
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new List<Claim>
         {
-            new Claim("user_id", "test-user-id"),
-            new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
+            new Claim("user_id", firebaseUid ?? "test-user-id"),
+            new Claim(ClaimTypes.NameIdentifier, firebaseUid ?? "test-user-id"),
             new Claim(ClaimTypes.Name, "Test User")
         };
 

@@ -1,5 +1,4 @@
 using System.Net;
-using FluentAssertions;
 using mSzczepienia.Shared.DTO.Stats;
 using mSzczepienia.Tests.Integration.Fixtures;
 

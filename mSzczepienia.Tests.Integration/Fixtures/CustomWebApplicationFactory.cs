@@ -359,9 +359,42 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             context.ocrSubmissions.AddRange(ocrSubmissions);
             context.SaveChanges();
 
-            // Create Accounts for personnel
+            // Create Accounts for personnel and admins
             var accounts = new List<Account>
             {
+                new Account
+                {
+                    accountId = Guid.NewGuid(),
+                    firebaseUid = "test-admin-uid-1",
+                    email = "admin1@test.com",
+                    role = Role.Admin,
+                    name = "AdminFirst",
+                    surname = "AdminOne",
+                    creationDate = DateTime.UtcNow,
+                    dateOfBirth = new DateTime(1980, 2, 10)
+                },
+                new Account
+                {
+                    accountId = Guid.NewGuid(),
+                    firebaseUid = "test-admin-uid-2",
+                    email = "admin2@test.com",
+                    role = Role.Admin,
+                    name = "AdminSecond",
+                    surname = "AdminTwo",
+                    creationDate = DateTime.UtcNow,
+                    dateOfBirth = new DateTime(1982, 6, 15)
+                },
+                new Account
+                {
+                    accountId = Guid.NewGuid(),
+                    firebaseUid = "test-admin-uid-3",
+                    email = "admin3@test.com",
+                    role = Role.Admin,
+                    name = "AdminThird",
+                    surname = "AdminThree",
+                    creationDate = DateTime.UtcNow,
+                    dateOfBirth = new DateTime(1984, 12, 20)
+                },
                 new Account
                 {
                     accountId = Guid.NewGuid(),
@@ -395,8 +428,8 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 new Personnel
                 {
                     personnelId = 1,
-                    accountId = accounts[0].accountId,
-                    account = accounts[0],
+                    accountId = accounts[3].accountId,  // Using worker-uid-1 (index 3)
+                    account = accounts[3],
                     facilityId = 1,
                     pwzNumber = "PWZ123456",
                     position = Position.Nurse
@@ -404,8 +437,8 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 new Personnel
                 {
                     personnelId = 2,
-                    accountId = accounts[1].accountId,
-                    account = accounts[1],
+                    accountId = accounts[4].accountId,  // Using worker-uid-2 (index 4)
+                    account = accounts[4],
                     facilityId = 2,
                     pwzNumber = "PWZ654321",
                     position = Position.Doctor

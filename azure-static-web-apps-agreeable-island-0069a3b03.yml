@@ -29,5 +29,6 @@ jobs:
   - script: npm install -g @azure/static-web-apps-cli
     displayName: 'Install SWA CLI'
   - script: |
-      swa deploy $(Build.ArtifactStagingDirectory)/published/wwwroot --env production --deployment-token $(AZURE_STATIC_WEB_APPS_API_TOKEN_AGREEABLE_ISLAND_0069A3B03)
+      swa deploy . --env production --deployment-token $(AZURE_STATIC_WEB_APPS_API_TOKEN_AGREEABLE_ISLAND_0069A3B03)
+    workingDirectory: $(Build.ArtifactStagingDirectory)\published\wwwroot
     displayName: 'Deploy to Azure Static Web Apps'

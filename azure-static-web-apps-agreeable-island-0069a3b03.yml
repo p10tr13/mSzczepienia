@@ -30,5 +30,5 @@ jobs:
     displayName: 'Install SWA CLI'
   - script: |
       swa deploy . --env production --deployment-token $(AZURE_STATIC_WEB_APPS_API_TOKEN_AGREEABLE_ISLAND_0069A3B03)
-    workingDirectory: $(Build.ArtifactStagingDirectory)\published\wwwroot
+    workingDirectory: $(Build.ArtifactStagingDirectory)\published\mSzczepienia.Client\wwwroot
     displayName: 'Deploy to Azure Static Web Apps'

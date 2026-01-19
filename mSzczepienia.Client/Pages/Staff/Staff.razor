@@ -1,0 +1,323 @@
+﻿@page "/staff"
+@attribute [Authorize(Roles = "admin")]
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<SharedResources> Localizer
+@inject IPersonnelClient PersonnelClient
+@inject IAdminClient AdminClient
+@inject ISnackbar Snackbar
+@using mSzczepienia.Shared.DTO
+@using mSzczepienia.Shared.DTO.Personnel
+@using mSzczepienia.Shared.DTO.Accounts
+@using mSzczepienia.Shared.DTO.Queries
+@using mSzczepienia.Shared.Enums
+@using mSzczepienia.Client.Shared.Components.Skeletons
+@using System.Text.RegularExpressions
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-8">
+    <MudGrid Spacing="4">
+        <MudItem xs="12" md="4">
+            <MudPaper Elevation="4" Class="pa-4" Width="100%">
+                <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.Center" Class="mb-4">
+                    @Localizer["Filters"]
+                </MudText>
+                <MudDivider Class="mb-4" />
+
+                <MudStack Spacing="3">
+                    <MudSelect T="Role" Label="@Localizer["Role"]" Value="@CurrentRole" ValueChanged="OnRoleChanged" Variant="Variant.Outlined" Margin="Margin.Dense">
+                        <MudSelectItem Value="@Role.HealthWorker">@Localizer["Healthcare Worker"]</MudSelectItem>
+                        <MudSelectItem Value="@Role.Admin">@Localizer["Admin"]</MudSelectItem>
+                    </MudSelect>
+
+                    <MudTextField @bind-Value="Name" Label="@Localizer["First Name"]" Variant="Variant.Outlined" Margin="Margin.Dense" InputType="InputType.Search" />
+                    <MudTextField @bind-Value="Surname" Label="@Localizer["Surname"]" Variant="Variant.Outlined" Margin="Margin.Dense" InputType="InputType.Search" />
+                    <MudTextField @bind-Value="Email" Label="@Localizer["Email"]" Variant="Variant.Outlined" Margin="Margin.Dense" InputType="InputType.Email" />
+
+                    @if (CurrentRole == Role.HealthWorker)
+                    {
+                        <MudDivider Class="my-2" />
+                        <MudText Typo="Typo.caption" Color="Color.Secondary">@Localizer["FacilityFilters"]</MudText>
+
+                        <MudTextField @bind-Value="FacilityName" Label="@Localizer["FacilityName"]" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        <MudTextField @bind-Value="City" Label="@Localizer["City"]" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        <MudStack Row="true">
+                            <MudTextField @bind-Value="Street" Label="@Localizer["Street"]" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudTextField @bind-Value="PostalCode" Label="@Localizer["PostalCode"]" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        </MudStack>
+                    }
+
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" FullWidth="true" OnClick="ApplyFilters" Class="mt-2">
+                        @Localizer["Apply"]
+                    </MudButton>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="8">
+            <MudText Typo="Typo.h4" Color="Color.Primary" Align="Align.Center" Class="mb-6"> @Localizer["StaffList"] </MudText>
+
+            @if (_isLoading)
+            {
+                <ListSkeleton Count="PageSize" PaperHeight="116px" Line1Width="30%" Line2Width="35%" />
+            }
+            else if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <ErrorState Message="@_errorMessage" OnRetry="LoadData" />
+            }
+            else
+            {
+                <MudStack Spacing="3">
+                    @if (CurrentRole == Role.HealthWorker && _personnelResult?.Items != null && _personnelResult.TotalCount > 0)
+                    {
+                        @foreach (var emp in _personnelResult.Items)
+                        {
+                            <MudPaper Elevation="1" Class="pa-4 transition-item">
+                                <MudGrid Class="align-center">
+                                    <MudItem xs="12" sm="8">
+                                        <MudText Typo="Typo.subtitle1"><b>@emp.Name @emp.Surname</b></MudText>
+                                        <MudText Typo="Typo.body2" Class="mud-text-secondary">@FormatEnum(emp.Position)</MudText>
+
+                                        <MudStack Row="true" Spacing="2" Class="mt-1 flex-wrap">
+                                            <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.Email" Variant="Variant.Text" Color="Color.Primary">@emp.Email</MudChip>
+                                            <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.Badge" Variant="Variant.Text" Color="Color.Secondary">PWZ: @emp.PwzNumber</MudChip>
+                                        </MudStack>
+                                    </MudItem>
+                                    <MudItem xs="12" sm="4" Class="d-flex justify-end">
+                                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OpenPersonnelDetails(emp.Id))">
+                                            @Localizer["Details"]
+                                        </MudButton>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudPaper>
+                        }
+                    }
+                    else if (CurrentRole == Role.Admin && _adminResult?.Items != null && _adminResult.TotalCount > 0)
+                    {
+                        @foreach (var admin in _adminResult.Items)
+                        {
+                            <MudPaper Elevation="1" Class="pa-4 transition-item">
+                                <MudGrid Class="align-center">
+                                    <MudItem xs="12" sm="8">
+                                        <MudText Typo="Typo.subtitle1"><b>@admin.Name @admin.Surname</b></MudText>
+                                        <MudText Typo="Typo.body2" Class="mud-text-secondary">@Localizer["Administrator"]</MudText>
+
+                                        <MudStack Row="true" Spacing="2" Class="mt-1">
+                                            <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.Email" Variant="Variant.Text" Color="Color.Primary">@admin.Email</MudChip>
+                                        </MudStack>
+                                    </MudItem>
+                                    <MudItem xs="12" sm="4" Class="d-flex justify-end">
+                                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OpenAdminDetails(admin.Id))">
+                                            @Localizer["Details"]
+                                        </MudButton>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudPaper>
+                        }
+                    }
+                    else
+                    {
+                        <MudPaper Class="pa-8 d-flex flex-column align-center justify-center mud-background-gray">
+                            <MudIcon Icon="@Icons.Material.TwoTone.PersonSearch" Size="Size.Large" Style="font-size: 4rem;" Color="Color.Default" Class="mb-4 opacity-50" />
+                            <MudText Typo="Typo.h6" Color="Color.Secondary" Align="Align.Center">@Localizer["NoStaffFound"]</MudText>
+                        </MudPaper>
+                    }
+                </MudStack>
+
+                @if (GetTotalPages() > 1)
+                {
+                    <div class="d-flex justify-center mt-6">
+                        <MudPagination Color="Color.Primary" Count="@GetTotalPages()" Selected="@Page" SelectedChanged="OnPageChanged" />
+                    </div>
+                }
+            }
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+<style>
+    .transition-item {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        will-change: transform, box-shadow;
+    }
+    .transition-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0px 8px 24px rgba(0,0,0,0.12) !important;
+    }
+    .opacity-50 { opacity: 0.5; }
+</style>
+
+@code {
+    [Parameter, SupplyParameterFromQuery] public string? Name { get; set; }
+    [Parameter, SupplyParameterFromQuery] public string? Surname { get; set; }
+    [Parameter, SupplyParameterFromQuery] public string? Email { get; set; }
+    [Parameter, SupplyParameterFromQuery(Name = "SelectedRole")]
+    public int? SelectedRoleQueryValue { get; set; }
+    [Parameter, SupplyParameterFromQuery] public int Page { get; set; } = 1;
+
+    [Parameter, SupplyParameterFromQuery] public string? FacilityName { get; set; }
+    [Parameter, SupplyParameterFromQuery] public string? City { get; set; }
+    [Parameter, SupplyParameterFromQuery] public string? Street { get; set; }
+    [Parameter, SupplyParameterFromQuery] public string? PostalCode { get; set; }
+
+    public int PageSize { get; set; } = 10;
+    private bool _isLoading = true;
+    private string? _errorMessage = null;
+
+    private PagedResult<PersonnelDto>? _personnelResult;
+    private PagedResult<AccountDto>? _adminResult;
+    private Role CurrentRole
+    {
+        get
+        {
+            if (SelectedRoleQueryValue.HasValue)
+            {
+                var val = SelectedRoleQueryValue.Value;
+
+                if (val == (int)Role.HealthWorker || val == (int)Role.Admin)
+                {
+                    return (Role)val;
+                }
+            }
+
+            return Role.HealthWorker;
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+        if (Page < 1) Page = 1;
+        StateHasChanged();
+
+        try
+        {
+            if (CurrentRole == Role.HealthWorker)
+            {
+                var query = new SearchPersonnelQuery
+                {
+                    Page = Page,
+                    PageSize = PageSize,
+                    FirstName = Name,
+                    Surname = Surname,
+                    Email = Email,
+                    FacilityName = FacilityName,
+                    FacilityCity = City,
+                    FacilityStreet = Street,
+                    FacilityPostalCode = PostalCode
+                };
+                _personnelResult = await PersonnelClient.SearchPersonnelAsync(query, CancellationToken.None);
+                _adminResult = null;
+            }
+            else
+            {
+                var query = new SearchAdminQuery
+                {
+                    Page = Page,
+                    PageSize = PageSize,
+                    FirstName = Name,
+                    Surname = Surname,
+                    Email = Email
+                };
+                _adminResult = await AdminClient.SearchAdminsAsync(query, CancellationToken.None);
+                _personnelResult = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = Localizer["ErrorLoadingStaff"];
+            Snackbar.Add($"{_errorMessage}: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void ApplyFilters()
+    {
+        Page = 1;
+        UpdateUrl(CurrentRole);
+    }
+
+    private void OnRoleChanged(Role role)
+    {
+        Page = 1;
+
+        if (role == Role.Admin)
+        {
+            FacilityName = City = Street = PostalCode = null;
+        }
+        UpdateUrl(role);
+    }
+
+    private void OnPageChanged(int page)
+    {
+        if (page == Page)
+            return;
+        Page = page;
+        UpdateUrl(CurrentRole);
+    }
+
+    private void UpdateUrl(Role roleToSet)
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        query.Clear();
+
+        query["Page"] = Page.ToString();
+        query["SelectedRole"] = ((int)roleToSet).ToString();
+
+        if (!string.IsNullOrWhiteSpace(Name)) query["Name"] = Name;
+        if (!string.IsNullOrWhiteSpace(Surname)) query["Surname"] = Surname;
+        if (!string.IsNullOrWhiteSpace(Email)) query["Email"] = Email;
+
+        if (roleToSet == Role.HealthWorker)
+        {
+            if (!string.IsNullOrWhiteSpace(FacilityName)) query["FacilityName"] = FacilityName;
+            if (!string.IsNullOrWhiteSpace(City)) query["City"] = City;
+            if (!string.IsNullOrWhiteSpace(Street)) query["Street"] = Street;
+            if (!string.IsNullOrWhiteSpace(PostalCode)) query["PostalCode"] = PostalCode;
+        }
+
+        var newUri = $"{uri.GetLeftPart(UriPartial.Path)}?{query}";
+        NavigationManager.NavigateTo(newUri, forceLoad: false);
+    }
+
+    private int GetTotalPages()
+    {
+        if (CurrentRole == Role.HealthWorker) return _personnelResult?.TotalPages ?? 0;
+        return _adminResult?.TotalPages ?? 0;
+    }
+
+    private void OpenPersonnelDetails(int id)
+    {
+        NavigationManager.NavigateTo($"/staff/{id}");
+    }
+
+    private void OpenAdminDetails(Guid id)
+    {
+        NavigationManager.NavigateTo($"/admins/{id}");
+    }
+
+    private string FormatEnum(string en)
+    {
+        switch (en)
+        {
+            case "Doctor":
+                return Localizer["Doctor"];
+            case "Nurse":
+                return Localizer["Nurse"];
+            case "OfficeWorker":
+                return Localizer["OfficeWorker"];
+            default:
+                return Regex.Replace(en, "(\\B[A-Z])", " $1");
+        }
+    }
+}

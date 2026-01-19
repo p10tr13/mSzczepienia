@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Components
+@inject IStringLocalizer<SharedResources> Localizer
+
+<MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="w-100 h-100 pa-6" Style="min-height: 320px;">
+
+    <MudPaper Elevation="4" Class="pa-6" Style="max-width: 460px;width: 100%;border-radius: 16px;
+              background: linear-gradient(180deg,rgba(var(--mud-palette-error-rgb), 0.06),rgba(var(--mud-palette-background-rgb), 1));">
+
+        <MudStack Spacing="3" AlignItems="AlignItems.Center" Class="text-center">
+
+            <MudAvatar Size="Size.Large" Style="background-color: rgba(var(--mud-palette-error-rgb), 0.10); width: 72px; height: 72px;">
+                <MudIcon Icon="@Icons.Material.Outlined.ErrorOutline" Color="Color.Error" Style="font-size: 40px;" />
+            </MudAvatar>
+
+            <MudText Typo="Typo.h6">
+                @Localizer["SomethingWentWrong"]
+            </MudText>
+
+            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
+                @Message
+            </MudText>
+
+            @if (OnRetry.HasDelegate)
+            {
+                <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Refresh" OnClick="OnRetry" Class="mt-2">
+                    @Localizer["TryAgain"]
+                </MudButton>
+            }
+
+        </MudStack>
+    </MudPaper>
+</MudStack>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Message { get; set; }
+
+    [Parameter]
+    public EventCallback OnRetry { get; set; }
+}

@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: . 
+      dockerfile: mSzczepienia.Api/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - BlobStorage__ConnectionString=${BLOB_CONNECTION_STRING}
+      - BlobStorage__ContainerName=mszczepienia-ocr
+      - AzureOcr__Endpoint=${AZURE_OCR_ENDPOINT}
+      - AzureOcr__ApiKey=${AZURE_OCR_APIKEY}
+      - AzureOcr__ModelId=szczepienia-v1
+      - AzureOpenAI__Endpoint=${AZURE_OPENAI_ENDPOINT}
+      - AzureOpenAI__ApiKey=${AZURE_OPENAI_APIKEY}
+      - AzureOpenAI__DeploymentName=${AZURE_OPENAI_DEPLOYMENT_NAME}
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - db
+    volumes:
+      - ./mSzczepienia.Api/Data/Csv:/app/Data/Csv
+
+  db:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    volumes:
+      - mssql-data:/var/opt/mssql
+
+volumes:
+  mssql-data:

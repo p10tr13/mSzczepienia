@@ -1,0 +1,57 @@
+﻿
+<MudCard Elevation="3" Class="pa-4">
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <MudSkeleton SkeletonType="SkeletonType.Circle" Width="56px" Height="56px" />
+        </CardHeaderAvatar>
+
+        <CardHeaderContent>
+            <MudSkeleton Width="160px" Height="32px" />
+            <MudSkeleton Width="120px" Height="20px" Class="mt-1" />
+        </CardHeaderContent>
+
+        <CardHeaderActions>
+            <MudSkeleton Width="70px" Height="32px" />
+        </CardHeaderActions>
+    </MudCardHeader>
+
+    <MudCardContent>
+        <MudDivider Class="mb-4" />
+
+        <MudGrid>
+            <MudItem xs="12">
+                <MudSkeleton Width="240px" Height="32px" Class="mb-3" />
+            </MudItem>
+
+            @for (int i = 0; i < 2; i++)
+            {
+                <MudItem xs="12" sm="6">
+                    <MudSkeleton Width="100%" Height="56px" />
+                </MudItem>
+            }
+
+            @for (int i = 0; i < 2; i++)
+            {
+                <MudItem xs="12" sm="6">
+                    <MudSkeleton Width="100%" Height="56px" />
+                </MudItem>
+            }
+
+            <MudItem xs="12" Class="mt-4">
+                <MudSkeleton Width="240px" Height="32px" Class="mb-3" />
+            </MudItem>
+
+            @for (int i = 0; i < 2; i++)
+            {
+                <MudItem xs="12" sm="6">
+                    <MudSkeleton Width="100%" Height="56px" />
+                </MudItem>
+            }
+        </MudGrid>
+    </MudCardContent>
+
+    <MudCardActions Class="pa-4 justify-space-between">
+        <MudSkeleton Width="200px" Height="36px" />
+        <MudSkeleton Width="200px" Height="36px" />
+    </MudCardActions>
+</MudCard>

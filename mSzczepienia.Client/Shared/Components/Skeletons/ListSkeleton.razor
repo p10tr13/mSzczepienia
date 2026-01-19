@@ -1,0 +1,51 @@
+﻿
+<MudStack Spacing="@Spacing">
+    @for (int i = 0; i < Count; i++)
+    {
+        <MudPaper Elevation="1" Class="pa-4 d-flex align-center" Style="@PaperStyle">
+            <MudGrid Class="align-center" Style="width:100%">
+                <MudItem xs="12" sm="8">
+                    <MudSkeleton Width="@Line1Width" Height="@Line1Height" />
+                    @if (ShowSecondLine)
+                    {
+                        <MudSkeleton Width="@Line2Width" Height="@Line2Height" Class="mt-1" />
+                    }
+                    @if (ShowThirdLine)
+                    {
+                        <MudSkeleton Width="@Line3Width" Height="@Line3Height" Class="mt-2" />
+                    }
+                </MudItem>
+
+                <MudItem xs="12" sm="4" Class="d-flex justify-end">
+                    <MudSkeleton Width="@ActionWidth" Height="@ActionHeight" />
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    }
+</MudStack>
+
+@code {
+    [Parameter] public int Count { get; set; } = 5;
+    [Parameter] public int Spacing { get; set; } = 3;
+
+    /* MudPaper */
+    [Parameter] public string? PaperHeight { get; set; }
+
+    /* Text */
+    [Parameter] public string Line1Width { get; set; } = "50%";
+    [Parameter] public string Line1Height { get; set; } = "24px";
+
+    [Parameter] public bool ShowSecondLine { get; set; } = true;
+    [Parameter] public string Line2Width { get; set; } = "30%";
+    [Parameter] public string Line2Height { get; set; } = "18px";
+
+    [Parameter] public bool ShowThirdLine { get; set; } = true;
+    [Parameter] public string Line3Width { get; set; } = "80%";
+    [Parameter] public string Line3Height { get; set; } = "22px";
+
+    /* Button */
+    [Parameter] public string ActionWidth { get; set; } = "80px";
+    [Parameter] public string ActionHeight { get; set; } = "50px";
+
+    private string? PaperStyle => string.IsNullOrWhiteSpace(PaperHeight) ? null : $"height:{PaperHeight};";
+}

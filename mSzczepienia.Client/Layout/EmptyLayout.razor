@@ -1,0 +1,32 @@
+﻿@inherits LayoutComponentBase
+@using MudBlazor
+@using mSzczepienia.Client.Theme
+@inject IStringLocalizer<SharedResources> Localizer
+
+<MudThemeProvider @ref="_themeProvider" Theme="@_theme" @bind-IsDarkMode="_isDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<div>
+    <div style="position:absolute; top: 10px; right: 10px;">
+        <CultureSelector />
+    </div>
+
+    @Body
+</div>
+
+@code {
+    private readonly MyAppTheme _theme = new MyAppTheme();
+    private MudThemeProvider? _themeProvider;
+    private bool _isDarkMode = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _themeProvider != null)
+        {
+            _isDarkMode = await _themeProvider.GetSystemDarkModeAsync();
+            StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,199 @@
+﻿@page "/admins/{Id:guid}/edit"
+@attribute [Authorize(Roles = "admin")]
+@inject NavigationManager NavigationManager
+@inject IAdminClient AdminClient
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<SharedResources> Localizer
+@using mSzczepienia.Shared.DTO.Accounts
+@using mSzczepienia.Shared.DTO.Admins
+@using mSzczepienia.Shared.Enums
+@using mSzczepienia.Client.Shared.Components.Skeletons
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8 mb-8">
+    <MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary">@Localizer["EditAdmin"]</MudText>
+
+    @if (_isLoading)
+    {
+        <AdvancedAccountDetailsSeleton />
+    }
+    else if (_adminDetails != null)
+    {
+        <EditForm Model="@model" OnValidSubmit="OnSubmit">
+            <DataAnnotationsValidator />
+
+            <MudCard Elevation="3" Class="pa-4">
+                <MudCardHeader>
+                    <CardHeaderAvatar>
+                        <MudAvatar Color="Color.Secondary" Size="Size.Large">
+                            @(model.Name?.FirstOrDefault())@(model.Surname?.FirstOrDefault())
+                        </MudAvatar>
+                    </CardHeaderAvatar>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">@model.Name @model.Surname</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">@Localizer["EditingAdministratorAccount"]</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudChip T="string" Color="Color.Primary" Variant="Variant.Text" Icon="@Icons.Material.Filled.Security">
+                            @_adminDetails.Role.ToString()
+                        </MudChip>
+                    </CardHeaderActions>
+                </MudCardHeader>
+
+                <MudCardContent>
+                    <MudGrid>
+
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">@Localizer["BasicInfo"]</MudText>
+                            <MudDivider />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Label="@Localizer["First Name"]" @bind-Value="model.Name" For="@(() => model.Name)"
+                                          Variant="Variant.Outlined" Required="true" RequiredError="@Localizer["Required"]"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Label="@Localizer["Surname"]" @bind-Value="model.Surname" For="@(() => model.Surname)"
+                                          Variant="Variant.Outlined" Required="true" RequiredError="@Localizer["Required"]" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Label="@Localizer["Email"]" @bind-Value="model.Email" For="@(() => model.Email)"
+                                          Variant="Variant.Outlined" Required="true" RequiredError="@Localizer["Required"]"
+                                          InputType="InputType.Email" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudDatePicker Label="@Localizer["DateOfBirth"]" @bind-Date="dateOfBirth" For="@(() => dateOfBirth)"
+                                           Variant="Variant.Outlined" Required="true" RequiredError="@Localizer["Required"]"
+                                           Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Cake"
+                                           Editable="true" MaxDate="DateTime.Now" />
+                        </MudItem>
+
+                        <MudItem xs="12" Class="mt-4">
+                            <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">@Localizer["SystemInfo"] (@Localizer["ReadOnly"])</MudText>
+                            <MudDivider />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Value="@_adminDetails.CreationDate.ToString("g")" Label="@Localizer["AccountCreationDate"]"
+                                          ReadOnly="true" Variant="Variant.Filled" Disabled="true"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.CalendarToday" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Value="@_adminDetails.Id.ToString()" Label="@Localizer["ID"]"
+                                          ReadOnly="true" Variant="Variant.Filled" Disabled="true"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Fingerprint" />
+                        </MudItem>
+
+                    </MudGrid>
+                </MudCardContent>
+
+                <MudCardActions Class="pa-4 justify-space-between">
+                    <MudButton OnClick="Cancel" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.ArrowBack">
+                        @Localizer["Cancel"]
+                    </MudButton>
+
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@_processing" StartIcon="@Icons.Material.Filled.Save">
+                        @if (_processing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">@Localizer["Saving"]</MudText>
+                        }
+                        else
+                        {
+                            @Localizer["SaveChanges"]
+                        }
+                    </MudButton>
+                </MudCardActions>
+
+            </MudCard>
+        </EditForm>
+    }
+</MudContainer>
+
+    @code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private UpdateAdminDto model = new();
+
+    private DetailedAccountDto? _adminDetails;
+
+    private DateTime? dateOfBirth
+    {
+        get => model.DateOfBirth;
+        set => model.DateOfBirth = value ?? DateTime.Now;
+    }
+
+    private bool _isLoading = true;
+    private bool _processing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAdminData();
+    }
+
+    private async Task LoadAdminData()
+    {
+        _isLoading = true;
+
+        try
+        {
+            _adminDetails = await AdminClient.GetAdminByIdAsync(Id, CancellationToken.None);
+
+            if (_adminDetails != null)
+            {
+                model = new UpdateAdminDto
+                {
+                    Name = _adminDetails.Name,
+                    Surname = _adminDetails.Surname,
+                    Email = _adminDetails.Email,
+                    DateOfBirth = _adminDetails.DateOfBirth
+                };
+            }
+            else
+            {
+                Snackbar.Add(Localizer["AdminNotFound"], Severity.Error);
+                NavigationManager.NavigateTo($"/staff?SelectedRole={(int)Role.Admin}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Localizer["ErrorLoadingData"]}: {ex.Message}", Severity.Error);
+            NavigationManager.NavigateTo($"/staff?SelectedRole={(int)Role.Admin}");
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task OnSubmit()
+    {
+        _processing = true;
+
+        try
+        {
+            await AdminClient.UpdateAdminAsync(Id, model, CancellationToken.None);
+
+            Snackbar.Add(Localizer["AdminUpdatedSuccess"], Severity.Success);
+            NavigationManager.NavigateTo($"/admins/{Id}");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Localizer["ErrorUpdatingAdmin"]}: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo($"/admins/{Id}");
+    }
+}

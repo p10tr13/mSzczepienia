@@ -1,0 +1,135 @@
+{
+    "@@locale": "pl",
+    "appTitle": "mSzczepienia",
+    "goodMorning": "Dzień dobry!",
+    "goodAfternoon": "Dzień dobry!",
+    "goodEvening": "Dobry wieczór",
+    
+    "logInTitle": "Zaloguj się do aplikacji",
+    "logInButton": "Zaloguj się",
+    "signUpTitle": "Zarejestruj się w aplikacji",
+    "signUpButton": "Zarejestruj się",
+
+    "email": "Email",
+    "enterEmail": "Wprowadź swój adres email",
+    "emailCondition": "Email musi zawierać @",
+
+    "password": "Hasło",
+    "enterPassword": "Wprowadź swoje hasło",
+    "passwordCondition": "Hasło musi mieć co najmniej 6 znaków",
+
+    "name": "Imię",
+    "enterName": "Wprowadź swoje imię",
+
+    "surname": "Nazwisko",
+    "enterSurname": "Wprowadź swoje nazwisko",
+
+    "pesel": "PESEL",
+    "enterPesel": "Wprowadź swój numer PESEL",
+    "peselCondition": "PESEL musi mieć dokładnie 11 cyfr",
+
+    "medicalFacility": "Placówka medyczna",
+    "selectMedicalFacility": "Wybierz swoją placówkę medyczną",
+    "validMedicalFacilityCondition": "Wybierz prawidłową placówkę medyczną z listy",
+
+    "dateOfBirth": "Data urodzenia",
+    "enterDateOfBirth": "Wprowadź swoją datę urodzenia (RRRR-MM-DD)",
+    "dateOfBirthCondition": "Data urodzenia musi być w formacie RRRR-MM-DD",
+
+    "repeatPassword": "Powtórz hasło",
+    "enterRepeatPassword": "Powtórz swoje hasło",
+    "repeatPasswordCondition": "Hasła nie są identyczne",
+
+    "incorrectCredentials": "Nieprawidłowy email lub hasło",
+    "signUpError": "Błąd rejestracji",
+
+    "goodMorningUser": "Dzień dobry, {userName}",
+    "@goodMorningUser": {
+        "placeholders": {
+        "userName": {
+            "type": "String"
+        }
+        }
+    },
+    "vaccinationBooklet": "Książeczka szczepień",
+    "vaccinationBookletDescription": "Dodaj swoją książeczkę szczepień",
+    "vaccinationHistory": "Historia szczepień",
+    "vaccinationHistoryDescription": "Sprawdź swoją historię szczepień",
+    "settings": "Ustawienia",
+    "settingsDescription": "Zmień ustawienia aplikacji",
+    "yourAccount": "Twoje konto",
+    "yourAccountDescription": "Sprawdź szczegóły swojego konta",
+
+    "theme": "Motyw",
+    "changeDarkMode": "Zmień na tryb ciemny",
+    "changeLightMode": "Zmień na tryb jasny",
+    "language": "Język",
+    "changePolish": "Zmień język na polski",
+    "changeEnglish": "Change language to English",
+
+    "accountCreationDate": "Data utworzenia konta",
+    "callSupport": "Zadzwoń do wsparcia",
+    "logOut": "Wyloguj się",
+
+    "yourVaccinations": "Twoje szczepienia",
+    "sort": "Sortuj",
+    "alphabetical_az": "Alfabetycznie (A-Z)",
+    "alphabetical_za": "Alfabetycznie (Z-A)",
+    "date_newest": "Data (od najnowszych)",
+    "date_oldest": "Data (od najstarszych)",
+    "dose": "Dawka",
+    "last": "Ostatnia:",
+    "noOfDoses": "Dawki:",
+    "noVaccinations": "Brak znalezionych szczepień.",
+    "errorLoadingVaccinationRecords": "Błąd podczas ładowania historii szczepień.",
+
+    "errorLoadingVaccinationDetails": "Błąd podczas ładowania szczegółów szczepienia.",
+    "doseNumber": "Numer dawki",
+    "vaccinationDate": "Data szczepienia",
+    "batchNo": "Numer serii",
+    "remarks": "Uwagi",
+    "aboutVaccine": "O tej szczepionce",
+    "vaccineDescription": "Opis szczepionki",
+    "diseasesPrevented": "Choroby, którym zapobiega",
+    "vaccineCreationDate": "Data powstania szczepionki",
+    "producer": "Producent",
+    "nextVaccination": "Następne szczepienie za",
+    "days": "dni",
+
+    "uploadNewPhoto": "Prześlij nowe zdjęcie",
+    "updateYourVaccinationHistory": "Zaktualizuj swoją historię szczepień za pomocą książeczki szczepień",
+    "submissionStatus": "Status zgłoszenia",
+    "statusNotUploaded": "Nie przesłano",
+    "statusPending": "Oczekuje na weryfikację",
+    "statusApproved": "Zatwierdzono",
+    "statusRejected": "Odrzucono",
+
+    "selectPhotoSource": "Wybierz źródło zdjęć (do 5 zdjęć)",
+    "takePhoto": "Zrób zdjęcie",
+    "chooseFromGallery": "Wybierz z galerii",
+    "cancel": "Anuluj",
+    "analize": "Analizuj",
+
+    "analyzingSubmission": "Analizowanie twoich zdjęć... Proces może potrwać do 5 minut.",
+    "errorOccurred": "Wystąpił błąd",
+
+    "ocrDescription": "Należy pamiętać, że proces OCR może nie być w 100% dokładny. Dokładnie sprawdź wyodrębnione dane przed przesłaniem.",
+    "addAnotherVaccination": "Dodaj szczepienie",
+    "cancelSubmission": "Anuluj zgłoszenie",
+    "submitForVerification": "Prześlij do weryfikacji",
+
+    "modifyEntry": "Modyfikuj wpis",
+    "saveChanges": "Zapisz zmiany",
+    "batchCondition": "Numer serii nie może być dłuższy niż 20 znaków",
+    "dateOfVacccinationCondition": "Data szczepienia musi być w formacie RRRR-MM-DD",
+    "vaccineName": "Nazwa szczepionki",
+    "vaccineNameCondition": "Proszę wybrać prawidłową szczepionkę z listy",
+    "submit": "Prześlij",
+
+    "deleteEntry": "Usuń ten wpis",
+    "deleteEntryDescription": "Czy na pewno chcesz usunąć ten wpis szczepienia?",
+    "delete": "Usuń",
+
+    "cancelLoading": "Anulowanie twojego zgłoszenia...",
+    "sendingSubmission": "Wysyłanie twojego zgłoszenia do weryfikacji..."
+}

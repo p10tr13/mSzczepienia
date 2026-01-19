@@ -1,0 +1,252 @@
+﻿@page "/admin-dashboard"
+@attribute [Authorize(Roles = "admin")]
+@inject IStringLocalizer<SharedResources> Localizer
+@inject NavigationManager NavigationManager
+@inject IFacilityClient FacilityClient
+@inject IStatsClient StatsClient
+@inject IVaccineClient VaccineClient
+@inject ISnackbar Snackbar
+@using mSzczepienia.Shared.DTO.Stats
+@using mSzczepienia.Client.Shared.Components
+@using mSzczepienia.Client.Shared.Components.Skeletons
+
+<MudGrid Class="pa-4">
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="2" Class="pa-4" Style="height: 100%;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["SearchMedicalFacility"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="searchFacilityModel.Street" Label="@Localizer["Street"]" Variant="Variant.Outlined"
+                                      Margin="Margin.Dense" Placeholder="@Localizer["EnterStreet"]" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudAutocomplete T="string" @bind-Value="searchFacilityModel.City" Label="@Localizer["City"]" Variant="Variant.Outlined"
+                                         Margin="Margin.Dense" Placeholder="@Localizer["EnterCity"]" ResetValueOnEmptyText="true" SearchFunc="@GetCitiesAsync" 
+                                         CoerceText="false" DebounceInterval="1000" AdornmentIcon="@Icons.Material.Filled.Search"/>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="searchFacilityModel.PostalCode" Label="@Localizer["PostalCode"]" Variant="Variant.Outlined"
+                                      Margin="Margin.Dense" Placeholder="@Localizer["EnterPostalCode"]" Mask="@(new PatternMask("00-000"))" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="searchFacilityModel.Id" Label="@Localizer["ID"]" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                      Placeholder="@Localizer["EnterID"]" InputType="InputType.Number" />
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-2 mb-2" OnClick="@GoToFacilityList">@Localizer["Search"]</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="2" Class="pa-4" Style="height: 100%;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["SearchVaccine"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudAutocomplete T="string" @bind-Value="searchVaccineModel.Name" Label="@Localizer["Name"]" Variant="Variant.Outlined"
+                                         Margin="Margin.Dense" Placeholder="@Localizer["EnterName"]" SearchFunc="@GetNamesAsync" ResetValueOnEmptyText="true"
+                                         CoerceText="false" DebounceInterval="1000" AdornmentIcon="@Icons.Material.Filled.Search" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudAutocomplete T="string" @bind-Value="searchVaccineModel.Manufacturer" Label="@Localizer["Manufacturer"]" Variant="Variant.Outlined"
+                                         Margin="Margin.Dense" Placeholder="@Localizer["EnterManufacturer"]" SearchFunc="@GetManufacturersAsync"
+                                         ResetValueOnEmptyText="true" CoerceText="false" DebounceInterval="1000" AdornmentIcon="@Icons.Material.Filled.Search" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="searchVaccineModel.TargetDisease" Label="@Localizer["TargetDisease"]" Variant="Variant.Outlined"
+                                      Margin="Margin.Dense" Placeholder="@Localizer["EnterTargetDisease"]" InputType="InputType.Search" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField @bind-Value="searchVaccineModel.Id" Label="@Localizer["ID"]" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                      Placeholder="@Localizer["EnterID"]" InputType="InputType.Number"/>
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-2 mb-2" OnClick="@GoToVaccinesList">@Localizer["Search"]</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="2" Class="pa-4 d-flex flex-column" Style="height: 100%;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["Stats"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent Class="flex-grow-1 d-flex flex-column justify-space-around">
+                @if (_isLoadingStats)
+                {
+                    <DonutStatSkeleton />
+                }
+                else if (!string.IsNullOrEmpty(_errorStats))
+                {
+                    <ErrorState Message="@_errorStats" OnRetry="LoadStats" />
+                }
+                else if (_stats != null)
+                {
+                    <DonutStat Data="donutData" MainValue="@_stats.TotalBooklets" MainLabel="@Localizer["AllBooklets"]" ChartSize="160px" ShowLegend="true" />
+                }
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="2" Class="pa-4" Style="height: 100%;">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["Charts"]</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudChart ChartType="ChartType.Bar" ChartSeries="@barSeries" XAxisLabels="@barLabels" Width="100%" Height="250px" ChartOptions="@barOptions"></MudChart>
+            </MudCardContent>
+            <MudCardActions Class="d-flex justify-end">
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary">@Localizer["GenerateChart"]</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private FacilityModel searchFacilityModel = new();
+    private VaccineModel searchVaccineModel = new();
+    private DashboardStatsDto? _stats;
+
+    private bool _isLoadingStats = true;
+    private string? _errorStats;
+
+    private double[] donutData = { 0, 0, 0 };
+    private ChartOptions donutOptions = new ChartOptions();
+
+    private List<ChartSeries> barSeries = new List<ChartSeries>();
+    private string[] barLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+    private ChartOptions barOptions = new ChartOptions();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadStats();
+
+        barSeries.Add(new ChartSeries() { Name = Localizer["Reviewed"], Data = new double[] { 40, 31, 40, 42, 40, 41, 60, 41, 20 } });
+        barSeries.Add(new ChartSeries() { Name = Localizer["NotReviewed"], Data = new double[] { 15, 20, 10, 8, 5, 8, 10, 8, 10 } });
+        barSeries.Add(new ChartSeries() { Name = Localizer["Rejected"], Data = new double[] { 2, 3, 2, 3, 2, 3, 2, 3, 2 } });
+        barOptions.ChartPalette = new[] { "#2979ff", "#00e5ff", "#ffc400" };
+    }
+
+    private async Task LoadStats()
+    {
+        _isLoadingStats = true;
+        _errorStats = null;
+        StateHasChanged();
+
+        try
+        {
+            _stats = await StatsClient.GetAdminStatsAsync(new CancellationToken());
+            if (_stats != null)
+            {
+                donutData = new double[] { _stats.AcceptedCount, _stats.NotReviewedCount, _stats.RejectedCount };
+            }
+        }
+        catch (HttpRequestException httpEx) when (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            _errorStats = Localizer["StatsNotFound"];
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _errorStats = Localizer["ErrorLoadingStats"];
+            Snackbar.Add($"{_errorStats}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            _errorStats = Localizer["ErrorLoadingStats"];
+            Snackbar.Add($"{_errorStats}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            _isLoadingStats = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task<IEnumerable<string>> GetCitiesAsync(string value, CancellationToken token)
+    {
+        if (string.IsNullOrEmpty(value) || value.Length < 2)
+            return new List<string>();
+        return await FacilityClient.GetCitiesAutocompleteAsync(value, token);
+    }
+
+    private async Task<IEnumerable<string>> GetManufacturersAsync(string value, CancellationToken token)
+    {
+        if (string.IsNullOrEmpty(value) || value.Length < 2)
+            return new List<string>();
+        return await VaccineClient.GetManufacturersAutocompleteAsync(value, token);
+    }
+
+    private async Task<IEnumerable<string>> GetNamesAsync(string value, CancellationToken token)
+    {
+        if (string.IsNullOrEmpty(value) || value.Length < 2)
+            return new List<string>();
+        return await VaccineClient.GetNamesAutocompleteAsync(value, token);
+    }
+
+    private void GoToFacilityList()
+    {
+        var query = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
+        if (!string.IsNullOrEmpty(searchFacilityModel.Street))
+            query["Street"] = searchFacilityModel.Street;
+        if (!string.IsNullOrEmpty(searchFacilityModel.City))
+            query["City"] = searchFacilityModel.City;
+        if (!string.IsNullOrEmpty(searchFacilityModel.PostalCode))
+            query["PostalCode"] = searchFacilityModel.PostalCode;
+        if (!string.IsNullOrEmpty(searchFacilityModel.Id))
+            query["Id"] = searchFacilityModel.Id;
+
+        NavigationManager.NavigateTo($"/facilities?{query}");
+    }
+
+    private void GoToVaccinesList()
+    {
+        var query = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
+        if (!string.IsNullOrEmpty(searchVaccineModel.Name))
+            query["Name"] = searchVaccineModel.Name;
+        if (!string.IsNullOrEmpty(searchVaccineModel.Manufacturer))
+            query["Manufacturer"] = searchVaccineModel.Manufacturer;
+        if (!string.IsNullOrEmpty(searchVaccineModel.TargetDisease))
+            query["Disease"] = searchVaccineModel.TargetDisease;
+        if (!string.IsNullOrEmpty(searchVaccineModel.Id))
+            query["Id"] = searchVaccineModel.Id;
+
+        NavigationManager.NavigateTo($"/vaccines?{query}");
+    }
+
+    public class FacilityModel
+    {
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string PostalCode { get; set; }
+        public string Id { get; set; }
+    }
+
+    public class VaccineModel
+    {
+        public string Name { get; set; }
+        public string Manufacturer { get; set; }
+        public string TargetDisease { get; set; }
+        public string Id { get; set; }
+    }
+}

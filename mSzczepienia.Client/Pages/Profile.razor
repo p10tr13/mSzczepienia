@@ -1,0 +1,160 @@
+@page "/profile"
+@attribute [Authorize]
+@inject IStringLocalizer<SharedResources> Localizer
+@inject mSzczepienia.Client.Services.Interfaces.IAccountClient AccountClient
+@inject ISnackbar Snackbar
+@using mSzczepienia.Shared.DTO.Accounts
+@using mSzczepienia.Client.Shared.Components;
+@using System.Text.RegularExpressions
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-8">
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12" sm="10" md="8">
+            <MudStack Spacing="4">
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["Profile"]</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+
+                    <MudCardContent>
+                        @if (loading)
+                        {
+                            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="224px" />
+                        }
+                        else if (!string.IsNullOrEmpty(error))
+                        {
+                            <ErrorState Message="@error" OnRetry="LoadData" />
+                        }
+                        else if (profile != null)
+                        {
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@profile.Name" Label="@Localizer["First Name"]" ReadOnly="true" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@profile.Surname" Label="@Localizer["Surname"]" ReadOnly="true" />
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@profile.Email" Label="@Localizer["Email"]" ReadOnly="true" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@profile.DateOfBirth.ToShortDateString()" Label="@Localizer["DateOfBirth"]" ReadOnly="true" />
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@profile.CreationDate.ToShortDateString()" Label="@Localizer["CreationDate"]" ReadOnly="true" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@FormatEnum(profile.Role)" Label="@Localizer["Role"]" ReadOnly="true" />
+                                </MudItem>
+                            </MudGrid>
+                        }
+                    </MudCardContent>
+                </MudCard>
+
+                <AuthorizeView Roles="worker">
+                    <Authorized>
+                        <MudCard Elevation="2" Class="pa-4">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.Center">@Localizer["HealthcareWorkerDetails"]</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                @if (loading)
+                                {
+                                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="224px" />
+                                }
+                                else if (profile != null && (!string.IsNullOrEmpty(profile.PwzNumber) || !string.IsNullOrEmpty(profile.FacilityName)))
+                                {
+                                    <MudGrid>
+                                        <MudItem xs="12" sm="12">
+                                            <MudTextField Value="@profile.PwzNumber" Label="@Localizer["PWZ"]" ReadOnly="true" />
+                                        </MudItem>
+                                        <MudItem xs="12" sm="12">
+                                            <MudTextField Value="@FormatEnum(profile.Position)" Label="@Localizer["Position"]" ReadOnly="true" />
+                                        </MudItem>
+                                        <MudItem xs="12" sm="12">
+                                            <MudTextField Value="@profile.FacilityName" Label="@Localizer["MedicalFacility"]" ReadOnly="true" />
+                                        </MudItem>
+                                    </MudGrid>
+                                }
+                                else if (!loading)
+                                {
+                                    <MudText Class="mud-text-secondary">@Localizer["NoWorkerInfo"]</MudText>
+                                }
+                            </MudCardContent>
+                        </MudCard>
+                    </Authorized>
+                </AuthorizeView>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private ProfileDto? profile;
+    private bool loading = true;
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        loading = true;
+        error = null;
+        StateHasChanged();
+        try
+        {
+            profile = await AccountClient.GetProfileAsync(CancellationToken.None);
+            if (profile == null)
+            {
+                error = Localizer["ProfileNotFound"];
+            }
+        }
+        catch (HttpRequestException httpEx) when (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            error = Localizer["ProfileNotFound"];
+        }
+        catch (HttpRequestException httpEx)
+        {
+            error = Localizer["ErrorLoadingProfile"];
+            Snackbar.Add($"{error}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            error = Localizer["ErrorLoadingProfile"];
+            Snackbar.Add($"{error}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
+    private string FormatEnum(string? en)
+    {
+        switch (en)
+        {
+            case "Doctor":
+                return Localizer["Doctor"];
+            case "Nurse":
+                return Localizer["Nurse"];
+            case "OfficeWorker":
+                return Localizer["OfficeWorker"];
+            case "Admin":
+                return Localizer["Admin"];
+            case "HealthWorker":
+                return Localizer["HealthcareWorker"];
+            default:
+                return Regex.Replace(en, "(\\B[A-Z])", " $1");
+        }
+    }
+}

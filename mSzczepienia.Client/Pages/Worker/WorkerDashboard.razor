@@ -1,0 +1,299 @@
+﻿@page "/worker-dashboard"
+@attribute [Authorize(Roles = "worker")]
+@inject IStringLocalizer<SharedResources> Localizer
+@inject NavigationManager NavigationManager
+@inject IStatsClient StatsClient
+@inject IOCRSubmissionClient OCRSubmissionClient
+@inject ISnackbar Snackbar
+@using System.Threading.Tasks
+@using mSzczepienia.Shared.DTO.Stats
+@using mSzczepienia.Client.Shared.Components
+@using mSzczepienia.Client.Shared.Components.Skeletons
+@using mSzczepienia.Shared.DTO;
+@using mSzczepienia.Shared.DTO.OCRSubmissions;
+
+<MudGrid Class="pa-4">
+
+    <MudItem xs="12" md="5">
+        <MudGrid>
+            <MudItem xs="12">
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["AddVaccination"]</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudGrid>
+                            <MudItem xs="12">
+                                <MudTextField @bind-Value="searchModel.Name" Label="@Localizer["First Name"]" Variant="Variant.Outlined" Margin="Margin.Dense" Placeholder="@Localizer["EnterFirstName"]" />
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudTextField @bind-Value="searchModel.Surname" Label="@Localizer["Surname"]" Variant="Variant.Outlined" Margin="Margin.Dense" Placeholder="@Localizer["EnterSurname"]" />
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudTextField @bind-Value="searchModel.Pesel" Label="@Localizer["PESEL"]" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                              Mask="@(new PatternMask("00000000000"))" Placeholder="00000000000" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton OnClick="NavigateToPatientSearch" Variant="Variant.Filled" Color="Color.Primary" FullWidth="false" Class="ml-2 mb-2 px-6">@Localizer["Search"]</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudCard Elevation="2" Class="pa-4 d-flex flex-column" Style="height: 100%;">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["YouFacilityStats"]</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent Class="flex-grow-1 d-flex flex-column justify-space-around">
+                        @if (_isLoadingStats)
+                        {
+                            <DonutStatSkeleton />
+                        }
+                        else if (!string.IsNullOrEmpty(_errorStats))
+                        {
+                            <ErrorState Message="@_errorStats" OnRetry="LoadStats" />
+                        }
+                        else if (_stats != null)
+                        {
+                            <DonutStat Data="donutData" MainValue="@_stats.NotReviewedCount" MainLabel="@Localizer["BookletsToVerify"]" ChartSize="160px" ShowLegend="true" />
+                        }
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+
+    <MudItem xs="12" md="7">
+        <MudStack Class="mb-4" Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+            <MudText Typo="Typo.h5" Color="Color.Primary">
+                @Localizer["PendingSubmissions"]
+                @if (!_isLoadingBooklets && _bookletsQueue?.TotalCount > 0)
+                {
+                    <MudChip T="string" Color="Color.Error" Size="Size.Small" Class="ml-2">@_bookletsQueue.TotalCount</MudChip>
+                }
+            </MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Refresh" OnClick="LoadBooklets" Color="Color.Default" />
+        </MudStack>
+
+        @if (_isLoadingBooklets)
+        {
+            <ListSkeleton Count="@PageSize" PaperHeight="136px" Line1Width="40%" Line2Width="35%" Line2Height="22px" Line3Width="40%" />
+        }
+        else if (!string.IsNullOrEmpty(_errorBooklets))
+        {
+            <ErrorState Message="@_errorBooklets" OnRetry="@(() => LoadBooklets())" />
+        }
+        else if (_bookletsQueue == null || _bookletsQueue.TotalCount == 0)
+        {
+            <MudPaper Class="pa-8 d-flex flex-column align-center justify-center mud-background-gray">
+                <MudIcon Icon="@Icons.Material.Outlined.CheckCircle" Size="Size.Large" Color="Color.Success" Class="mb-4" />
+                <MudText Typo="Typo.h6" Color="Color.Secondary">@Localizer["NoBookletsToVerify"]</MudText>
+                <MudText Typo="Typo.body2">@Localizer["AllVerified"]</MudText>
+            </MudPaper>
+        }
+        else
+        {
+            <MudStack Spacing="3">
+                @foreach (var item in _bookletsQueue.Items)
+                {
+                    <MudPaper Elevation="1" Class="pa-4 transition-item">
+                        <MudGrid Class="align-center">
+                            <MudItem xs="12" sm="1" Class="d-flex justify-center">
+                                <MudAvatar Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Medium">
+                                    @GetInitials(item.Name, item.Surname)
+                                </MudAvatar>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="7">
+                                <MudText Typo="Typo.subtitle1">
+                                    <b>@item.Name @item.Surname</b>
+                                </MudText>
+                                <MudStack Spacing="2" Class="mt-1 align-baseline flex-wrap">
+                                    <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.Badge" Variant="Variant.Text" Color="Color.Secondary">
+                                        @Localizer["PESEL"]: @item.Pesel
+                                    </MudChip>
+                                    <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.CalendarToday" Variant="Variant.Text" Color="@GetDateColor(item.SubmissionDate)">
+                                        @Localizer["Submitted"]: @item.SubmissionDate.ToShortDateString()
+                                    </MudChip>
+                                </MudStack>
+                            </MudItem>
+
+                            <MudItem xs="12" sm="4" Class="d-flex justify-end">
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="@(() => NavigateToSubmission(item.ID))">
+                                    @Localizer["Verify"]
+                                </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                }
+
+                @if (_bookletsQueue.TotalCount > PageSize)
+                {
+                    <div class="d-flex justify-center mt-4">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowForward" OnClick="NavigateToFullList">
+                            @Localizer["ViewAllPending"] (@(_bookletsQueue.TotalCount - PageSize)+)
+                        </MudButton>
+                    </div>
+                }
+            </MudStack>
+        }
+    </MudItem>
+</MudGrid>
+
+<style>
+    .transition-item {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        will-change: transform, box-shadow;
+    }
+
+        .transition-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 8px 24px rgba(0,0,0,0.12) !important;
+        }
+</style>
+
+@code {
+    private SearchPatientModel searchModel = new();
+
+    private DashboardStatsDto? _stats;
+
+    private PagedResult<SearchOCRSubmissionDTO> _bookletsQueue = new();
+
+    // Stats helpers
+    private bool _isLoadingStats = true;
+    private string? _errorStats;
+    private double[] donutData = { 0, 0, 0 };
+
+    // Booklets helpers
+    private bool _isLoadingBooklets = true;
+    private string? _errorBooklets;
+    private const int PageSize = 5;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var t1 = LoadStats();
+        var t2 = LoadBooklets();
+
+        await Task.WhenAll(t1, t2);
+    }
+
+    private async Task LoadStats()
+    {
+        _isLoadingStats = true;
+        _errorStats = null;
+        StateHasChanged();
+
+        try
+        {
+            _stats = await StatsClient.GetWorkerStatsAsync(new CancellationToken());
+            if (_stats != null)
+            {
+                donutData = new double[] { _stats.AcceptedCount, _stats.NotReviewedCount, _stats.RejectedCount };
+            }
+        }
+        catch (HttpRequestException httpEx) when (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            _errorStats = Localizer["StatsNotFound"];
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _errorStats = Localizer["ErrorLoadingStats"];
+            Snackbar.Add($"{_errorStats}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            _errorStats = Localizer["ErrorLoadingStats"];
+            Snackbar.Add($"{_errorStats}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            _isLoadingStats = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadBooklets()
+    {
+        _isLoadingBooklets = true;
+        _errorBooklets = null;
+        StateHasChanged();
+
+        try
+        {
+            _bookletsQueue = await OCRSubmissionClient.GetDashboardOCRSubmissions(PageSize, new CancellationToken());
+        }
+        catch (HttpRequestException httpEx) when (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            _errorBooklets = Localizer["BookletsNotFound"];
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _errorBooklets = Localizer["ErrorLoadingBooklets"];
+            Snackbar.Add($"{_errorBooklets}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            _errorBooklets = Localizer["ErrorLoadingBooklets"];
+            Snackbar.Add($"{_errorBooklets}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            _isLoadingBooklets = false;
+            StateHasChanged();
+        }
+    }
+
+    private string GetInitials(string name, string surname)
+    {
+        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(surname)) return "?";
+        return $"{name[0]}{surname[0]}".ToUpper();
+    }
+
+    private Color GetDateColor(DateTime date)
+    {
+        double days = (DateTime.Now - date).TotalDays;
+        if (days > 5)
+            return Color.Error;
+        else if (days > 2)
+            return Color.Warning;
+        else
+            return Color.Default;
+    }
+
+    private void NavigateToSubmission(int id)
+    {
+        NavigationManager.NavigateTo($"/submissions/{id}");
+    }
+
+    private void NavigateToFullList()
+    {
+        NavigationManager.NavigateTo("/submissions/queue");
+    }
+
+    private void NavigateToPatientSearch()
+    {
+        var query = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
+        if (!string.IsNullOrEmpty(searchModel.Name))
+            query["Name"] = searchModel.Name;
+        if (!string.IsNullOrEmpty(searchModel.Surname))
+            query["Surname"] = searchModel.Surname;
+        if (!string.IsNullOrEmpty(searchModel.Pesel))
+            query["Pesel"] = searchModel.Pesel;
+
+        NavigationManager.NavigateTo($"/citizens/search?{query}");
+    }
+
+    public class SearchPatientModel
+    {
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string Pesel { get; set; }
+    }
+}

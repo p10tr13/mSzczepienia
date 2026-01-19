@@ -1,0 +1,164 @@
+﻿@page "/submissions/{id:int}/extracted-data"
+@attribute [Authorize(Roles = "worker")]
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<SharedResources> Localizer
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject IOCRSubmissionClient OCRSubmissionClient
+@using mSzczepienia.Client.Shared.Components
+@using mSzczepienia.Shared.DTO.VaccinationEntries
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-6 mb-8 pb-16">
+
+    <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-6 ml-2"><b>@Localizer["SubmissionVerification"] #@id</b></MudText>
+
+    <MudGrid Spacing="4" Class="h-100">
+
+        @if (_isLoading)
+        {
+            <MudItem xs="12" lg="6">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="75vh" />
+            </MudItem>
+
+            <MudItem xs="12" lg="6">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="75vh" />
+            </MudItem>
+        }
+        else if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <MudItem xs="12" Class="d-flex justify-center align-center" Style="height: 100%;">
+                <ErrorState Message="@_errorMessage" OnRetry="@(() => LoadEntries())" />
+            </MudItem>
+        }
+        else if (_entries != null)
+        {
+            <MudItem xs="12" lg="6">
+                <MudCard Elevation="3" Class="pa-4" Style="height: 100%; overflow-y: auto;">
+                    <MudText Typo="Typo.h6" Class="mb-4">
+                        @Localizer["EditionOfRecognizedEntries"]
+                    </MudText>
+
+                    <VaccinationEntryEditor Entries="_entries" />
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" lg="6">
+                <ImageGallery Images="_photos" Height="75vh" />
+            </MudItem>
+        }
+    </MudGrid>
+
+    <MudPaper Elevation="6" Class="fixed d-flex justify-center gap-6 px-8 py-3 z-20 rounded-pill"
+              Style="bottom: 10px; left: 50%; transform: translateX(-50%); border: 1px solid var(--mud-palette-lines-default);">
+
+        <MudButton Variant="Variant.Text" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack" Style="font-weight: bold;">
+            @Localizer["GoBack"]
+        </MudButton>
+
+        <MudDivider Vertical="true" FlexItem="true" Class="my-1" />
+
+        <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.Save" OnClick="ConfirmAndSave" Class="rounded-pill px-6" Style="font-weight: bold;">
+            @Localizer["ConfirmData"]
+        </MudButton>
+    </MudPaper>
+
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private List<DetailedVaccinationEntryDto>? _entries = new();
+    private List<string> _photos = new();
+    private bool _isLoading = true;
+    private string? _errorMessage;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadEntries();
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task LoadEntries()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+        StateHasChanged();
+
+        try
+        {
+            var result = await OCRSubmissionClient.GetSubmissionEntriesReviewAsync(id, new CancellationToken());
+            if (result == null)
+            {
+                _errorMessage = Localizer["NoSubmissionFound"];
+                _photos = new List<string>();
+                _entries = null;
+            }
+            else
+            {
+                _photos = result.Photos;
+                _entries = result.VaccinationEntries;
+            }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _errorMessage = Localizer["ErrorLoadingSubmission"];
+            Snackbar.Add($"{_errorMessage}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = Localizer["ErrorLoadingSubmission"];
+            Snackbar.Add($"{_errorMessage}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo($"/submissions/{id}");
+    }
+
+    private async Task ConfirmAndSave()
+    {
+        if (_entries != null && _entries.Any(x => x.Vaccine == null || x.Date == null))
+        {
+            Snackbar.Add(Localizer["FillOutMissingVaccinationEntryData"], Severity.Warning);
+            return;
+        }
+
+        var parameters = new DialogParameters<ConfirmSaveDialog>
+        {
+            { x => x.Title, Localizer["VerifyDataCompleteProcessTitle"] },
+            { x => x.Message, Localizer["VerifyDataCompleteProcessMessage"] },
+        };
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<ConfirmSaveDialog>("Save data", parameters, options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            try
+            {
+                await OCRSubmissionClient.ReviewSubmissionAsync(id, _entries, new CancellationToken());
+                Snackbar.Add(Localizer["VaccinationEntriesSubmitted"], Severity.Success);
+                NavigationManager.NavigateTo("/submissions/queue");
+            }
+            catch (KeyNotFoundException)
+            {
+                Snackbar.Add(Localizer["NoSubmissionFound"], Severity.Error);
+            }
+            catch (HttpRequestException httpEx)
+            {
+                Snackbar.Add($"{Localizer["ErrorReviewingSubmission"]}: ({httpEx.StatusCode}) {httpEx.Message}", Severity.Error);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"{Localizer["ErrorReviewingSubmission"]}: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+}

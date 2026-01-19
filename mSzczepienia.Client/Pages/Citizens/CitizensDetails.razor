@@ -1,0 +1,295 @@
+﻿@page "/citizens/{id:int}"
+@attribute [Authorize(Roles = "worker")]
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<SharedResources> Localizer
+@inject ICitizenClient CitizenClient
+@inject IVaccinationRecordClient VaccinationRecordClient
+@inject ISnackbar Snackbar
+@using mSzczepienia.Shared.DTO
+@using mSzczepienia.Shared.DTO.Citizens
+@using mSzczepienia.Shared.DTO.Queries
+@using mSzczepienia.Shared.DTO.VaccinationRecords
+@using mSzczepienia.Client.Shared.Components.Skeletons
+@using System.Text.RegularExpressions
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-8">
+    <MudGrid Spacing="4">
+
+        <MudItem xs="12" md="6">
+            <MudStack Spacing="4">
+
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["CitizenDetails"]</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+
+                    <MudCardContent>
+                        @if (_isLoadingCitizen)
+                        {
+                            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="296px" />
+                        }
+                        else if (!string.IsNullOrEmpty(_errorCitizen))
+                        {
+                            <ErrorState Message="@_errorCitizen" OnRetry="LoadCitizen" />
+                        }
+                        else if (_citizen != null)
+                        {
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_citizen.name" Label="@Localizer["First Name"]" ReadOnly="true" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_citizen.surname" Label="@Localizer["Surname"]" ReadOnly="true" />
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_citizen.pesel" Label="@Localizer["Pesel"]" ReadOnly="true" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_citizen.dateOfBirth.ToShortDateString()" Label="@Localizer["DateOfBirth"]" ReadOnly="true" />
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_citizen.email" Label="@Localizer["Email"]" ReadOnly="true" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_citizen.facilityName" Label="@Localizer["MedicalFacility"]" ReadOnly="true" />
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@FormatEnum(_citizen.submissionStatus)" Label="@Localizer["SubmissionState"]" ReadOnly="true" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_citizen.creationDate.ToShortDateString()" Label="@Localizer["CreationDate"]" ReadOnly="true" />
+                                </MudItem>
+                            </MudGrid>
+                        }
+                    </MudCardContent>
+                </MudCard>
+
+                <div>
+                    <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center" Class="mb-3 pl-1">@Localizer["Actions"]</MudText>
+
+                    <MudGrid Spacing="3">
+                        <MudItem xs="12" sm="6">
+                            <MudPaper Class="pa-6 d-flex flex-column align-center transition-item justify-space-between" Elevation="2" Style="height: 100%;">
+                                <MudIcon Icon="@Icons.Material.Filled.Vaccines" Color="Color.Primary" Style="font-size: 4rem;" Class="mb-4" />
+                                <MudText Typo="Typo.subtitle1" Align="Align.Center" Class="mb-2">@Localizer["AddVaccinationRecord"]</MudText>
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large"
+                                           OnClick="AddVaccinationRecord" StartIcon="@Icons.Material.Filled.Add">
+                                    @Localizer["Add"]
+                                </MudButton>
+                            </MudPaper>
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudPaper Class="pa-6 d-flex flex-column align-center transition-item justify-space-between" Elevation="2" Style="height: 100%;">
+                                <MudIcon Icon="@Icons.Material.Filled.UploadFile" Color="Color.Secondary" Style="font-size: 4rem;" Class="mb-4" />
+                                <MudText Typo="Typo.subtitle1" Align="Align.Center" Class="mb-2">@Localizer["UploadBookletPhoto"]</MudText>
+                                <MudButton Variant="Variant.Outlined" Color="Color.Primary" FullWidth="true" Size="Size.Large"
+                                           OnClick="UploadBookletPhotos" StartIcon="@Icons.Material.Filled.CloudUpload">
+                                    @Localizer["Upload"]
+                                </MudButton>
+                            </MudPaper>
+                        </MudItem>
+                    </MudGrid>
+                </div>
+            </MudStack>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center" Class="mb-4">@Localizer["VaccinationRecords"]</MudText>
+
+            @if (_isLoadingRecords)
+            {
+                <ListSkeleton Count="@PageSize" PaperHeight="104px" Line1Width="30%" Line2Width="35%"/>
+            }
+            else if (!string.IsNullOrEmpty(_errorRecords))
+            {
+                <ErrorState Message="@_errorRecords" OnRetry="@(() => LoadRecords(Page))" />
+            }
+            else if (_recordsResult?.Items != null)
+            {
+                <MudStack Spacing="3">
+                    @foreach (var rec in _recordsResult.Items)
+                    {
+                        <MudPaper Elevation="1" Class="pa-4 transition-item">
+                            <MudGrid Class="align-center">
+                                <MudItem xs="12" sm="8">
+                                    <MudText Typo="Typo.subtitle1"><b>@rec.VaccineName</b></MudText>
+                                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@rec.Manufacturer</MudText>
+                                    <MudText Typo="Typo.body2" Class="mt-1">@Localizer["VaccinationDate"]: @rec.VaccinationDate.ToShortDateString()</MudText>
+                                </MudItem>
+                                <MudItem xs="12" sm="4" Class="d-flex justify-end">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="@(() => EditRecord(rec.RecordId))">
+                                        @Localizer["Edit"]
+                                    </MudButton>
+                                </MudItem>
+                            </MudGrid>
+                        </MudPaper>
+                    }
+                </MudStack>
+
+                @if (_recordsResult.TotalPages > 1)
+                {
+                    <div class="d-flex justify-center mt-6">
+                        <MudPagination Color="Color.Primary" Count="@_recordsResult.TotalPages" Selected="@Page" SelectedChanged="OnPageChanged" />
+                    </div>
+                }
+            }
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+<style>
+    .transition-item {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        will-change: transform, box-shadow;
+    }
+
+        .transition-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 8px 24px rgba(0,0,0,0.12) !important;
+        }
+</style>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private CitizenDetailsDto? _citizen;
+    private PagedResult<VaccinationRecordSimpleListItemDto>? _recordsResult;
+
+    private bool _isLoadingCitizen = true;
+    private bool _isLoadingRecords = true;
+
+    private string? _errorCitizen;
+    private string? _errorRecords;
+
+    private int Page = 1;
+    private int PageSize = 6;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var t1 = LoadCitizen();
+        var t2 = LoadRecords(Page);
+
+        await Task.WhenAll(t1, t2);
+        await base.OnInitializedAsync();
+    }
+
+    private async Task LoadCitizen()
+    {
+        _isLoadingCitizen = true;
+        _errorCitizen = null;
+        StateHasChanged();
+
+        try
+        {
+            _citizen = await CitizenClient.GetCitizenByIdAsync(id, new CancellationToken());
+            if (_citizen == null)
+            {
+                _errorCitizen = Localizer["CitizenNotFound"];
+            }
+        }
+        catch (HttpRequestException httpEx) when (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            _errorCitizen = Localizer["CitizenNotFound"];
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _errorCitizen = Localizer["ErrorLoadingCitizen"];
+            Snackbar.Add($"{_errorCitizen}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            _errorCitizen = Localizer["ErrorLoadingCitizen"];
+            Snackbar.Add($"{_errorCitizen}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            _isLoadingCitizen = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadRecords(int page)
+    {
+        _isLoadingRecords = true;
+        _errorRecords = null;
+        StateHasChanged();
+
+        try
+        {
+            var query = new GetVaccinationRecordsByCitizenIdQuery
+            {
+                CitizenId = id,
+                PageNumber = page,
+                PageSize = PageSize,
+                SortingField = "vaccinationDate",
+                SortingDirection = "desc"
+            };
+
+            _recordsResult = await VaccinationRecordClient.GetVaccinationRecordsByCitizenIdAsync(query, new CancellationToken());
+        }
+        catch (HttpRequestException httpEx) when (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            _errorRecords = Localizer["RecordsNotFound"];
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _errorRecords = Localizer["ErrorLoadingRecords"];
+            Snackbar.Add($"{_errorRecords}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            _errorRecords = Localizer["ErrorLoadingRecords"];
+            Snackbar.Add($"{_errorRecords}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            _isLoadingRecords = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnPageChanged(int page)
+    {
+        Page = page;
+        await LoadRecords(page);
+    }
+
+    private string FormatEnum(string en)
+    {
+        switch (en)
+        {
+            case "NotUploaded":
+                return Localizer["NotUploaded"];
+            case "Pending":
+                return Localizer["Pending"];
+            case "Accepted":
+                return Localizer["Accepted"];
+            case "Rejected":
+                return Localizer["Rejected"];
+            default:
+                return Regex.Replace(en, "(\\B[A-Z])", " $1");
+        }
+    }
+
+    private void AddVaccinationRecord()
+    {
+        NavigationManager.NavigateTo($"/citizens/{id}/vaccination-records/new");
+    }
+
+    private void UploadBookletPhotos()
+    {
+        //NavigationManager.NavigateTo($"/citizens/{id}/bookletphotos/upload");
+    }
+
+    private void EditRecord(int recordId)
+    {
+        NavigationManager.NavigateTo($"/vaccination-records/{recordId}/edit");
+    }
+}

@@ -1,0 +1,135 @@
+{
+    "@@locale": "en",
+    "appTitle": "mSzczepienia",
+    "goodMorning": "Good morning!",
+    "goodAfternoon": "Good afternoon",
+    "goodEvening": "Good evening",
+    
+    "logInTitle": "Log in to the application",
+    "logInButton": "Log In",
+    "signUpTitle": "Sign up to the application",
+    "signUpButton": "Sign Up",
+
+    "email": "Email",
+    "enterEmail": "Enter your email address",
+    "emailCondition": "Email has to contain @",
+
+    "password": "Password",
+    "enterPassword": "Enter your password",
+    "passwordCondition": "Password must be at least 6 characters long",
+
+    "name": "Name",
+    "enterName": "Enter your name",
+
+    "surname": "Surname",
+    "enterSurname": "Enter your surname",
+
+    "pesel": "PESEL",
+    "enterPesel": "Enter your PESEL number",
+    "peselCondition": "PESEL must be exactly 11 digits long",
+
+    "dateOfBirth": "Date of birth",
+    "enterDateOfBirth": "Enter your date of birth (YYYY-MM-DD)",
+    "dateOfBirthCondition": "Date of birth must be in the format YYYY-MM-DD",
+
+    "medicalFacility": "Medical Facility",
+    "selectMedicalFacility": "Select your medical facility",
+    "validMedicalFacilityCondition": "Please select a valid medical facility from the list",
+
+    "repeatPassword": "Repeat Password",
+    "enterRepeatPassword": "Repeat your password",
+    "repeatPasswordCondition": "Passwords do not match",
+
+    "incorrectCredentials": "Incorrect email or password",
+    "signUpError": "Sign up error",
+
+    "goodMorningUser": "Good morning, {userName}",
+    "@goodMorningUser": {
+        "placeholders": {
+        "userName": {
+            "type": "String"
+        }
+        }
+    },
+    "vaccinationBooklet": "Vaccination Booklet",
+    "vaccinationBookletDescription": "Add your vaccination booklet",
+    "vaccinationHistory": "Vaccination History",
+    "vaccinationHistoryDescription": "View your vaccination history",
+    "settings": "Settings",
+    "settingsDescription": "Change application settings",
+    "yourAccount": "Your Account",
+    "yourAccountDescription": "View your account details",
+
+    "theme": "Theme",
+    "changeDarkMode": "Change to dark mode",
+    "changeLightMode": "Change to light mode",
+    "language": "Language",
+    "changePolish": "Zmień język na polski",
+    "changeEnglish": "Change language to English",
+    
+    "accountCreationDate": "Account creation date",
+    "callSupport": "Call Support",
+    "logOut": "Log Out",
+
+    "yourVaccinations": "Your Vaccinations",
+    "sort": "Sort",
+    "alphabetical_az": "Alphabetical (A-Z)",
+    "alphabetical_za": "Alphabetical (Z-A)",
+    "date_newest": "Date (Newest first)",
+    "date_oldest": "Date (Oldest first)",
+    "dose": "Dose",
+    "last": "Last:",
+    "noOfDoses": "Doses:",
+    "noVaccinations": "No vaccinations found.",
+    "errorLoadingVaccinationRecords": "Error loading vaccination records.",
+
+    "errorLoadingVaccinationDetails": "Error loading vaccination details.",
+    "doseNumber": "Dose Number",
+    "vaccinationDate": "Vaccination Date",
+    "batchNo": "Batch Number",
+    "remarks": "Remarks",
+    "aboutVaccine": "About this vaccine",
+    "vaccineDescription": "Vaccine Description",
+    "diseasesPrevented": "Diseases Prevented",
+    "vaccineCreationDate": "Vaccine Creation Date",
+    "producer": "Manufacturer",
+    "nextVaccination": "Next Vaccination In",
+    "days": "days",
+
+    "uploadNewPhoto": "Upload New Photo",
+    "updateYourVaccinationHistory": "Update your Vaccination History with your Vaccination Booklet",
+    "submissionStatus": "Submission Status",
+    "statusNotUploaded": "Not Uploaded",
+    "statusPending": "Pending Verification",
+    "statusApproved": "Approved",
+    "statusRejected": "Rejected",
+
+    "selectPhotoSource": "Select Photos Source (up to 5 photos)",
+    "takePhoto": "Take Photo",
+    "chooseFromGallery": "Choose from Gallery",
+    "cancel": "Cancel",
+    "analize": "Analyze",
+
+    "analyzingSubmission": "Analyzing your photos... The process may take up to 5 minutes.",
+    "errorOccurred": "An error occurred",
+
+    "ocrDescription": "Please note that the OCR process may not be 100% accurate. Review the extracted data carefully before submission.",
+    "addAnotherVaccination": "Add Vaccination",
+    "cancelSubmission": "Cancel Submission",
+    "submitForVerification": "Submit for Verification",
+
+    "modifyEntry": "Modify Entry",
+    "saveChanges": "Save Changes",
+    "batchCondition": "Batch number cannot be longer than 20 characters",
+    "dateOfVacccinationCondition": "Date of vaccination must be in the format YYYY-MM-DD",
+    "vaccineName": "Vaccine Name",
+    "vaccineNameCondition": "Please select a valid vaccine from the list",
+    "submit": "Submit",
+
+    "deleteEntry": "Delete This Entry",
+    "deleteEntryDescription": "Are you sure you want to delete this vaccination entry?",
+    "delete": "Delete",
+
+    "cancelLoading": "Cancelling your submission...",
+    "sendingSubmission": "Sending your submission for verification..."
+}

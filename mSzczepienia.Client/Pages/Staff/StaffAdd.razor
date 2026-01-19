@@ -1,0 +1,196 @@
+﻿@page "/staff/add"
+@attribute [Authorize(Roles = "admin")]
+@using mSzczepienia.Shared.Enums
+@using mSzczepienia.Shared.DTO.Facilities
+@using mSzczepienia.Shared.DTO.Users
+@using mSzczepienia.Shared.DTO.Queries;
+@inject IFacilityClient FacilityClient
+@inject IUserManagementClient UserManagementClient
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+@inject IStringLocalizer<SharedResources> Localizer
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    <MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary">@Localizer["AddEmployee"]</MudText>
+
+    <EditForm Model="@model" OnValidSubmit="OnSubmit">
+        <DataAnnotationsValidator />
+
+        <MudCard Elevation="3" Class="pa-4">
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.h6" Class="mb-2">@Localizer["BasicInfo"]</MudText>
+                        <MudDivider />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Localizer["First Name"]" Required="true" @bind-Value="model.Name" For="@(() => model.Name)"
+                                      Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Localizer["Surname"]" Required="true" @bind-Value="model.Surname" For="@(() => model.Surname)"
+                                      Variant="Variant.Outlined" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Localizer["Email"]" Required="true" @bind-Value="model.Email" For="@(() => model.Email)" InputType="InputType.Email"
+                                      Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Label="@Localizer["InitialPassword"]" Required="true" @bind-Value="model.Password" For="@(() => model.Password)"
+                                      InputType="InputType.Password" Variant="Variant.Outlined" HelperText="@Localizer["EnterPassword"]" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudDatePicker Label="@Localizer["DateOfBirth"]" Required="true" @bind-Date="dateOfBirth" For="@(() => model.DateOfBirth)"
+                                       Variant="Variant.Outlined" />
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        <MudSelect Label="@Localizer["Role"]" @bind-Value="model.Role" Variant="Variant.Outlined">
+                            <MudSelectItem Value="@Role.HealthWorker">@Localizer["HealthcareWorker"]</MudSelectItem>
+                            <MudSelectItem Value="@Role.Admin">@Localizer["Admin"]</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+
+                    @if (model.Role == Role.HealthWorker)
+                    {
+                        <MudItem xs="12" Class="mt-4">
+                            <MudText Typo="Typo.h6" Class="mb-2">@Localizer["MedicalInfo"]</MudText>
+                            <MudDivider />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Label="@Localizer["PWZ"]" @bind-Value="model.PwzNumber"
+                                          Required="true" RequiredError="@Localizer["Required"]"
+                                          Variant="Variant.Outlined" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudSelect T="mSzczepienia.Shared.Enums.Position?" Label="@Localizer["Position"]" @bind-Value="model.Position" Variant="Variant.Outlined">
+                                <MudSelectItem T="mSzczepienia.Shared.Enums.Position?" Value="@mSzczepienia.Shared.Enums.Position.Doctor">@Localizer["Doctor"]</MudSelectItem>
+                                <MudSelectItem T="mSzczepienia.Shared.Enums.Position?" Value="@mSzczepienia.Shared.Enums.Position.Nurse">@Localizer["Nurse"]</MudSelectItem>
+                                <MudSelectItem T="mSzczepienia.Shared.Enums.Position?" Value="@mSzczepienia.Shared.Enums.Position.OfficeWorker">@Localizer["OfficeWorker"]</MudSelectItem>
+                            </MudSelect>
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudAutocomplete T="SearchFacilityDto" Label="@Localizer["MedicalFacility"]" @bind-Value="selectedFacility" SearchFunc="@SearchFacility"
+                                             ToStringFunc="@(e => e == null ? null : $"{e.Name} - {e.City} - {e.Street} - {e.Nip}")"
+                                             Variant="Variant.Outlined" Required="true" RequiredError="@Localizer["Required"]"
+                                             AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" MinCharacters="3"
+                                             Placeholder="@Localizer["SearchByNipNameCity"]" DebounceInterval="1000">
+
+                                <ItemTemplate Context="e">
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                        <MudIcon Icon="@Icons.Material.Filled.LocalHospital" Color="Color.Info" Size="Size.Small" />
+                                        <MudStack Spacing="0">
+                                            <MudText Typo="Typo.body1"><b>@e.Name</b> (NIP: @e.Nip)</MudText>
+                                            <MudText Typo="Typo.caption" Color="Color.Default">@e.City, @e.Street (@e.PostalCode)</MudText>
+                                        </MudStack>
+                                    </MudStack>
+                                </ItemTemplate>
+
+                                <NoItemsTemplate>
+                                    <MudText Typo="Typo.body2" Align="Align.Center" Class="pa-2">@Localizer["NoFacilitiesFound"]</MudText>
+                                </NoItemsTemplate>
+                            </MudAutocomplete>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudCardContent>
+
+            <MudCardActions Class="pa-4 justify-end">
+                <MudButton OnClick="@(() => NavManager.NavigateTo("/staff"))" Class="mr-2">@Localizer["Cancel"]</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary"
+                           Disabled="@_processing">
+                    @if (_processing)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">@Localizer["Processing"]</MudText>
+                    }
+                    else
+                    {
+                        @Localizer["CreateAccount"]
+                    }
+                </MudButton>
+            </MudCardActions>
+
+        </MudCard>
+    </EditForm>
+</MudContainer>
+
+@code {
+    private CreateUserDto model = new();
+    private DateTime? dateOfBirth = DateTime.Today.AddYears(-25);
+    private SearchFacilityDto? selectedFacility;
+    private bool _processing = false;
+
+    private async Task OnSubmit()
+    {
+        _processing = true;
+        if (dateOfBirth.HasValue) model.DateOfBirth = dateOfBirth.Value;
+        if (selectedFacility != null) model.FacilityId = (int)selectedFacility.Id;
+
+        if (model.Role == Role.HealthWorker)
+        {
+            if (string.IsNullOrEmpty(model.PwzNumber) || model.FacilityId == null || model.Position == null)
+            {
+                Snackbar.Add(Localizer["FillMedicalFields"], Severity.Warning);
+                _processing = false;
+                return;
+            }
+        }
+
+        try
+        {
+            var success = await UserManagementClient.CreateUserAsync(model);
+            if (success)
+            {
+                Snackbar.Add(Localizer["UserCreated"], Severity.Success);
+                NavManager.NavigateTo("/staff");
+            }
+            else
+            {
+                Snackbar.Add(Localizer["ErrorCreatingUser"], Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+
+    private async Task<IEnumerable<SearchFacilityDto>> SearchFacility(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length < 3)
+            return Enumerable.Empty<SearchFacilityDto>();
+
+        var query = new GetFacilitiesQuery
+        {
+            SearchPhrase = value,
+            PageNumber = 1,
+            PageSize = 10
+        };
+
+        try
+        {
+            var pagedResult = await FacilityClient.GetFacilitiesAsync(query, token);
+            return pagedResult.Items;
+        }
+        catch (OperationCanceledException)
+        {
+            return Enumerable.Empty<SearchFacilityDto>();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            return Enumerable.Empty<SearchFacilityDto>();
+        }
+    }
+}

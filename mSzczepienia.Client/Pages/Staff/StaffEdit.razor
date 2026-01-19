@@ -1,0 +1,245 @@
+﻿@page "/staff/{Id:int}/edit"
+@attribute [Authorize(Roles = "admin")]
+@inject NavigationManager NavigationManager
+@inject IPersonnelClient PersonnelClient
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<SharedResources> Localizer
+@using mSzczepienia.Shared.DTO.Personnel
+@using mSzczepienia.Shared.Enums
+@using mSzczepienia.Client.Shared.Components.Skeletons
+@using System.Text.RegularExpressions
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8 mb-8">
+    <MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary">@Localizer["EditStaff"]</MudText>
+
+    @if (_isLoading)
+    {
+        <AdvancedAccountDetailsSeleton />
+    }
+    else if (_staffDetails != null)
+    {
+        <EditForm Model="@model" OnValidSubmit="OnSubmit">
+            <DataAnnotationsValidator />
+
+            <MudCard Elevation="3" Class="pa-4">
+                <MudCardHeader>
+                    <CardHeaderAvatar>
+                        <MudAvatar Color="Color.Tertiary" Size="Size.Large">
+                            @(model.Name?.FirstOrDefault())@(model.Surname?.FirstOrDefault())
+                        </MudAvatar>
+                    </CardHeaderAvatar>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">@model.Name @model.Surname</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Tertiary">@Localizer["EditingMedicalAccount"]</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudChip T="string" Color="Color.Default" Variant="Variant.Text" Icon="@Icons.Material.Filled.Security">
+                            @FormatEnum(_staffDetails.Role.ToString())
+                        </MudChip>
+                    </CardHeaderActions>
+                </MudCardHeader>
+
+                <MudCardContent>
+                    <MudGrid>
+
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">@Localizer["BasicInfo"]</MudText>
+                            <MudDivider />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Label="@Localizer["First Name"]" @bind-Value="model.Name" For="@(() => model.Name)"
+                                          Variant="Variant.Outlined" Required="true" RequiredError="@Localizer["Required"]"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Label="@Localizer["Surname"]" @bind-Value="model.Surname" For="@(() => model.Surname)"
+                                          Variant="Variant.Outlined" Required="true" RequiredError="@Localizer["Required"]" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Label="@Localizer["Email"]" @bind-Value="model.Email" For="@(() => model.Email)"
+                                          Variant="Variant.Outlined" Required="true" RequiredError="@Localizer["Required"]"
+                                          InputType="InputType.Email" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudDatePicker Label="@Localizer["DateOfBirth"]" @bind-Date="dateOfBirth" For="@(() => dateOfBirth)"
+                                           Variant="Variant.Outlined" Required="true" RequiredError="@Localizer["Required"]"
+                                           Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Cake"
+                                           Editable="true" MaxDate="DateTime.Now" />
+                        </MudItem>
+
+                        <MudItem xs="12" Class="mt-4">
+                            <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-2">@Localizer["MedicalInformation"]</MudText>
+                            <MudDivider />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Label="@Localizer["PWZ"]" @bind-Value="model.PwzNumber" For="@(() => model.PwzNumber)"
+                                          Variant="Variant.Outlined" Required="true" RequiredError="@Localizer["Required"]"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Badge" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudSelect Label="@Localizer["Position"]" @bind-Value="model.Position" For="@(() => model.Position)"
+                                       Variant="Variant.Outlined" Required="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Work">
+                                @foreach (mSzczepienia.Shared.Enums.Position item in Enum.GetValues(typeof(mSzczepienia.Shared.Enums.Position)))
+                                {
+                                    <MudSelectItem Value="@item">@FormatEnum(item.ToString())</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+
+                        <MudItem xs="12" Class="mt-4">
+                            <MudText Typo="Typo.h6" Color="Color.Default" Class="mb-2">@Localizer["EmploymentAndSystem"] (@Localizer["ReadOnly"])</MudText>
+                            <MudDivider />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField Value="@_staffDetails.FacilityName" Label="@Localizer["AssignedFacility"]"
+                                          ReadOnly="true" Variant="Variant.Filled" Disabled="true"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.LocalHospital" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Value="@_staffDetails.CreationDate.ToString("g")" Label="@Localizer["AccountCreationDate"]"
+                                          ReadOnly="true" Variant="Variant.Filled" Disabled="true"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.CalendarToday" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Value="@_staffDetails.Id.ToString()" Label="@Localizer["GUID"]"
+                                          ReadOnly="true" Variant="Variant.Filled" Disabled="true"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Fingerprint" />
+                        </MudItem>
+
+                    </MudGrid>
+                </MudCardContent>
+
+                <MudCardActions Class="pa-4 justify-space-between">
+                    <MudButton OnClick="Cancel" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.ArrowBack">
+                        @Localizer["Cancel"]
+                    </MudButton>
+
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@_processing" StartIcon="@Icons.Material.Filled.Save">
+                        @if (_processing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">@Localizer["Saving"]</MudText>
+                        }
+                        else
+                        {
+                            @Localizer["SaveChanges"]
+                        }
+                    </MudButton>
+                </MudCardActions>
+
+            </MudCard>
+        </EditForm>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private UpdatePersonnelDto model = new();
+
+    private DetailedPersonnelDto? _staffDetails;
+
+    private DateTime? dateOfBirth
+    {
+        get => model.DateOfBirth;
+        set => model.DateOfBirth = value ?? DateTime.Now;
+    }
+
+    private bool _isLoading = true;
+    private bool _processing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadStaffData();
+    }
+
+    private async Task LoadStaffData()
+    {
+        try
+        {
+            _isLoading = true;
+            _staffDetails = await PersonnelClient.GetPersonnelByIdAsync(Id, CancellationToken.None);
+
+            if (_staffDetails != null)
+            {
+                model = new UpdatePersonnelDto
+                {
+                    Name = _staffDetails.Name,
+                    Surname = _staffDetails.Surname,
+                    Email = _staffDetails.Email,
+                    DateOfBirth = _staffDetails.DateOfBirth,
+                    PwzNumber = _staffDetails.PwzNumber,
+                    Position = _staffDetails.Position
+                };
+            }
+            else
+            {
+                Snackbar.Add(Localizer["PersonnelNotFound"], Severity.Error);
+                NavigationManager.NavigateTo($"/staff?SelectedRole={(int)Role.HealthWorker}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Localizer["ErrorLoadingData"]}: {ex.Message}", Severity.Error);
+            NavigationManager.NavigateTo($"/staff?SelectedRole={(int)Role.HealthWorker}");
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task OnSubmit()
+    {
+        _processing = true;
+        try
+        {
+            await PersonnelClient.UpdatePersonnelAsync(Id, model, CancellationToken.None);
+
+            Snackbar.Add(Localizer["StaffUpdatedSuccess"], Severity.Success);
+            NavigationManager.NavigateTo($"/staff/{Id}");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Localizer["ErrorUpdatingStaff"]}: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo($"/staff/{Id}");
+    }
+
+    private string FormatEnum(string en)
+    {
+        switch (en)
+        {
+            case "Doctor":
+                return Localizer["Doctor"];
+            case "Nurse":
+                return Localizer["Nurse"];
+            case "OfficeWorker":
+                return Localizer["OfficeWorker"];
+            case "Admin":
+                return Localizer["Admin"];
+            case "HealthWorker":
+                return Localizer["HealthcareWorker"];
+            default:
+                return Regex.Replace(en, "(\\B[A-Z])", " $1");
+        }
+    }
+}

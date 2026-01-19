@@ -1,0 +1,199 @@
+﻿@page "/facilities/{id:int}/edit"
+@attribute [Authorize(Roles = "admin")]
+@inject NavigationManager NavigationManager
+@inject IFacilityClient FacilityClient
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<SharedResources> Localizer
+@using mSzczepienia.Shared.DTO.Facilities
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8 mb-8">
+    <MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary">@Localizer["EditFacility"]</MudText>
+
+    @if (_isLoading)
+    {
+        <MudCard Elevation="3" Class="pa-4">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="60px" Class="mb-4" />
+            <MudDivider />
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="170px" Class="mb-4" />
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="60px" Class="mb-4" />
+            <MudDivider />
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="280px" />
+        </MudCard>
+    }
+    else
+    {
+        <EditForm Model="@model" OnValidSubmit="OnSubmit">
+            <DataAnnotationsValidator />
+
+            <MudCard Elevation="3" Class="pa-4">
+                <MudCardContent>
+                    <MudGrid>
+
+                        <MudItem xs="12">
+                            <MudText Typo="Typo.h6" Class="mb-2">@Localizer["FacilityDetails"]</MudText>
+                            <MudDivider />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField Label="@Localizer["FacilityName"]" @bind-Value="model.FacilityName" For="@(() => model.FacilityName)" Variant="Variant.Outlined" Required="true"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Business" Placeholder="@Localizer["EnterFacilityName"]"
+                                          RequiredError="@Localizer["Required"]" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Label="@Localizer["NIP"]" @bind-Value="model.Nip" For="@(() => model.Nip)" Variant="Variant.Outlined" Required="true"
+                                          Placeholder="@Localizer["EnterNIP"]" Mask="@(new PatternMask("0000000000"))" MaxLength="10" RequiredError="@Localizer["Required"]" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Label="@Localizer["PhoneNumber"]" @bind-Value="model.PhoneNumber" For="@(() => model.PhoneNumber)" Variant="Variant.Outlined" Required="true"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Phone" Placeholder="@Localizer["EnterPhoneNumber"]"
+                                          RequiredError="@Localizer["Required"]" Mask="@(new PatternMask("000000000"))" MaxLength="9" />
+                        </MudItem>
+
+                        <MudItem xs="12" Class="mt-4">
+                            <MudText Typo="Typo.h6" Class="mb-2">@Localizer["Address"]</MudText>
+                            <MudDivider />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField Label="@Localizer["Street"]" @bind-Value="model.Street" For="@(() => model.Street)" Variant="Variant.Outlined" Required="true"
+                                          Placeholder="@Localizer["EnterStreet"]" RequiredError="@Localizer["Required"]" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Label="@Localizer["PostalCode"]" @bind-Value="model.PostalCode" For="@(() => model.PostalCode)" Variant="Variant.Outlined" Required="true"
+                                          Placeholder="@Localizer["EnterPostalCode"]" Mask="@(new PatternMask("00-000"))" MaxLength="6" RequiredError="@Localizer["Required"]" />
+                        </MudItem>
+
+                        <MudItem xs="12" sm="6">
+                            <MudTextField Label="@Localizer["City"]" @bind-Value="model.City" For="@(() => model.City)" Variant="Variant.Outlined" Required="true"
+                                          Placeholder="@Localizer["EnterCity"]" RequiredError="@Localizer["Required"]" />
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudTextField Label="@Localizer["Country"]" @bind-Value="model.Country" For="@(() => model.Country)" Variant="Variant.Outlined" Required="true"
+                                          Placeholder="@Localizer["EnterCountry"]" RequiredError="@Localizer["Required"]" />
+                        </MudItem>
+
+                    </MudGrid>
+                </MudCardContent>
+
+                <MudCardActions Class="pa-4 justify-end">
+                    <MudButton OnClick="Cancel" Class="mr-2">@Localizer["Cancel"]</MudButton>
+
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@_processing">
+                        @if (_processing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">@Localizer["Processing"]</MudText>
+                        }
+                        else
+                        {
+                            @Localizer["SaveChanges"]
+                        }
+                    </MudButton>
+                </MudCardActions>
+
+            </MudCard>
+        </EditForm>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private CreateFacilityDto model = new();
+    private bool _processing = false;
+    private bool _isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFacilityData();
+    }
+
+    private async Task LoadFacilityData()
+    {
+        try
+        {
+            _isLoading = true;
+            var facility = await FacilityClient.GetFacilityByIdAsync(Id, new CancellationToken());
+
+            if (facility != null)
+            {
+                model = new CreateFacilityDto
+                {
+                    FacilityName = facility.Name,
+                    Nip = facility.Nip,
+                    PhoneNumber = facility.PhoneNumber,
+                    Street = facility.Street,
+                    PostalCode = facility.PostalCode,
+                    City = facility.City,
+                    Country = facility.Country
+                };
+            }
+            else
+            {
+                Snackbar.Add(Localizer["FacilityNotFound"], Severity.Error);
+                NavigationManager.NavigateTo("/facilities");
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Localizer["ErrorLoadingFacility"]}: {ex.Message}", Severity.Error);
+            NavigationManager.NavigateTo("/facilities");
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task OnSubmit()
+    {
+        _processing = true;
+
+        if (model.Nip.Length != 10)
+        {
+            Snackbar.Add(Localizer["NIPMustBe10Digits"], Severity.Error);
+            _processing = false;
+            return;
+        }
+
+        if (model.PostalCode.Length != 6)
+        {
+            Snackbar.Add(Localizer["PostalCodeMustBeInFormat"], Severity.Error);
+            _processing = false;
+            return;
+        }
+
+        if (model.PhoneNumber.Length < 9)
+        {
+            Snackbar.Add(Localizer["PhoneNumberTooShort"], Severity.Error);
+            _processing = false;
+            return;
+        }
+
+        try
+        {
+            await FacilityClient.UpdateFacilityAsync(Id, model, new CancellationToken());
+
+            Snackbar.Add(Localizer["FacilityUpdatedSuccess"], Severity.Success);
+            NavigationManager.NavigateTo($"/facilities/{Id}");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"{Localizer["ErrorUpdatingFacility"]}: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo($"/facilities/{Id}");
+    }
+}

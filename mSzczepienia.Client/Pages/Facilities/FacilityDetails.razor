@@ -1,0 +1,341 @@
+﻿@page "/facilities/{id:int}"
+@attribute [Authorize(Roles = "admin")]
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<SharedResources> Localizer
+@inject IFacilityClient FacilityClient
+@inject IStatsClient StatsClient
+@inject IPersonnelClient PersonnelClient
+@inject ISnackbar Snackbar
+@using mSzczepienia.Shared.DTO
+@using mSzczepienia.Shared.DTO.Facilities
+@using mSzczepienia.Shared.DTO.Personnel
+@using mSzczepienia.Shared.DTO.Stats
+@using mSzczepienia.Client.Shared.Components
+@using mSzczepienia.Client.Shared.Components.Skeletons
+@using System.Text.RegularExpressions
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-8">
+    <MudGrid Spacing="4">
+
+        <MudItem xs="12" md="6">
+            <MudStack Spacing="4">
+
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["FacilityDetails"]</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+
+                    <MudCardContent>
+                        @if (_isLoadingFacility)
+                        {
+                            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" />
+                        }
+                        else if (!string.IsNullOrEmpty(_errorFacility))
+                        {
+                            <ErrorState Message="@_errorFacility" OnRetry="LoadFacility" />
+                        }
+                        else if (_facility != null)
+                        {
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_facility.Name" Label="@Localizer["Name"]" ReadOnly="true" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_facility.Street" Label="@Localizer["Street"]" ReadOnly="true" />
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_facility.City" Label="@Localizer["City"]" ReadOnly="true" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_facility.PostalCode" Label="@Localizer["PostalCode"]" ReadOnly="true" />
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_facility.Nip" Label="@Localizer["NIP"]" ReadOnly="true" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_facility.Id.ToString()" Label="@Localizer["ID"]" ReadOnly="true" />
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_facility.PhoneNumber" Label="@Localizer["PhoneNumber"]" ReadOnly="true" />
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudTextField Value="@_facility.CreationDate.ToShortDateString()" Label="@Localizer["CreationDate"]" ReadOnly="true" />
+                                </MudItem>
+                            </MudGrid>
+                        }
+                    </MudCardContent>
+
+                    <AuthorizeView Roles="admin">
+                        <Authorized>
+                            @if (string.IsNullOrEmpty(_errorFacility))
+                            {
+                                <MudCardActions>
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="ml-2" OnClick="EditFacility">
+                                        @Localizer["EditDetails"]
+                                    </MudButton>
+                                </MudCardActions>
+                            }
+                        </Authorized>
+                    </AuthorizeView>
+                </MudCard>
+
+                <MudCard Elevation="2" Class="pa-4">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center">@Localizer["Stats"]</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        @if (_isLoadingStats)
+                        {
+                            <DonutStatSkeleton />
+                        }
+                        else if (!string.IsNullOrEmpty(_errorStats))
+                        {
+                            <ErrorState Message="@_errorStats" OnRetry="LoadStats" />
+                        }
+                        else if (_stats != null)
+                        {
+                            <DonutStat Data="donutData" MainValue="@_stats.TotalBooklets" MainLabel="@Localizer["AllBooklets"]" ChartSize="160px" ShowLegend="true" />
+                        }
+                    </MudCardContent>
+                </MudCard>
+            </MudStack>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Center" Class="mb-4">@Localizer["MedicalStaff"]</MudText>
+
+            @if (_isLoadingPersonnel)
+            {
+                <ListSkeleton Count="@PageSize" PaperHeight="116px"/>
+            }
+            else if (!string.IsNullOrEmpty(_errorPersonnel))
+            {
+                <MudPaper Class="pa-4">
+                    <ErrorState Message="@_errorPersonnel" OnRetry="@(() => LoadPersonnel(Page))" />
+                </MudPaper>
+            }
+            else if (_personnelResult?.Items != null)
+            {
+                <MudStack Spacing="3">
+                    @foreach (var emp in _personnelResult.Items)
+                    {
+                        <MudPaper Elevation="1" Class="pa-4 transition-item">
+                            <MudGrid Class="align-center">
+                                <MudItem xs="12" sm="8">
+                                    <MudText Typo="Typo.subtitle1"><b>@emp.Name @emp.Surname</b></MudText>
+                                    <MudText Typo="Typo.body2" Class="mud-text-secondary">@FormatEnum(emp.Position)</MudText>
+
+                                    <MudStack Row="true" Spacing="2" Class="mt-1">
+                                        <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.Email" Variant="Variant.Text" Color="Color.Primary">@emp.Email</MudChip>
+                                        <MudChip T="string" Size="Size.Small" Icon="@Icons.Material.Filled.Badge" Variant="Variant.Text" Color="Color.Secondary">PWZ: @emp.PwzNumber</MudChip>
+                                    </MudStack>
+                                </MudItem>
+                                <AuthorizeView Roles="admin">
+                                    <Authorized>
+                                        <MudItem xs="12" sm="4" Class="d-flex justify-end">
+                                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OpenEmployeeDetails(emp.Id))">
+                                                @Localizer["Details"]
+                                            </MudButton>
+                                        </MudItem>
+                                    </Authorized>
+                                </AuthorizeView>
+                            </MudGrid>
+                        </MudPaper>
+                    }
+                </MudStack>
+
+                @if (_personnelResult.TotalPages > 1)
+                {
+                    <div class="d-flex justify-center mt-6">
+                        <MudPagination Color="Color.Primary" Count="@_personnelResult.TotalPages" Selected="@Page" SelectedChanged="OnPageChanged" />
+                    </div>
+                }
+            }
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+<style>
+    .transition-item {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        will-change: transform, box-shadow;
+    }
+
+        .transition-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 8px 24px rgba(0,0,0,0.12) !important;
+        }
+</style>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private FacilityDto? _facility;
+    private DashboardStatsDto? _stats;
+    private PagedResult<PersonnelDto>? _personnelResult;
+
+    private bool _isLoadingFacility = true;
+    private bool _isLoadingStats = true;
+    private bool _isLoadingPersonnel = true;
+
+    private string? _errorFacility;
+    private string? _errorStats;
+    private string? _errorPersonnel;
+
+    private int Page = 1;
+    private int PageSize = 6;
+
+    private double[] donutData = { 0, 0, 0 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var t1 = LoadFacility();
+        var t2 = LoadStats();
+
+        await Task.WhenAll(t1, t2);
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadPersonnel(Page);
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task LoadFacility()
+    {
+        _isLoadingFacility = true;
+        _errorFacility = null;
+        StateHasChanged();
+
+        try
+        {
+            _facility = await FacilityClient.GetFacilityByIdAsync(id, new CancellationToken());
+        }
+        catch (HttpRequestException httpEx) when (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            _errorFacility = Localizer["FacilityNotFound"];
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _errorFacility = Localizer["ErrorLoadingFacility"];
+            Snackbar.Add($"{_errorFacility}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+
+        }
+        catch (Exception ex)
+        {
+            _errorFacility = Localizer["ErrorLoadingFacility"];
+            Snackbar.Add($"{_errorFacility}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            _isLoadingFacility = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadStats()
+    {
+        _isLoadingStats = true;
+        _errorStats = null;
+        StateHasChanged();
+
+        try
+        {
+            _stats = await StatsClient.GetFacilityStatsAsync(id, new CancellationToken());
+            if (_stats != null)
+            {
+                donutData = new double[] { _stats.AcceptedCount, _stats.NotReviewedCount, _stats.RejectedCount };
+            }
+        }
+        catch (HttpRequestException httpEx) when (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            _errorStats = Localizer["StatsNotFound"];
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _errorStats = Localizer["ErrorLoadingStats"];
+            Snackbar.Add($"{_errorStats}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            _errorStats = Localizer["ErrorLoadingStats"];
+            Snackbar.Add($"{_errorStats}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            _isLoadingStats = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadPersonnel(int page)
+    {
+        _isLoadingPersonnel = true;
+        _errorPersonnel = null;
+        StateHasChanged();
+
+        try
+        {
+            _personnelResult = await PersonnelClient.GetPersonnelByFacilityAsync(id, page, PageSize, new CancellationToken());
+        }
+        catch (HttpRequestException httpEx) when (httpEx.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            _errorPersonnel = Localizer["PersonnelNotFound"];
+        }
+        catch (HttpRequestException httpEx)
+        {
+            _errorPersonnel = Localizer["ErrorLoadingPersonnel"];
+            Snackbar.Add($"{_errorPersonnel}: ({httpEx.StatusCode},{httpEx.Message})", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            _errorPersonnel = Localizer["ErrorLoadingPersonnel"];
+            Snackbar.Add($"{_errorPersonnel}: ({ex.Message})", Severity.Error);
+        }
+        finally
+        {
+            _isLoadingPersonnel = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnPageChanged(int page)
+    {
+        Page = page;
+        await LoadPersonnel(page);
+    }
+
+    private void EditFacility()
+    {
+        NavigationManager.NavigateTo($"/facilities/{id}/edit");
+    }
+
+    private void OpenEmployeeDetails(int personnelId)
+    {
+        NavigationManager.NavigateTo($"/staff/{personnelId}");
+    }
+
+    private string FormatEnum(string en)
+    {
+        switch (en)
+        {
+            case "Doctor":
+                return Localizer["Doctor"];
+            case "Nurse":
+                return Localizer["Nurse"];
+            case "OfficeWorker":
+                return Localizer["OfficeWorker"];
+            default:
+                return Regex.Replace(en, "(\\B[A-Z])", " $1");
+        }
+    }
+}

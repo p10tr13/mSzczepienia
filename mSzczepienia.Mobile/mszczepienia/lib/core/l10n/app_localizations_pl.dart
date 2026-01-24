@@ -101,7 +101,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get repeatPasswordCondition => 'Hasła nie są identyczne';
 
   @override
-  String get incorrectCredentials => 'Nieprawidłowy email lub hasło';
+  String get incorrectCredentials => 'Niepoprawne dane logowania';
+
+  @override
+  String get userNotRegistered => 'Użytkownik nie jest zarejestrowany';
 
   @override
   String get signUpError => 'Błąd rejestracji';

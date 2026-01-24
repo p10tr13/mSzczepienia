@@ -151,6 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                                 email,
                                 password,
                                 l10n.incorrectCredentials,
+                                l10n.userNotRegistered,
                               );
                             }
                           },

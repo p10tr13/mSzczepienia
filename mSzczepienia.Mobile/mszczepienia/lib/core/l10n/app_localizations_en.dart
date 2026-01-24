@@ -104,6 +104,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get incorrectCredentials => 'Incorrect email or password';
 
   @override
+  String get userNotRegistered => 'User is not registered';
+
+  @override
   String get signUpError => 'Sign up error';
 
   @override

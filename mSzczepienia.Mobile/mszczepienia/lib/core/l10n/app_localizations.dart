@@ -284,6 +284,12 @@ abstract class AppLocalizations {
   /// **'Incorrect email or password'**
   String get incorrectCredentials;
 
+  /// No description provided for @userNotRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'User is not registered'**
+  String get userNotRegistered;
+
   /// No description provided for @signUpError.
   ///
   /// In en, this message translates to:

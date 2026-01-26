@@ -9,12 +9,9 @@ class DioClient {
         BaseOptions(
           // For testing
           // baseUrl: 'http://10.0.2.2:8080/api',
-          // For deployment
-          // WITH VM
+          // For VM
           // baseUrl: 'http://74.161.152.171:8080/api',
-          // connectTimeout: const Duration(seconds: 10),
-          // receiveTimeout: const Duration(seconds: 10),
-          // headers: {'Content-Type': 'application/json'},
+          // For container apps
           baseUrl: 'https://mszczepienia-app.salmonbay-ca24e90b.switzerlandnorth.azurecontainerapps.io/api',
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),

@@ -40,7 +40,8 @@
     "enterRepeatPassword": "Powtórz swoje hasło",
     "repeatPasswordCondition": "Hasła nie są identyczne",
 
-    "incorrectCredentials": "Nieprawidłowy email lub hasło",
+    "incorrectCredentials": "Niepoprawne dane logowania",
+    "userNotRegistered": "Użytkownik nie jest zarejestrowany",
     "signUpError": "Błąd rejestracji",
 
     "goodMorningUser": "Dzień dobry, {userName}",

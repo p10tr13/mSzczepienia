@@ -42,8 +42,14 @@ class AuthRepository {
         email: email,
         password: password,
       );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw Exception('USER_NOT_FOUND');
+      } else {
+        throw Exception('INVALID_CREDENTIALS');
+      }
     } catch (e) {
-      throw Exception('Incorrect credentials');
+      throw Exception('INVALID_CREDENTIALS');
     }
 
     // DATABASE LOGIN
@@ -79,7 +85,7 @@ class AuthRepository {
         password: password,
       );
     } catch (e) {
-      throw Exception('Incorrect credentials');
+      throw Exception('INVALID_CREDENTIALS');
     }
 
     // DATABASE SIGN UP - POST data to db about new user

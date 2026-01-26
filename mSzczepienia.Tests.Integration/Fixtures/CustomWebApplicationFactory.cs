@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using mSzczepienia.Api;
+using mSzczepienia.Api.Services.Interfaces;
+using mSzczepienia.Shared.DTO.VaccinationEntries;
 using mSzczepienia.Shared.Models;
 using mSzczepienia.Shared.Enums;
 using System.IdentityModel.Tokens.Jwt;
@@ -66,6 +70,26 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             {
                 return new TestDataSeeder(sp);
             });
+        });
+
+        // Override external services with mocks after app configuration
+        builder.ConfigureTestServices(services =>
+        {
+            // Remove and replace BlobService
+            var blobDescriptors = services.Where(d => d.ServiceType == typeof(IBlobService)).ToList();
+            foreach (var descriptor in blobDescriptors)
+            {
+                services.Remove(descriptor);
+            }
+            services.AddSingleton<IBlobService, MockBlobService>();
+
+            // Remove and replace AzureOcrService
+            var ocrDescriptors = services.Where(d => d.ServiceType == typeof(IAzureOcrService)).ToList();
+            foreach (var descriptor in ocrDescriptors)
+            {
+                services.Remove(descriptor);
+            }
+            services.AddSingleton<IAzureOcrService, MockAzureOcrService>();
         });
 
         builder.UseEnvironment("Testing");
@@ -561,4 +585,26 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
     {
         return new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this-is-a-very-long-secret-key-for-testing-purposes-only-12345"));
     }
+
+    #region Mock Services
+
+    private class MockBlobService : IBlobService
+    {
+        public Task UploadFileAsync(string blobName, Stream content) => Task.CompletedTask;
+
+        public Task UploadMultipleFilesAsync(string directoryUrl, List<IFormFile> files) => Task.CompletedTask;
+
+        public Task<List<string>> GetSasUrlsForDirectoryAsync(string directoryPath, int expirationMinutes = 30)
+            => Task.FromResult(new List<string> { "https://mock-blob-url.test/image1.jpg", "https://mock-blob-url.test/image2.jpg" });
+
+        public Task DeleteDirectoryAsync(string directoryUrl) => Task.CompletedTask;
+    }
+
+    private class MockAzureOcrService : IAzureOcrService
+    {
+        public Task<List<VaccinationEntryOcrDto>> ProcessFilesAsync(List<IFormFile> files, CancellationToken ct)
+            => Task.FromResult(new List<VaccinationEntryOcrDto>());
+    }
+
+    #endregion
 }

@@ -1,5 +1,6 @@
 services:
   api:
+    image: mszczepieniaapi:latest
     build:
       context: . 
       dockerfile: mSzczepienia.Api/Dockerfile

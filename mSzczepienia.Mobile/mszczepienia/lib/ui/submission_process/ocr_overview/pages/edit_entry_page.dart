@@ -104,21 +104,22 @@ class _EditEntryPageState extends State<EditEntryPage> {
                               showEyeIcon: false,
                               keyboardType: TextInputType.datetime,
                               hintText: 'YYYY-MM-DD',
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return null;
-                                }
-                                final dateRegex = RegExp(
-                                  r'^\d{4}-\d{2}-\d{2}$',
+                              readOnly: true,
+                              onTap: () async {
+                                final DateTime? picked = await showDatePicker(
+                                  context: context,
+                                  initialDate: _originalEntry.date == DateTime(1900, 1, 1)
+                                      ? DateTime.now()
+                                      : _originalEntry.date,
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime.now(),
                                 );
-                                if (!dateRegex.hasMatch(value)) {
-                                  return l10n.dateOfVacccinationCondition;
+                                if (picked != null) {
+                                  _dateController.text =
+                                      '${picked.year.toString().padLeft(4, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
                                 }
-                                try {
-                                  DateTime.parse(value);
-                                } catch (e) {
-                                  return l10n.dateOfVacccinationCondition;
-                                }
+                              },
+                              validator: (value) {
                                 return null;
                               },
                             ),

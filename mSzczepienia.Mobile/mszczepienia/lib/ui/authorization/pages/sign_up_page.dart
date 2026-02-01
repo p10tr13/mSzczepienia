@@ -149,6 +149,19 @@ class _SignUpPageState extends State<SignUpPage> {
                                   controller: _dateOfBirthController,
                                   showEyeIcon: false,
                                   keyboardType: TextInputType.datetime,
+                                  readOnly: true,
+                                  onTap: () async {
+                                    final DateTime? picked = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
+                                      firstDate: DateTime(1900),
+                                      lastDate: DateTime.now(),
+                                    );
+                                    if (picked != null) {
+                                      _dateOfBirthController.text =
+                                          '${picked.year.toString().padLeft(4, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+                                    }
+                                  },
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return null;

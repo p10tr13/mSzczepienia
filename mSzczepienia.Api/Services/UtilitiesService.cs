@@ -41,8 +41,8 @@ namespace  mSzczepienia.Api.Services
                 }
             }
 
-            // If accuracy is lower than 25%, return empty string
-            if (lowestDistance <= input.Length / 4)
+            // If accuracy is lower than 5%, return empty string
+            if (lowestDistance > input.Length * 0.05)
             {
                 return string.Empty;
             }

@@ -51,7 +51,7 @@ namespace mSzczepienia.Api
                 var facilities = _dbContext.medicalFacilities.ToList();
 
                 // Personnel
-                var personnelAccounts = GenerateAccounts(6000, Role.HealthWorker);
+                var personnelAccounts = GenerateAccounts(100, Role.HealthWorker);
                 _dbContext.accounts.AddRange(personnelAccounts);
                 _dbContext.SaveChanges();
 
@@ -84,7 +84,7 @@ namespace mSzczepienia.Api
                 _dbContext.SaveChanges();
 
                 // Citizens
-                var citizenAccounts = GenerateAccounts(50000, Role.Citizen).ToList();
+                var citizenAccounts = GenerateAccounts(500, Role.Citizen).ToList();
                 var testCitizenAccount = new Account
                 {
                     email = "piotrjac23@gmail.com",

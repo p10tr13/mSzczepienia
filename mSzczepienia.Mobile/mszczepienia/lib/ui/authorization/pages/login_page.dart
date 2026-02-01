@@ -39,169 +39,178 @@ class _LoginPageState extends State<LoginPage> {
         return Layout(
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 24.0,
-                right: 24.0,
-                top: 8.0,
-                bottom: 20.0,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    MediaQuery.of(context).padding.bottom -
+                    kToolbarHeight,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.goodMorning,
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.logInTitle,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: grey,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-
-                      const SizedBox(height: 30),
-
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: borderColor, width: 1.1),
-                        ),
-                        child: Form(
-                          key: formKey,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                CustomTextField(
-                                  label: l10n.email,
-                                  controller: _emailController,
-                                  showEyeIcon: false,
-                                  keyboardType: TextInputType.emailAddress,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return l10n.enterEmail;
-                                    }
-                                    if (!value.contains('@')) {
-                                      return l10n.emailCondition;
-                                    }
-                                    return null;
-                                  },
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                CustomTextField(
-                                  label: l10n.password,
-                                  controller: _passwordController,
-                                  obscureText: true,
-                                  showEyeIcon: true,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return l10n.enterPassword;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ],
-                            ),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 24.0,
+                  right: 24.0,
+                  top: 8.0,
+                  bottom: 20.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.goodMorning,
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 15),
-
-                      Center(
-                        child: Text(
-                          state is AuthError ? state.message : '',
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.logInTitle,
                           style: TextStyle(
-                            fontSize: 14,
-                            color: AppColors.logoRed,
+                            fontSize: 16,
+                            color: grey,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+
+                        const SizedBox(height: 30),
+
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: borderColor, width: 1.1),
+                          ),
+                          child: Form(
+                            key: formKey,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  CustomTextField(
+                                    label: l10n.email,
+                                    controller: _emailController,
+                                    showEyeIcon: false,
+                                    keyboardType: TextInputType.emailAddress,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return l10n.enterEmail;
+                                      }
+                                      if (!value.contains('@')) {
+                                        return l10n.emailCondition;
+                                      }
+                                      return null;
+                                    },
+                                  ),
+
+                                  const SizedBox(height: 16),
+
+                                  CustomTextField(
+                                    label: l10n.password,
+                                    controller: _passwordController,
+                                    obscureText: true,
+                                    showEyeIcon: true,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return l10n.enterPassword;
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+
+                        Center(
+                          child: Text(
+                            state is AuthError ? state.message : '',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.logoRed,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
 
                   const SizedBox(height: 270),
 
-                  Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (formKey.currentState!.validate()) {
-                              final email = _emailController.text;
-                              final password = _passwordController.text;
+                    Column(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (formKey.currentState!.validate()) {
+                                final email = _emailController.text;
+                                final password = _passwordController.text;
 
-                              context.read<AuthCubit>().loginRequested(
-                                email,
-                                password,
-                                l10n.incorrectCredentials,
-                              );
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.defaultBlue,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                                context.read<AuthCubit>().loginRequested(
+                                  email,
+                                  password,
+                                  l10n.incorrectCredentials,
+                                  l10n.userNotRegistered,
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.defaultBlue,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
                             ),
-                          ),
-                          child: state is AuthLoading
-                              ? CircularProgressIndicator(color: Colors.white)
-                              : Text(
-                                  l10n.logInButton,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                            child: state is AuthLoading
+                                ? CircularProgressIndicator(color: Colors.white)
+                                : Text(
+                                    l10n.logInButton,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: OutlinedButton(
-                          onPressed: () {
-                            context.go('/signup');
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: borderColor, width: 1.5),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                          child: Text(
-                            l10n.signUpButton,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                  ),
-                ],
+
+                        const SizedBox(height: 16),
+
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              context.go('/signup');
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: borderColor, width: 1.5),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: Text(
+                              l10n.signUpButton,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

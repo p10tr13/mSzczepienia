@@ -228,7 +228,29 @@ void main() {
           isA<Exception>().having(
             (e) => e.toString(),
             'message',
-            contains('Incorrect credentials'),
+            contains('INVALID_CREDENTIALS'),
+          ),
+        ),
+      );
+    });
+
+    test('throws USER_NOT_FOUND exception when user does not exist', () async {
+      // Arrange
+      when(
+        () => mockFirebaseAuth.signInWithEmailAndPassword(
+          email: 'unknown@example.com',
+          password: 'password123',
+        ),
+      ).thenThrow(FakeFirebaseAuthException.fromCode('user-not-found'));
+
+      // Act & Assert
+      expect(
+        () => authRepository.login('unknown@example.com', 'password123'),
+        throwsA(
+          isA<Exception>().having(
+            (e) => e.toString(),
+            'message',
+            contains('USER_NOT_FOUND'),
           ),
         ),
       );
@@ -351,7 +373,7 @@ void main() {
           isA<Exception>().having(
             (e) => e.toString(),
             'message',
-            contains('Incorrect credentials'),
+            contains('INVALID_CREDENTIALS'),
           ),
         ),
       );
@@ -375,12 +397,9 @@ void main() {
 }
 
 // Helper class for Firebase exceptions
-class FakeFirebaseAuthException implements Exception {
-  final String code;
-  final String message;
-
-  FakeFirebaseAuthException.fromCode(this.code)
-    : message = _getMessageFromCode(code);
+class FakeFirebaseAuthException extends FirebaseAuthException {
+  FakeFirebaseAuthException.fromCode(String code)
+    : super(code: code, message: _getMessageFromCode(code));
 
   static String _getMessageFromCode(String code) {
     switch (code) {

@@ -41,6 +41,7 @@
     "repeatPasswordCondition": "Passwords do not match",
 
     "incorrectCredentials": "Incorrect email or password",
+    "userNotRegistered": "User is not registered",
     "signUpError": "Sign up error",
 
     "goodMorningUser": "Good morning, {userName}",

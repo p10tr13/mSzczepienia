@@ -11,6 +11,8 @@ class CustomTextField extends StatefulWidget {
     this.validator,
     this.keyboardType,
     this.hintText,
+    this.readOnly = false,
+    this.onTap,
   });
 
   final String label;
@@ -20,6 +22,8 @@ class CustomTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final String? hintText;
+  final bool readOnly;
+  final VoidCallback? onTap;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -41,6 +45,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       obscureText: _isObscured,
       validator: widget.validator,
       keyboardType: widget.keyboardType,
+      readOnly: widget.readOnly,
+      onTap: widget.onTap,
       style: TextStyle(color: AppColors.darkGrey),
       decoration: InputDecoration(
         labelText: widget.label,

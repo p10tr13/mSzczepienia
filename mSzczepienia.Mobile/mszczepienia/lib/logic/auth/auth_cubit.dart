@@ -29,7 +29,8 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> loginRequested(
     String email,
     String password,
-    String errorMessage,
+    String incorrectCredentialsMessage,
+    String userNotRegisteredMessage,
   ) async {
     emit(AuthLoading());
     try {
@@ -38,10 +39,14 @@ class AuthCubit extends Cubit<AuthState> {
       if (user != null) {
         emit(Authenticated(user));
       } else {
-        emit(AuthError(errorMessage));
+        emit(AuthError(incorrectCredentialsMessage));
       }
     } catch (e) {
-      emit(AuthError(e.toString()));
+      if (e.toString().contains('USER_NOT_FOUND')) {
+        emit(AuthError(userNotRegisteredMessage));
+      } else {
+        emit(AuthError(incorrectCredentialsMessage));
+      }
     }
   }
 

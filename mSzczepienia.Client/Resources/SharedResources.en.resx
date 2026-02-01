@@ -562,7 +562,7 @@
     <value>Next Vaccination Date</value>
   </data>
   <data name="Batch" xml:space="preserve">
-    <value>Batch</value>
+    <value>Serial number</value>
   </data>
   <data name="Remarks" xml:space="preserve">
     <value>Remarks</value>
@@ -694,7 +694,7 @@
     <value>Date</value>
   </data>
   <data name="BatchNumber" xml:space="preserve">
-    <value>Batch Number</value>
+    <value>Serial Number</value>
   </data>
   <data name="SaveAndExit" xml:space="preserve">
     <value>Save and Exit</value>

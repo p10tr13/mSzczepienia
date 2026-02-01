@@ -208,7 +208,7 @@
     <value>Producent</value>
   </data>
   <data name="TargetDisease" xml:space="preserve">
-    <value>Choroba celowana</value>
+    <value>Chroni przed</value>
   </data>
   <data name="EnterName" xml:space="preserve">
     <value>Wpisz nazwę</value>
@@ -232,10 +232,10 @@
     <value>Zgłoszone książeczki</value>
   </data>
   <data name="Reviewed" xml:space="preserve">
-    <value>Przejrzane</value>
+    <value>Zweryfikowane</value>
   </data>
   <data name="NotReviewed" xml:space="preserve">
-    <value>Nieprzejrzane</value>
+    <value>Niezweryfikowane</value>
   </data>
   <data name="Rejected" xml:space="preserve">
     <value>Odrzucone</value>
@@ -562,7 +562,7 @@
     <value>Data następnego szczepienia</value>
   </data>
   <data name="Batch" xml:space="preserve">
-    <value>Partia</value>
+    <value>Seria</value>
   </data>
   <data name="Remarks" xml:space="preserve">
     <value>Uwagi</value>
@@ -694,7 +694,7 @@
     <value>Data</value>
   </data>
   <data name="BatchNumber" xml:space="preserve">
-    <value>Numer partii</value>
+    <value>Numer serii</value>
   </data>
   <data name="SaveAndExit" xml:space="preserve">
     <value>Zapisz i Zakończ</value>
@@ -742,7 +742,7 @@
     <value>Wystąpił błąd podczas przetwarzania wysłanej recenzji rekordów szczepień</value>
   </data>
   <data name="CreateNewVaccine" xml:space="preserve">
-    <value>Dodaj nową szcepionkę</value>
+    <value>Dodaj nową szczepionkę</value>
   </data>
   <data name="VaccineName" xml:space="preserve">
     <value>Nazwa szczepionki</value>

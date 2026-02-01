@@ -88,7 +88,12 @@ void main() {
       build: () => AuthCubit(mockAuthRepository),
       act: (cubit) async {
         await Future.delayed(const Duration(milliseconds: 50));
-        await cubit.loginRequested('john@example.com', 'password123', 'error');
+        await cubit.loginRequested(
+          'john@example.com',
+          'password123',
+          'Incorrect credentials',
+          'User not registered',
+        );
       },
       wait: const Duration(milliseconds: 100),
       expect: () => [
@@ -124,6 +129,7 @@ void main() {
           'john@example.com',
           'wrongpassword',
           'Incorrect credentials',
+          'User not registered',
         );
       },
       wait: const Duration(milliseconds: 100),
@@ -139,19 +145,24 @@ void main() {
     );
 
     blocTest<AuthCubit, AuthState>(
-      'emits [Unauthenticated, AuthLoading, AuthError] on login exception',
+      'emits [Unauthenticated, AuthLoading, AuthError] with incorrect credentials on login exception',
       setUp: () {
         when(
           () => mockAuthRepository.getCurrentUser(),
         ).thenAnswer((_) async => null);
         when(
           () => mockAuthRepository.login('john@example.com', 'password123'),
-        ).thenThrow(Exception('Network error'));
+        ).thenThrow(Exception('INVALID_CREDENTIALS'));
       },
       build: () => AuthCubit(mockAuthRepository),
       act: (cubit) async {
         await Future.delayed(const Duration(milliseconds: 50));
-        await cubit.loginRequested('john@example.com', 'password123', 'error');
+        await cubit.loginRequested(
+          'john@example.com',
+          'password123',
+          'Incorrect credentials',
+          'User not registered',
+        );
       },
       wait: const Duration(milliseconds: 100),
       expect: () => [
@@ -160,7 +171,39 @@ void main() {
         isA<AuthError>().having(
           (s) => s.message,
           'message',
-          contains('Network error'),
+          'Incorrect credentials',
+        ),
+      ],
+    );
+
+    blocTest<AuthCubit, AuthState>(
+      'emits [Unauthenticated, AuthLoading, AuthError] with user not registered on USER_NOT_FOUND exception',
+      setUp: () {
+        when(
+          () => mockAuthRepository.getCurrentUser(),
+        ).thenAnswer((_) async => null);
+        when(
+          () => mockAuthRepository.login('unknown@example.com', 'password123'),
+        ).thenThrow(Exception('USER_NOT_FOUND'));
+      },
+      build: () => AuthCubit(mockAuthRepository),
+      act: (cubit) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+        await cubit.loginRequested(
+          'unknown@example.com',
+          'password123',
+          'Incorrect credentials',
+          'User not registered',
+        );
+      },
+      wait: const Duration(milliseconds: 100),
+      expect: () => [
+        isA<Unauthenticated>(),
+        isA<AuthLoading>(),
+        isA<AuthError>().having(
+          (s) => s.message,
+          'message',
+          'User not registered',
         ),
       ],
     );

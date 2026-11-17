@@ -167,6 +167,7 @@ Developed as a Bachelor's Thesis at Warsaw University of Technology (MiNI WUT) b
 
 * **Piotr Iśtok**
 * **Piotr Jacak**
+
 ---
 
 ## License

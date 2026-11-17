@@ -1,8 +1,14 @@
+<p align="center">
+  <img src="docs/images/logo.png" alt="mSzczepienia logo" width="96">
+</p>
+
 # mSzczepienia
 
 **Bridging the gap between 21st-century digital healthcare and 19th-century paper booklets.**
 
 This repository contains the source code for **mSzczepienia**, a comprehensive system designed to digitize, verify, and manage historical vaccination records. It was developed as a Bachelor's Thesis project at the **Warsaw University of Technology** (Faculty of Mathematics and Information Science).
+
+![A healthcare worker verifies a submitted booklet page: the citizen's data on the left, the photo of the handwritten booklet on the right](docs/images/verification.png)
 
 ## The Problem
 
@@ -21,6 +27,20 @@ We know that medical handwriting is notoriously difficult for AI to read perfect
 ### Why an LLM instead of classic OCR?
 
 We compared two extractors: a custom-trained Azure AI Document Intelligence model and a multimodal LLM. Classic OCR transcribes characters, so a smudged or hurried entry comes out as a misspelled string. The LLM reads the entry in context: it recognizes vaccine names from a partial or misspelled scrawl and can sometimes infer which vaccine was meant when the name is barely legible. It recognized vaccine names noticeably better, so it became the final choice. Its output is never trusted blindly: every entry still goes through fuzzy matching against the official vaccine list and a healthcare worker's review.
+
+---
+
+## See It in Action
+
+| A citizen uploads a booklet photo | Verified vaccinations in the history |
+| :---: | :---: |
+| <img src="docs/images/mobile-upload.gif" alt="Mobile app: picking a booklet photo, waiting for the analysis and correcting the extracted entries before sending them for verification" width="260"> | <img src="docs/images/mobile-history.gif" alt="Mobile app: the vaccination history with details of a vaccine" width="260"> |
+
+A healthcare worker corrects the extracted entries next to the photo, picks the vaccine from the official list and approves the submission:
+
+![Web app: editing the extracted entries next to the booklet photo and saving the verified data](docs/images/web-verification.gif)
+
+*The recordings show the Polish version of the interface; the apps are also available in English.*
 
 ---
 
@@ -44,6 +64,8 @@ We compared two extractors: a custom-trained Azure AI Document Intelligence mode
 * **Facility Management:** Register medical facilities and manage personnel accounts.
 * **Analytics:** Monitor system usage and OCR rejection rates via interactive charts.
 
+![Administrator's dashboard with facility and vaccine search, submission statistics and a monthly chart](docs/images/admin-dashboard.png)
+
 ---
 
 ## Tech Stack & Architecture
@@ -57,7 +79,34 @@ The system is built on a modern, cloud-native **N-Layer architecture**:
 * **Identity Management:** `Firebase Authentication` (JWT based stateless auth).
 * **AI & OCR:** `gpt-5-mini` on `Azure OpenAI` turns booklet photos into structured JSON entries. A custom `Azure AI Document Intelligence` model was evaluated as an alternative and is kept in the code (`AzureOcrService`).
 * **Storage:** `Azure Blob Storage` with short-lived Shared Access Signatures (SAS) for secure medical image handling.
-* **Deployment:** Dockerized backend hosted on `Azure Container Apps`.
+* **Deployment:** Dockerized backend hosted on `Azure Container Apps`, the web client on `Azure Static Web Apps`.
+
+```mermaid
+flowchart LR
+    mobile["Mobile app<br>(Flutter)"]
+    web["Web client<br>(Blazor WebAssembly,<br>Azure Static Web Apps)"]
+    firebase["Firebase<br>Authentication &<br>Cloud Messaging"]
+    api["API<br>(ASP.NET Core,<br>Azure Container Apps)"]
+    sql[("Azure SQL<br>Database")]
+    blob[("Azure Blob<br>Storage")]
+    llm["Azure OpenAI<br>(gpt-5-mini)"]
+
+    mobile -- "sign-in" --> firebase
+    web -- "sign-in" --> firebase
+    mobile -- "REST + JWT" --> api
+    web -- "REST + JWT" --> api
+    api -- "EF Core" --> sql
+    api -- "booklet photos (SAS)" --> blob
+    api -- "photo -> JSON entries" --> llm
+    api -- "push notifications" --> firebase
+```
+
+<details>
+<summary>Data model (ERD)</summary>
+
+![Entity-relationship diagram of the database](docs/images/erd.png)
+
+</details>
 
 ---
 
